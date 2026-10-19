@@ -25,9 +25,13 @@ export default function AuthModal({ isOpen, onClose, defaultMode = "login" }: Au
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showGooglePicker, setShowGooglePicker] = useState(false);
+  const [googleCustomEmail, setGoogleCustomEmail] = useState("");
+  const [googleCustomName, setGoogleCustomName] = useState("");
   const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const signUpWithEmail = useAuthStore((state) => state.signUpWithEmail);
   const loginWithEmail = useAuthStore((state) => state.loginWithEmail);
   const loginWithGoogle = useAuthStore((state) => state.loginWithGoogle);
   const loginAdminDemo = useAuthStore((state) => state.loginAdminDemo);
@@ -37,27 +41,42 @@ export default function AuthModal({ isOpen, onClose, defaultMode = "login" }: Au
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    if (!email || !password) {
-      setError("Please fill in both email and password.");
-      return;
-    }
 
-    setLoading(true);
-    try {
-      await loginWithEmail(email, password, name);
+    if (isLogin) {
+      if (!email.trim() || !password.trim()) {
+        setError("Please enter your email and password.");
+        return;
+      }
+      setLoading(true);
+      const res = await loginWithEmail(email, password);
       setLoading(false);
-      onClose();
-    } catch {
-      setError("Failed to sign in. Please verify your credentials.");
+      if (!res.success) {
+        setError(res.message || "Failed to sign in. Please verify your credentials.");
+      } else {
+        onClose();
+      }
+    } else {
+      if (!name.trim() || !email.trim() || !password.trim()) {
+        setError("Please enter your name, email, and password to create an account.");
+        return;
+      }
+      setLoading(true);
+      const res = await signUpWithEmail(email, password, name);
       setLoading(false);
+      if (!res.success) {
+        setError(res.message || "Failed to create account.");
+      } else {
+        onClose();
+      }
     }
   };
 
-  const handleGoogleSignIn = async () => {
+  const handleExecuteGoogleLogin = async (selectedEmail: string, selectedName: string) => {
     setGoogleLoading(true);
     try {
-      await loginWithGoogle();
+      await loginWithGoogle(selectedEmail, selectedName);
       setGoogleLoading(false);
+      setShowGooglePicker(false);
       onClose();
     } catch {
       setError("Google authentication encountered an error.");
@@ -99,20 +118,19 @@ export default function AuthModal({ isOpen, onClose, defaultMode = "login" }: Au
             {isLogin ? "Welcome back" : "Create your digital account"}
           </h3>
           <p className="text-xs text-neutral-400 mt-1">
-            Access your permanent license key vault, WordPress activations, and order history.
+            {isLogin
+              ? "Sign in with your registered account to access orders and downloads."
+              : "Sign up once to receive instant license delivery and verified buyer access."}
           </p>
         </div>
 
-        {/* Google SSO Button */}
-        <button
-          type="button"
-          onClick={handleGoogleSignIn}
-          disabled={googleLoading}
-          className="w-full py-3 px-4 rounded-2xl bg-white hover:bg-neutral-100 text-neutral-900 font-bold text-xs flex items-center justify-center gap-3 transition-all shadow-md active:scale-[0.99] cursor-pointer"
-        >
-          {googleLoading ? (
-            <span className="w-4 h-4 border-2 border-neutral-900 border-t-transparent rounded-full animate-spin" />
-          ) : (
+        {/* Google SSO Selection or Trigger */}
+        {!showGooglePicker ? (
+          <button
+            type="button"
+            onClick={() => setShowGooglePicker(true)}
+            className="w-full py-3 px-4 rounded-2xl bg-white hover:bg-neutral-100 text-neutral-900 font-bold text-xs flex items-center justify-center gap-3 transition-all shadow-md active:scale-[0.99] cursor-pointer"
+          >
             <svg className="w-4 h-4" viewBox="0 0 24 24">
               <path
                 fill="#4285F4"
@@ -131,9 +149,57 @@ export default function AuthModal({ isOpen, onClose, defaultMode = "login" }: Au
                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
               />
             </svg>
-          )}
-          <span>Continue with Google</span>
-        </button>
+            <span>Continue with Google</span>
+          </button>
+        ) : (
+          <div className="p-4 rounded-2xl bg-white/[0.04] border border-white/10 space-y-3">
+            <div className="flex items-center justify-between text-xs font-semibold text-white">
+              <span>Choose Google Account</span>
+              <button
+                type="button"
+                onClick={() => setShowGooglePicker(false)}
+                className="text-neutral-400 hover:text-white text-[11px]"
+              >
+                Cancel
+              </button>
+            </div>
+            
+            <div className="space-y-2">
+              <input
+                type="text"
+                placeholder="Your Name (e.g. Sarah Connor)"
+                value={googleCustomName}
+                onChange={(e) => setGoogleCustomName(e.target.value)}
+                className="w-full px-3 py-2 text-xs rounded-xl bg-black/40 border border-white/10 text-white placeholder-neutral-500 focus:outline-hidden focus:border-blue-500"
+              />
+              <input
+                type="email"
+                placeholder="your.email@gmail.com"
+                value={googleCustomEmail}
+                onChange={(e) => setGoogleCustomEmail(e.target.value)}
+                className="w-full px-3 py-2 text-xs rounded-xl bg-black/40 border border-white/10 text-white placeholder-neutral-500 focus:outline-hidden focus:border-blue-500 font-mono"
+              />
+            </div>
+
+            <button
+              type="button"
+              disabled={googleLoading || !googleCustomEmail.trim()}
+              onClick={() =>
+                handleExecuteGoogleLogin(
+                  googleCustomEmail,
+                  googleCustomName || googleCustomEmail.split("@")[0]
+                )
+              }
+              className="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-bold text-xs flex items-center justify-center gap-2 cursor-pointer transition-all"
+            >
+              {googleLoading ? (
+                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <span>Authorize & Continue</span>
+              )}
+            </button>
+          </div>
+        )}
 
         {/* Divider */}
         <div className="relative my-5">
@@ -149,11 +215,14 @@ export default function AuthModal({ isOpen, onClose, defaultMode = "login" }: Au
         <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
           {!isLogin && (
             <div>
-              <label className="block text-neutral-300 font-semibold mb-1">Full Name</label>
+              <label className="block text-neutral-300 font-semibold mb-1">
+                Full Name <span className="text-rose-400">*</span>
+              </label>
               <div className="relative">
                 <User className="w-4 h-4 absolute left-3 top-3 text-neutral-500" />
                 <input
                   type="text"
+                  required
                   placeholder="e.g. David Miller"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
@@ -196,7 +265,7 @@ export default function AuthModal({ isOpen, onClose, defaultMode = "login" }: Au
               <input
                 type="password"
                 required
-                placeholder="••••••••••••"
+                placeholder={isLogin ? "Enter your password" : "Min. 6 characters"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full pl-9 pr-3.5 py-2.5 rounded-xl bg-white/[0.05] border border-white/10 text-white placeholder-neutral-500 focus:outline-hidden focus:border-blue-500 font-mono"
@@ -204,7 +273,11 @@ export default function AuthModal({ isOpen, onClose, defaultMode = "login" }: Au
             </div>
           </div>
 
-          {error && <p className="text-rose-400 text-[11px] font-medium">{error}</p>}
+          {error && (
+            <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-[11px] font-medium leading-relaxed">
+              ⚠️ {error}
+            </div>
+          )}
 
           <button
             type="submit"
@@ -215,7 +288,7 @@ export default function AuthModal({ isOpen, onClose, defaultMode = "login" }: Au
               <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
             ) : (
               <>
-                <span>{isLogin ? "Sign In to Account" : "Create Account"}</span>
+                <span>{isLogin ? "Sign In to Account" : "Create Account (Sign Up)"}</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </>
             )}
@@ -229,7 +302,10 @@ export default function AuthModal({ isOpen, onClose, defaultMode = "login" }: Au
               Don&apos;t have an account?{" "}
               <button
                 type="button"
-                onClick={() => setIsLogin(false)}
+                onClick={() => {
+                  setError("");
+                  setIsLogin(false);
+                }}
                 className="text-blue-400 hover:underline font-semibold"
               >
                 Sign up
@@ -240,7 +316,10 @@ export default function AuthModal({ isOpen, onClose, defaultMode = "login" }: Au
               Already have an account?{" "}
               <button
                 type="button"
-                onClick={() => setIsLogin(true)}
+                onClick={() => {
+                  setError("");
+                  setIsLogin(true);
+                }}
                 className="text-blue-400 hover:underline font-semibold"
               >
                 Sign in

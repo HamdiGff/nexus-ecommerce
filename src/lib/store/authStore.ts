@@ -25,15 +25,28 @@ export interface ApiKeyConfig {
   openAiApiKey?: string;
 }
 
+export interface RegisteredUser {
+  id: string;
+  email: string;
+  name: string;
+  passwordHash: string; // Plain/Base64 for client-side storage
+  role: "USER" | "ADMIN";
+  provider: "email" | "google";
+  avatar?: string;
+  createdAt: string;
+}
+
 interface AuthStore {
   user: UserProfile | null;
+  registeredUsers: RegisteredUser[];
   isAuthenticated: boolean;
   isAdmin: boolean;
   apiKeys: ApiKeyConfig;
 
   // Actions
-  loginWithEmail: (email: string, pass: string, name?: string) => Promise<boolean>;
-  loginWithGoogle: (customEmail?: string, customName?: string) => Promise<boolean>;
+  signUpWithEmail: (email: string, pass: string, name: string) => Promise<{ success: boolean; message?: string }>;
+  loginWithEmail: (email: string, pass: string) => Promise<{ success: boolean; message?: string }>;
+  loginWithGoogle: (email: string, name: string, avatar?: string) => Promise<boolean>;
   loginAdminDemo: () => void;
   logout: () => void;
   updateApiKeys: (keys: Partial<ApiKeyConfig>) => void;
@@ -53,39 +66,88 @@ const DEFAULT_API_KEYS: ApiKeyConfig = {
   openAiApiKey: "sk-proj-xxxxxxxxxxxxxxxxxxxx",
 };
 
+// Initial default registered user so admin or demo users exist
+const INITIAL_USERS: RegisteredUser[] = [
+  {
+    id: "usr-admin-master",
+    email: "admin@nexusdigital.io",
+    name: "Master Administrator",
+    passwordHash: "admin123",
+    role: "ADMIN",
+    provider: "email",
+    avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80",
+    createdAt: new Date().toISOString(),
+  },
+];
+
 export const useAuthStore = create<AuthStore>()(
   persist(
     (set, get) => ({
       user: null,
+      registeredUsers: INITIAL_USERS,
       isAuthenticated: false,
       isAdmin: false,
       apiKeys: DEFAULT_API_KEYS,
 
-      loginWithEmail: async (email: string, pass: string, name?: string) => {
-        // Check if admin credentials
+      signUpWithEmail: async (email: string, pass: string, name: string) => {
         const trimmedEmail = email.trim().toLowerCase();
+        const trimmedPass = pass.trim();
+        const trimmedName = name.trim();
+
+        if (!trimmedEmail || !trimmedPass || !trimmedName) {
+          return { success: false, message: "Please fill in all fields (Name, Email, and Password)." };
+        }
+
+        if (trimmedPass.length < 6) {
+          return { success: false, message: "Password must be at least 6 characters long." };
+        }
+
+        const existing = get().registeredUsers.find(
+          (u) => u.email.toLowerCase() === trimmedEmail
+        );
+
+        if (existing) {
+          return {
+            success: false,
+            message: "An account with this email already exists. Please sign in instead.",
+          };
+        }
+
         const isAdminUser =
           trimmedEmail === "admin@nexusdigital.io" ||
           trimmedEmail === "admin@nexus.io" ||
           trimmedEmail.startsWith("admin@");
 
-        const userProfile: UserProfile = {
+        const newUser: RegisteredUser = {
           id: `usr-${Date.now()}`,
           email: trimmedEmail,
-          name: name?.trim() || trimmedEmail.split("@")[0],
+          name: trimmedName,
+          passwordHash: trimmedPass,
           role: isAdminUser ? "ADMIN" : "USER",
           provider: "email",
           createdAt: new Date().toISOString(),
-          avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${trimmedEmail}`,
+          avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(trimmedName)}`,
+        };
+
+        const updatedUsers = [...get().registeredUsers, newUser];
+
+        const userProfile: UserProfile = {
+          id: newUser.id,
+          email: newUser.email,
+          name: newUser.name,
+          role: newUser.role,
+          provider: "email",
+          avatar: newUser.avatar,
+          createdAt: newUser.createdAt,
         };
 
         set({
+          registeredUsers: updatedUsers,
           user: userProfile,
           isAuthenticated: true,
-          isAdmin: isAdminUser,
+          isAdmin: newUser.role === "ADMIN",
         });
 
-        // Also sync with live chat user email in localStorage
         try {
           localStorage.setItem(
             "nexus_livechat_user",
@@ -95,30 +157,104 @@ export const useAuthStore = create<AuthStore>()(
           // ignore
         }
 
-        return true;
+        return { success: true };
       },
 
-      loginWithGoogle: async (customEmail?: string, customName?: string) => {
-        // Realistic Google SSO flow simulation
-        const email = customEmail || "alex.mercer@gmail.com";
-        const name = customName || "Alex Mercer";
+      loginWithEmail: async (email: string, pass: string) => {
         const trimmedEmail = email.trim().toLowerCase();
-        const isAdminUser = trimmedEmail.includes("admin");
+        const trimmedPass = pass.trim();
+
+        if (!trimmedEmail || !trimmedPass) {
+          return { success: false, message: "Please enter your email and password." };
+        }
+
+        const foundUser = get().registeredUsers.find(
+          (u) => u.email.toLowerCase() === trimmedEmail
+        );
+
+        // Account doesn't exist
+        if (!foundUser) {
+          return {
+            success: false,
+            message: "No account found with this email. Please click 'Sign up' to create an account first.",
+          };
+        }
+
+        // Check password
+        if (foundUser.passwordHash !== trimmedPass) {
+          return {
+            success: false,
+            message: "Incorrect password. Please verify and try again.",
+          };
+        }
 
         const userProfile: UserProfile = {
-          id: `usr-google-${Date.now()}`,
-          email: trimmedEmail,
-          name,
-          role: isAdminUser ? "ADMIN" : "USER",
-          provider: "google",
-          avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80",
-          createdAt: new Date().toISOString(),
+          id: foundUser.id,
+          email: foundUser.email,
+          name: foundUser.name,
+          role: foundUser.role,
+          provider: foundUser.provider,
+          avatar: foundUser.avatar,
+          createdAt: foundUser.createdAt,
         };
 
         set({
           user: userProfile,
           isAuthenticated: true,
-          isAdmin: isAdminUser,
+          isAdmin: foundUser.role === "ADMIN",
+        });
+
+        try {
+          localStorage.setItem(
+            "nexus_livechat_user",
+            JSON.stringify({ name: userProfile.name, email: userProfile.email })
+          );
+        } catch {
+          // ignore
+        }
+
+        return { success: true };
+      },
+
+      loginWithGoogle: async (email: string, name: string, avatar?: string) => {
+        const trimmedEmail = email.trim().toLowerCase();
+        const trimmedName = name.trim();
+        const isAdminUser = trimmedEmail.includes("admin");
+
+        // Check if user already registered or create on the fly
+        let existing = get().registeredUsers.find((u) => u.email.toLowerCase() === trimmedEmail);
+
+        if (!existing) {
+          existing = {
+            id: `usr-google-${Date.now()}`,
+            email: trimmedEmail,
+            name: trimmedName,
+            passwordHash: "oauth-google-session",
+            role: isAdminUser ? "ADMIN" : "USER",
+            provider: "google",
+            avatar: avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(trimmedName)}`,
+            createdAt: new Date().toISOString(),
+          };
+
+          set((state) => ({
+            registeredUsers: [...state.registeredUsers, existing!],
+          }));
+        }
+
+        const userProfile: UserProfile = {
+          id: existing.id,
+          email: existing.email,
+          name: existing.name,
+          role: existing.role,
+          provider: "google",
+          avatar: existing.avatar,
+          createdAt: existing.createdAt,
+        };
+
+        set({
+          user: userProfile,
+          isAuthenticated: true,
+          isAdmin: existing.role === "ADMIN",
         });
 
         try {
