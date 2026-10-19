@@ -1768,39 +1768,107 @@ export default function AdminDashboardPage() {
         {activeTab === "tickets" && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             {/* Ticket List Column */}
-            <div className="lg:col-span-5 bg-white rounded-3xl border border-neutral-200 overflow-hidden shadow-xs divide-y divide-neutral-100">
+            <div className="lg:col-span-5 bg-white rounded-3xl border border-neutral-200 overflow-hidden shadow-xs">
               <div className="p-5 border-b border-neutral-200 flex justify-between items-center">
-                <h3 className="font-bold text-sm text-neutral-900">Customer Inquiries</h3>
-                <span className="text-xs text-neutral-500">{tickets.length} total</span>
+                <div>
+                  <h3 className="font-bold text-sm text-neutral-900">Customer Inquiries</h3>
+                  <p className="text-[11px] text-neutral-500 mt-0.5">
+                    {tickets.filter((t) => t.status === "OPEN").length} open ·{" "}
+                    {tickets.filter((t) => t.status === "IN_PROGRESS").length} in progress ·{" "}
+                    {tickets.filter((t) => t.status === "RESOLVED").length} resolved
+                  </p>
+                </div>
+                <span className="text-xs font-semibold bg-neutral-100 text-neutral-700 px-2.5 py-1 rounded-full">
+                  {tickets.length} total
+                </span>
               </div>
 
-              {tickets.map((t) => (
-                <button
-                  key={t.id}
-                  onClick={() => setSelectedTicket(t)}
-                  className={`w-full text-left p-5 transition-colors block ${
-                    selectedTicket?.id === t.id ? "bg-neutral-100/80 border-l-4 border-neutral-900" : "hover:bg-neutral-50"
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="font-mono text-xs font-bold text-neutral-900">{t.ticketNumber}</span>
-                    <span
-                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                        t.priority === "HIGH" || t.priority === "URGENT"
-                          ? "bg-rose-100 text-rose-800"
-                          : "bg-neutral-100 text-neutral-700"
-                      }`}
-                    >
-                      {t.priority}
-                    </span>
-                  </div>
-
-                  <h4 className="font-bold text-neutral-950 text-xs mt-1 line-clamp-1">{t.subject}</h4>
-                  <p className="text-[11px] text-neutral-500 mt-0.5">
-                    From: {t.customerName} • {t.createdAt}
+              <div className="divide-y divide-neutral-100 max-h-[680px] overflow-y-auto">
+                {tickets.length === 0 && (
+                  <p className="text-xs text-neutral-400 text-center py-10">
+                    No tickets yet. They appear here when customers submit via /support.
                   </p>
-                </button>
-              ))}
+                )}
+                {tickets.map((t) => (
+                  <div
+                    key={t.id}
+                    className={`group relative flex items-start gap-0 transition-colors ${
+                      selectedTicket?.id === t.id
+                        ? "bg-neutral-100/80 border-l-4 border-neutral-900"
+                        : "hover:bg-neutral-50 border-l-4 border-transparent"
+                    }`}
+                  >
+                    {/* Clickable ticket row */}
+                    <button
+                      type="button"
+                      onClick={() => setSelectedTicket(t)}
+                      className="flex-1 text-left p-4 block"
+                    >
+                      <div className="flex items-center justify-between mb-0.5">
+                        <span className="font-mono text-xs font-bold text-neutral-900">
+                          {t.ticketNumber}
+                        </span>
+                        <div className="flex items-center gap-1.5">
+                          <span
+                            className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full ${
+                              t.status === "RESOLVED"
+                                ? "bg-emerald-100 text-emerald-800"
+                                : t.status === "CLOSED"
+                                ? "bg-neutral-200 text-neutral-600"
+                                : t.status === "IN_PROGRESS"
+                                ? "bg-blue-100 text-blue-800"
+                                : "bg-amber-100 text-amber-800"
+                            }`}
+                          >
+                            {t.status === "IN_PROGRESS" ? "In Progress" : t.status}
+                          </span>
+                          <span
+                            className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full ${
+                              t.priority === "HIGH" || t.priority === "URGENT"
+                                ? "bg-rose-100 text-rose-800"
+                                : "bg-neutral-100 text-neutral-600"
+                            }`}
+                          >
+                            {t.priority}
+                          </span>
+                        </div>
+                      </div>
+
+                      <h4 className="font-bold text-neutral-950 text-xs line-clamp-1">{t.subject}</h4>
+                      <p className="text-[11px] text-neutral-400 mt-0.5 font-mono truncate">
+                        {t.customerName} · {t.customerEmail}
+                      </p>
+                      <p className="text-[10px] text-neutral-400 mt-0.5">
+                        {t.createdAt} · {t.messages?.length || 1} message{(t.messages?.length || 1) > 1 ? "s" : ""}
+                      </p>
+                    </button>
+
+                    {/* Admin Delete Button */}
+                    <button
+                      type="button"
+                      title="Delete ticket permanently"
+                      onClick={async (e) => {
+                        e.stopPropagation();
+                        if (!confirm(`Permanently delete ticket ${t.ticketNumber}? This cannot be undone.`)) return;
+                        try {
+                          await fetch("/api/tickets", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ action: "delete", ticketId: t.id }),
+                          });
+                          setTickets((prev) => prev.filter((tk) => tk.id !== t.id));
+                          if (selectedTicket?.id === t.id) setSelectedTicket(null);
+                        } catch {
+                          // ignore
+                        }
+                      }}
+                      className="shrink-0 opacity-0 group-hover:opacity-100 p-3 self-stretch flex items-center justify-center text-rose-400 hover:text-rose-600 hover:bg-rose-50 transition-all"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ))}
+              </div>
             </div>
 
             {/* Threaded Message Column */}

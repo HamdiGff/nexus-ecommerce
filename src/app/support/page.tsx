@@ -27,10 +27,10 @@ export default function SupportPage() {
   // Mode: "create" | "track"
   const [activeTab, setActiveTab] = useState<"create" | "track">("create");
 
-  // Form State
+  // Form State — pre-filled from logged-in user
   const [form, setForm] = useState({
-    name: user?.name || "",
-    email: user?.email || "",
+    name: "",
+    email: "",
     orderNumber: "",
     priority: "MEDIUM",
     subject: "",
@@ -48,6 +48,35 @@ export default function SupportPage() {
   const [isSearching, setIsSearching] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Auto-populate form when user logs in / page loads
+  useEffect(() => {
+    if (user) {
+      setForm((prev) => ({
+        ...prev,
+        name: prev.name || user.name || "",
+        email: prev.email || user.email || "",
+      }));
+    }
+  }, [user]);
+
+  // Persist submitted ticket numbers to localStorage keyed by email
+  const persistTicketForUser = (ticket: SupportTicketRecord) => {
+    if (typeof window === "undefined") return;
+    try {
+      const stored = JSON.parse(localStorage.getItem("nexus-my-tickets") || "{}");
+      const key = ticket.customerEmail.toLowerCase();
+      if (!stored[key]) stored[key] = [];
+      // Store ticket number if not already there
+      if (!stored[key].includes(ticket.ticketNumber)) {
+        stored[key].unshift(ticket.ticketNumber);
+        // Keep max 50 entries
+        if (stored[key].length > 50) stored[key] = stored[key].slice(0, 50);
+      }
+      localStorage.setItem("nexus-my-tickets", JSON.stringify(stored));
+    } catch { /* ignore */ }
+  };
+
 
   // Auto-scroll when messages update in active ticket
   useEffect(() => {
@@ -93,6 +122,7 @@ export default function SupportPage() {
       const data = await res.json();
       if (data.success && data.ticket) {
         setActiveTicket(data.ticket);
+        persistTicketForUser(data.ticket);
       } else {
         const fallbackTicket: SupportTicketRecord = {
           id: `tick-${Date.now()}`,
@@ -115,6 +145,7 @@ export default function SupportPage() {
           ],
         };
         setActiveTicket(fallbackTicket);
+        persistTicketForUser(fallbackTicket);
       }
     } catch {
       const fallbackTicket: SupportTicketRecord = {
@@ -138,6 +169,7 @@ export default function SupportPage() {
         ],
       };
       setActiveTicket(fallbackTicket);
+      persistTicketForUser(fallbackTicket);
     } finally {
       setIsSubmitting(false);
     }

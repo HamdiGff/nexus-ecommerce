@@ -196,5 +196,7 @@ export interface SupportTicketRecord {
   priority: "LOW" | "MEDIUM" | "HIGH" | "URGENT";
   status: "OPEN" | "IN_PROGRESS" | "RESOLVED" | "CLOSED";
   createdAt: string;
+  updatedAt?: string;
+  resolvedAt?: string | null;
   messages: TicketMessage[];
 }

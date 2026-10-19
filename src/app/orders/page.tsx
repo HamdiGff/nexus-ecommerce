@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -9,217 +9,239 @@ import {
   ShieldCheck,
   Zap,
   Wrench,
-  Globe,
   ArrowRight,
   ArrowLeft,
   PackageCheck,
-  ShoppingBag,
-  ExternalLink,
-  Clock,
-  Sparkles,
   Ticket,
-  MessageSquare,
   Send,
-  CheckCircle2,
-  AlertCircle,
   RefreshCw,
   User,
   ChevronDown,
   ChevronUp,
+  LogIn,
+  MailCheck,
+  Clock,
+  CheckCircle2,
+  XCircle,
+  AlertCircle,
 } from "lucide-react";
 import { useAuthStore } from "@/lib/store/authStore";
 import { formatPrice } from "@/lib/utils";
 import { SupportTicketRecord } from "@/data/mockOrders";
 
+// ── Status helpers ──────────────────────────────────────────────────────────
+const STATUS_STYLES: Record<string, string> = {
+  OPEN: "bg-amber-500/10 text-amber-400 border border-amber-500/20",
+  IN_PROGRESS: "bg-blue-500/10 text-blue-300 border border-blue-500/20",
+  RESOLVED: "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20",
+  CLOSED: "bg-neutral-800 text-neutral-400 border border-neutral-700",
+};
+
+const STATUS_LABEL: Record<string, string> = {
+  OPEN: "Under Review",
+  IN_PROGRESS: "Specialist Replied",
+  RESOLVED: "Resolved ✓",
+  CLOSED: "Closed",
+};
+
 export default function OrderLookupPage() {
   const router = useRouter();
-  const user = useAuthStore((state) => state.user);
+  const user = useAuthStore((s) => s.user);
 
-  // Active view tab: "orders" | "tickets"
+  // ── Active view tab ─────────────────────────────────────────────────────
   const [activeTab, setActiveTab] = useState<"orders" | "tickets">("orders");
 
-  // Order lookup form state
-  const [orderNumber, setOrderNumber] = useState("");
-  const [emailQuery, setEmailQuery] = useState("");
-  const [lookupError, setLookupError] = useState<string | null>(null);
-
-  // Orders list state
+  // ── Orders state ────────────────────────────────────────────────────────
   const [userOrders, setUserOrders] = useState<any[]>([]);
-  const [isLoadingOrders, setIsLoadingOrders] = useState(false);
+  const [isLoadingOrders, setIsLoadingOrders] = useState(true);
+  const [orderSearch, setOrderSearch] = useState("");
+  const [lookupError, setLookupError] = useState<string | null>(null);
+  const [emailQuery, setEmailQuery] = useState("");
 
-  // Tickets list & interaction state
+  // ── Tickets state ───────────────────────────────────────────────────────
   const [tickets, setTickets] = useState<SupportTicketRecord[]>([]);
-  const [isLoadingTickets, setIsLoadingTickets] = useState(false);
+  const [isLoadingTickets, setIsLoadingTickets] = useState(true);
   const [expandedTicketId, setExpandedTicketId] = useState<string | null>(null);
   const [customerReplies, setCustomerReplies] = useState<Record<string, string>>({});
-  const [isSubmittingReply, setIsSubmittingReply] = useState<Record<string, boolean>>({});
+  const [sendingReply, setSendingReply] = useState<Record<string, boolean>>({});
   const [ticketSearchInput, setTicketSearchInput] = useState("");
   const [ticketSearchError, setTicketSearchError] = useState<string | null>(null);
 
-  const ticketMessagesEndRef = useRef<HTMLDivElement>(null);
+  const threadEndRef = useRef<HTMLDivElement>(null);
 
-  // Determine effective email for current user
-  const effectiveEmail = (user?.email || emailQuery || "").toLowerCase().trim();
+  // The email used to query – prefer logged-in, fallback to manually typed
+  const effectiveEmail = (user?.email || emailQuery).toLowerCase().trim();
 
-  // 1. Fetch orders from localStorage + server API
-  const fetchOrders = async () => {
+  // ── Fetch orders ────────────────────────────────────────────────────────
+  const fetchOrders = useCallback(async () => {
     setIsLoadingOrders(true);
-    let allOrders: any[] = [];
+    let all: any[] = [];
 
-    // Local storage orders
-    if (typeof window !== "undefined") {
-      try {
-        const stored = localStorage.getItem("nexus-recent-orders");
-        if (stored) {
-          const parsed = JSON.parse(stored);
-          if (Array.isArray(parsed)) {
-            allOrders = parsed;
-          }
-        }
-      } catch {
-        // ignore
-      }
-    }
-
-    // Server API orders
+    // 1. localStorage
     try {
-      const url = effectiveEmail
-        ? `/api/orders?email=${encodeURIComponent(effectiveEmail)}`
-        : "/api/orders";
-      const res = await fetch(url, { cache: "no-store" });
-      const data = await res.json();
-      if (data.success && Array.isArray(data.orders)) {
-        // Merge & deduplicate by orderNumber or id
-        const map = new Map<string, any>();
-        [...allOrders, ...data.orders].forEach((ord) => {
-          const key = (ord.orderNumber || ord.orderId || ord.id || "").toUpperCase();
-          if (key && !map.has(key)) {
-            map.set(key, ord);
-          }
-        });
-        allOrders = Array.from(map.values());
+      const stored = localStorage.getItem("nexus-recent-orders");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) all = parsed;
       }
-    } catch {
-      // ignore
+    } catch { /* ignore */ }
+
+    // 2. Server API
+    if (effectiveEmail) {
+      try {
+        const res = await fetch(
+          `/api/orders?email=${encodeURIComponent(effectiveEmail)}`,
+          { cache: "no-store" }
+        );
+        const data = await res.json();
+        if (data.success && Array.isArray(data.orders)) {
+          const map = new Map<string, any>();
+          [...all, ...data.orders].forEach((o) => {
+            const k = (o.orderNumber || o.orderId || o.id || "").toUpperCase();
+            if (k && !map.has(k)) map.set(k, o);
+          });
+          all = Array.from(map.values());
+        }
+      } catch { /* ignore */ }
     }
 
-    // Filter by user if logged in
+    // 3. Filter by logged-in email
     if (user?.email) {
-      const filtered = allOrders.filter((o) => {
-        const ordEmail = (o.customerEmail || o.customer?.email || "").toLowerCase().trim();
-        return !ordEmail || ordEmail === user.email.toLowerCase().trim();
+      const filtered = all.filter((o) => {
+        const e = (o.customerEmail || o.customer?.email || "").toLowerCase();
+        return !e || e === user.email.toLowerCase();
       });
-      setUserOrders(filtered.length > 0 ? filtered : allOrders);
+      setUserOrders(filtered.length ? filtered : all);
     } else {
-      setUserOrders(allOrders);
+      setUserOrders(all);
     }
     setIsLoadingOrders(false);
-  };
+  }, [effectiveEmail, user]);
 
-  // 2. Fetch support tickets matching customer email
-  const fetchTickets = async () => {
-    try {
-      const url = effectiveEmail
-        ? `/api/tickets?email=${encodeURIComponent(effectiveEmail)}`
-        : "/api/tickets";
-      const res = await fetch(url, { cache: "no-store" });
-      const data = await res.json();
-      if (data.success && Array.isArray(data.tickets)) {
-        setTickets(data.tickets);
-        // Automatically expand the first ticket if none expanded yet
-        if (data.tickets.length > 0 && !expandedTicketId) {
-          setExpandedTicketId(data.tickets[0].id);
+  // ── Fetch tickets by email (and localStorage ticket numbers as fallback) ──
+  const fetchTickets = useCallback(async () => {
+    let fetched: SupportTicketRecord[] = [];
+
+    // 1. By email if available
+    if (effectiveEmail) {
+      try {
+        const res = await fetch(
+          `/api/tickets?email=${encodeURIComponent(effectiveEmail)}`,
+          { cache: "no-store" }
+        );
+        const data = await res.json();
+        if (data.success && Array.isArray(data.tickets)) {
+          fetched = data.tickets;
         }
-      }
-    } catch {
-      // ignore
+      } catch { /* ignore */ }
     }
-  };
 
+    // 2. Supplement from localStorage ticket numbers (for users who submitted via /support)
+    if (typeof window !== "undefined") {
+      try {
+        const stored = JSON.parse(localStorage.getItem("nexus-my-tickets") || "{}");
+        // Collect all ticket numbers that belong to this email (or all if no email)
+        const allNums: string[] = [];
+        if (effectiveEmail && stored[effectiveEmail]) {
+          allNums.push(...stored[effectiveEmail]);
+        } else if (!effectiveEmail) {
+          Object.values(stored).forEach((arr: any) => allNums.push(...arr));
+        }
+
+        // Fetch any ticket numbers not already in fetched list
+        const existingNums = new Set(fetched.map((t) => t.ticketNumber));
+        const missing = allNums.filter((n) => !existingNums.has(n));
+
+        for (const num of missing.slice(0, 20)) {
+          try {
+            const r = await fetch(`/api/tickets?ticketNumber=${encodeURIComponent(num)}`, { cache: "no-store" });
+            const d = await r.json();
+            if (d.success && d.ticket) fetched.unshift(d.ticket);
+          } catch { /* ignore */ }
+        }
+      } catch { /* ignore */ }
+    }
+
+    if (fetched.length > 0) {
+      setTickets(fetched);
+      if (!expandedTicketId) {
+        setExpandedTicketId(fetched[0].id);
+      }
+    } else {
+      setTickets([]);
+    }
+    setIsLoadingTickets(false);
+  }, [effectiveEmail]);
+
+  // Initial load
   useEffect(() => {
     fetchOrders();
     fetchTickets();
-  }, [user, emailQuery]);
+  }, [fetchOrders, fetchTickets]);
 
-  // Real-time polling for tickets every 3s so customer sees admin replies immediately
+  // Real-time polling for tickets every 3 s so admin replies appear without reload
   useEffect(() => {
-    const interval = setInterval(() => {
-      fetchTickets();
-    }, 3000);
-    return () => clearInterval(interval);
-  }, [effectiveEmail]);
+    if (!effectiveEmail) return;
+    const iv = setInterval(fetchTickets, 3000);
+    return () => clearInterval(iv);
+  }, [effectiveEmail, fetchTickets]);
 
-  // Scroll to bottom of message thread when expanded ticket updates
+  // Auto-scroll thread when ticket updates
   useEffect(() => {
     if (expandedTicketId) {
-      ticketMessagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      setTimeout(() => threadEndRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
     }
   }, [expandedTicketId, tickets]);
 
-  // Handle single order lookup form
+  // ── Handlers ─────────────────────────────────────────────────────────────
   const handleOrderLookup = (e: React.FormEvent) => {
     e.preventDefault();
     setLookupError(null);
-    const cleanOrder = orderNumber.trim().toUpperCase();
-    if (!cleanOrder) {
-      setLookupError("Please enter your order number (e.g. NEX-948210).");
-      return;
-    }
-    router.push(`/orders/${cleanOrder}`);
+    const clean = orderSearch.trim().toUpperCase();
+    if (!clean) { setLookupError("Please enter your order number (e.g. NEX-948210)."); return; }
+    router.push(`/orders/${clean}`);
   };
 
-  // Handle ticket search by ticket number or email
   const handleTicketSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     setTicketSearchError(null);
-    const clean = ticketSearchInput.trim();
-    if (!clean) return;
+    const q = ticketSearchInput.trim();
+    if (!q) return;
 
-    setIsLoadingTickets(true);
     try {
-      // Check if user entered an email or a ticket number
-      if (clean.includes("@")) {
-        const res = await fetch(`/api/tickets?email=${encodeURIComponent(clean.toLowerCase())}`, {
-          cache: "no-store",
-        });
+      if (q.includes("@")) {
+        const res = await fetch(`/api/tickets?email=${encodeURIComponent(q.toLowerCase())}`, { cache: "no-store" });
         const data = await res.json();
-        if (data.success && Array.isArray(data.tickets) && data.tickets.length > 0) {
+        if (data.success && data.tickets?.length > 0) {
           setTickets(data.tickets);
           setExpandedTicketId(data.tickets[0].id);
         } else {
-          setTicketSearchError(`No support tickets found associated with ${clean}.`);
+          setTicketSearchError(`No tickets found for email: ${q}`);
         }
       } else {
-        // Search by ticket number
         const res = await fetch("/api/tickets", { cache: "no-store" });
         const data = await res.json();
         if (data.success && Array.isArray(data.tickets)) {
-          const target = clean.toUpperCase();
           const match = data.tickets.find(
-            (t: SupportTicketRecord) =>
-              t.ticketNumber.toUpperCase() === target || t.id.toUpperCase() === target
+            (t: SupportTicketRecord) => t.ticketNumber.toUpperCase() === q.toUpperCase() || t.id === q
           );
           if (match) {
             setTickets([match]);
             setExpandedTicketId(match.id);
           } else {
-            setTicketSearchError(`Ticket "${clean}" not found. Please verify the ticket ID.`);
+            setTicketSearchError(`Ticket "${q}" not found. Please verify the ticket number.`);
           }
         }
       }
     } catch {
-      setTicketSearchError("Unable to fetch ticket details at this moment.");
-    } finally {
-      setIsLoadingTickets(false);
+      setTicketSearchError("Could not fetch ticket — please try again.");
     }
   };
 
-  // Customer sending a reply to a ticket
-  const handleSendCustomerReply = async (ticketId: string) => {
+  const sendReply = async (ticketId: string) => {
     const text = customerReplies[ticketId]?.trim();
     if (!text) return;
-
-    setIsSubmittingReply((prev) => ({ ...prev, [ticketId]: true }));
+    setSendingReply((p) => ({ ...p, [ticketId]: true }));
     try {
       const res = await fetch("/api/tickets", {
         method: "POST",
@@ -235,48 +257,74 @@ export default function OrderLookupPage() {
       const data = await res.json();
       if (data.success && data.ticket) {
         setTickets((prev) => prev.map((t) => (t.id === ticketId ? data.ticket : t)));
-        setCustomerReplies((prev) => ({ ...prev, [ticketId]: "" }));
+        setCustomerReplies((p) => ({ ...p, [ticketId]: "" }));
       }
-    } catch {
-      // ignore
-    } finally {
-      setIsSubmittingReply((prev) => ({ ...prev, [ticketId]: false }));
-    }
+    } catch { /* ignore */ }
+    setSendingReply((p) => ({ ...p, [ticketId]: false }));
   };
 
+  // ── Render ────────────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-[#090a0f] text-neutral-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto space-y-8">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 text-xs font-semibold text-neutral-400 hover:text-white transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Back to Marketplace</span>
+        {/* Back link */}
+        <Link href="/" className="inline-flex items-center gap-2 text-xs font-semibold text-neutral-400 hover:text-white transition-colors">
+          <ArrowLeft className="w-4 h-4" /> Back to Marketplace
         </Link>
 
-        {/* Hero Header */}
+        {/* Hero */}
         <div className="text-center space-y-3">
-          <div className="w-14 h-14 bg-gradient-to-tr from-blue-500/20 via-indigo-500/10 to-amber-500/20 border border-blue-500/30 text-white rounded-2xl flex items-center justify-center mx-auto shadow-lg shadow-blue-500/10">
+          <div className="w-14 h-14 bg-gradient-to-tr from-blue-500/20 via-indigo-500/10 to-amber-500/20 border border-blue-500/30 rounded-2xl flex items-center justify-center mx-auto shadow-lg shadow-blue-500/10">
             <Key className="w-7 h-7 text-blue-400" />
           </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-white font-sans tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
             Customer Portal & Digital Vault
           </h1>
           <p className="text-xs sm:text-sm text-neutral-400 max-w-xl mx-auto leading-relaxed">
-            Access your delivered software licenses, monitor WordPress service credentials,
-            and view real-time replies from our 24/7 technical support team.
+            View your purchased licenses, track WordPress activations, and read live replies from our support team.
           </p>
 
-          {user?.email && (
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/10 text-xs text-neutral-300">
-              <User className="w-3.5 h-3.5 text-blue-400" />
-              <span>Signed in as <strong className="text-white">{user.email}</strong></span>
+          {/* Logged-in identity pill */}
+          {user ? (
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-300">
+              <User className="w-3.5 h-3.5" />
+              Signed in as <strong className="text-white">{user.email}</strong>
+            </div>
+          ) : (
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-xs text-amber-300">
+              <LogIn className="w-3.5 h-3.5" />
+              <span>
+                <Link href="/" className="text-amber-200 underline underline-offset-2">Sign in</Link> to auto-load your orders & tickets
+              </span>
             </div>
           )}
         </div>
 
-        {/* Main Tab Navigation: Orders vs Tickets */}
+        {/* Email fallback (only if not logged in) */}
+        {!user && (
+          <div className="bg-[#10121a] rounded-2xl border border-white/[0.08] p-4 flex flex-col sm:flex-row gap-3 items-center">
+            <MailCheck className="w-4 h-4 text-blue-400 shrink-0" />
+            <p className="text-xs text-neutral-400 flex-1">Enter the email you used at checkout to auto-load your orders and tickets:</p>
+            <div className="flex gap-2 w-full sm:w-auto">
+              <input
+                type="email"
+                placeholder="your@email.com"
+                value={emailQuery}
+                onChange={(e) => setEmailQuery(e.target.value)}
+                className="flex-1 sm:w-56 px-3.5 py-2 rounded-xl border border-white/10 bg-white/[0.04] text-xs text-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
+              />
+              <button
+                type="button"
+                onClick={() => { fetchOrders(); fetchTickets(); }}
+                className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-xs text-white font-bold shrink-0 transition-colors cursor-pointer"
+              >
+                Load
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Tab switcher */}
         <div className="flex justify-center">
           <div className="bg-[#10121a] p-1.5 rounded-2xl border border-white/[0.08] inline-flex gap-2">
             <button
@@ -289,11 +337,9 @@ export default function OrderLookupPage() {
               }`}
             >
               <PackageCheck className="w-4 h-4" />
-              <span>My Orders & Licenses</span>
+              My Orders & Licenses
               {userOrders.length > 0 && (
-                <span className={`px-2 py-0.5 rounded-full text-[10px] ${
-                  activeTab === "orders" ? "bg-white/20 text-white" : "bg-neutral-800 text-neutral-300"
-                }`}>
+                <span className={`px-2 py-0.5 rounded-full text-[10px] ${activeTab === "orders" ? "bg-white/20" : "bg-neutral-800 text-neutral-300"}`}>
                   {userOrders.length}
                 </span>
               )}
@@ -309,26 +355,31 @@ export default function OrderLookupPage() {
               }`}
             >
               <Ticket className="w-4 h-4" />
-              <span>Support Tickets & Replies</span>
+              Support Tickets
               {tickets.length > 0 && (
-                <span className={`px-2 py-0.5 rounded-full text-[10px] ${
-                  activeTab === "tickets" ? "bg-white/20 text-white" : "bg-neutral-800 text-neutral-300"
-                }`}>
+                <span className={`px-2 py-0.5 rounded-full text-[10px] ${activeTab === "tickets" ? "bg-white/20" : "bg-neutral-800 text-neutral-300"}`}>
                   {tickets.length}
                 </span>
+              )}
+              {/* Unread indicator: admin replied and tab not active */}
+              {activeTab !== "tickets" && tickets.some((t) => t.status === "IN_PROGRESS") && (
+                <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
               )}
             </button>
           </div>
         </div>
 
-        {/* ======================================================== */}
-        {/* TAB 1: ORDERS & DIGITAL LICENSES                         */}
-        {/* ======================================================== */}
+        {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+        {/* TAB 1: ORDERS                            */}
+        {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
         {activeTab === "orders" && (
           <div className="space-y-6">
-            {/* List of Orders */}
-            {userOrders.length > 0 ? (
-              <div className="bg-[#10121a] rounded-3xl border border-blue-500/30 p-6 sm:p-8 shadow-2xl space-y-5">
+            {isLoadingOrders ? (
+              <div className="bg-[#10121a] rounded-3xl border border-white/[0.08] p-12 text-center text-xs text-neutral-400 animate-pulse">
+                Loading your orders...
+              </div>
+            ) : userOrders.length > 0 ? (
+              <div className="bg-[#10121a] rounded-3xl border border-blue-500/20 p-6 sm:p-8 shadow-2xl space-y-5">
                 <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
                   <div className="flex items-center gap-2.5">
                     <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
@@ -336,13 +387,11 @@ export default function OrderLookupPage() {
                     </div>
                     <div>
                       <h2 className="text-base font-bold text-white">Your Purchased Digital Assets</h2>
-                      <p className="text-xs text-neutral-400">
-                        Select any order to view your license keys and fulfillment progress.
-                      </p>
+                      <p className="text-xs text-neutral-400">Click any order to view your license keys & fulfillment details.</p>
                     </div>
                   </div>
-                  <span className="text-xs bg-emerald-500/10 text-emerald-300 px-3 py-1 rounded-full border border-emerald-500/20 font-semibold font-mono">
-                    {userOrders.length} Order{userOrders.length > 1 ? "s" : ""}
+                  <span className="text-xs bg-emerald-500/10 text-emerald-300 px-3 py-1 rounded-full border border-emerald-500/20 font-semibold">
+                    {userOrders.length} Order{userOrders.length !== 1 ? "s" : ""}
                   </span>
                 </div>
 
@@ -350,49 +399,37 @@ export default function OrderLookupPage() {
                   {userOrders.map((ord: any) => {
                     const orderId = ord.orderNumber || ord.orderId || ord.id;
                     const firstItem = ord.items?.[0];
-                    const itemCount = ord.items?.length || 1;
+                    const extra = (ord.items?.length || 1) - 1;
 
                     return (
-                      <div
-                        key={orderId}
-                        className="p-5 rounded-2xl bg-white/[0.03] border border-white/[0.08] hover:border-blue-500/40 transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
-                      >
-                        <div className="space-y-1.5">
+                      <div key={orderId} className="p-5 rounded-2xl bg-white/[0.03] border border-white/[0.08] hover:border-blue-500/30 transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div className="space-y-1.5 min-w-0">
                           <div className="flex items-center gap-2">
-                            <span className="font-mono text-xs font-bold text-blue-400">
-                              {orderId}
-                            </span>
+                            <span className="font-mono text-xs font-bold text-blue-400">{orderId}</span>
                             <span className="text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded-md font-semibold border border-emerald-500/20">
                               {ord.status || "CONFIRMED"}
                             </span>
                           </div>
-                          <h4 className="text-sm font-semibold text-white">
+                          <h4 className="text-sm font-semibold text-white truncate">
                             {firstItem?.title || firstItem?.productTitle || "Digital Asset Order"}
-                            {itemCount > 1 && (
-                              <span className="text-xs text-neutral-400 font-normal">
-                                {" "}+ {itemCount - 1} more item{itemCount > 2 ? "s" : ""}
-                              </span>
-                            )}
+                            {extra > 0 && <span className="text-xs text-neutral-400 font-normal"> +{extra} more</span>}
                           </h4>
                           <p className="text-xs text-neutral-400">
-                            {ord.timestamp || "Recent order"} • {ord.paymentMethod || "Direct Payment"} •{" "}
+                            {ord.timestamp || "Recent"} · {ord.paymentMethod || "Payment"} ·{" "}
                             <strong className="text-white">{formatPrice(ord.total || ord.totalAmount || 0)}</strong>
                           </p>
                         </div>
-
-                        <div className="flex items-center gap-2 w-full sm:w-auto">
+                        <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto">
                           <Link
                             href={`/orders/${orderId}`}
-                            className="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-md cursor-pointer shrink-0"
+                            className="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-md"
                           >
-                            <span>Open Vault & Key</span>
-                            <ArrowRight className="w-3.5 h-3.5" />
+                            Open Vault & Key <ArrowRight className="w-3.5 h-3.5" />
                           </Link>
-
                           <Link
-                            href={`/support`}
-                            className="px-3 py-2.5 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] border border-white/10 text-neutral-300 font-semibold text-xs flex items-center gap-1 transition-colors"
-                            title="Open ticket for this order"
+                            href="/support"
+                            className="px-3 py-2.5 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] border border-white/10 text-neutral-300 text-xs font-semibold flex items-center gap-1 transition-colors"
+                            title="Open a support ticket for this order"
                           >
                             <Ticket className="w-3.5 h-3.5" />
                           </Link>
@@ -404,144 +441,110 @@ export default function OrderLookupPage() {
               </div>
             ) : null}
 
-            {/* Manual Order Lookup Card */}
-            <div className="bg-[#10121a]/95 rounded-3xl border border-white/[0.08] p-6 sm:p-8 shadow-2xl backdrop-blur-xl space-y-6">
+            {/* Manual order number lookup */}
+            <div className="bg-[#10121a]/95 rounded-3xl border border-white/[0.08] p-6 sm:p-8 shadow-2xl space-y-5">
               <div>
-                <h3 className="font-bold text-base text-white flex items-center gap-2">
+                <h3 className="font-bold text-sm text-white flex items-center gap-2">
                   <Search className="w-4 h-4 text-blue-400" />
                   Look Up Any Order Number
                 </h3>
                 <p className="text-xs text-neutral-400 mt-1">
-                  Don&apos;t see your order above? Enter your order number or billing email below.
+                  Have a specific order number? Enter it below to open the vault directly.
                 </p>
               </div>
-
-              <form onSubmit={handleOrderLookup} className="space-y-4">
-                <div>
-                  <label className="block text-xs font-semibold text-neutral-300 mb-1.5">
-                    Order Number
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      required
-                      placeholder="e.g. NEX-948210"
-                      value={orderNumber}
-                      onChange={(e) => setOrderNumber(e.target.value)}
-                      className="w-full pl-4 pr-10 py-3 rounded-xl border border-white/10 bg-white/[0.04] text-white font-mono text-sm focus:ring-2 focus:ring-blue-500 focus:outline-hidden uppercase"
-                    />
-                    <Search className="w-4 h-4 absolute right-3.5 top-1/2 -translate-y-1/2 text-neutral-400" />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-neutral-300 mb-1.5">
-                    Filter by Billing Email (Optional)
-                  </label>
+              <form onSubmit={handleOrderLookup} className="flex flex-col sm:flex-row gap-3">
+                <div className="relative flex-1">
                   <input
-                    type="email"
-                    placeholder="youremail@example.com"
-                    value={emailQuery}
-                    onChange={(e) => setEmailQuery(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-white/10 bg-white/[0.04] text-white text-sm focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
+                    type="text"
+                    required
+                    placeholder="e.g. NEX-948210"
+                    value={orderSearch}
+                    onChange={(e) => setOrderSearch(e.target.value)}
+                    className="w-full pl-4 pr-10 py-3 rounded-xl border border-white/10 bg-white/[0.04] text-white font-mono text-sm focus:ring-2 focus:ring-blue-500 focus:outline-hidden uppercase"
                   />
+                  <Search className="w-4 h-4 absolute right-3.5 top-1/2 -translate-y-1/2 text-neutral-400" />
                 </div>
-
-                {lookupError && (
-                  <p className="text-xs text-rose-400 bg-rose-500/10 p-3 rounded-xl border border-rose-500/20">
-                    {lookupError}
-                  </p>
-                )}
-
                 <button
                   type="submit"
-                  className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:brightness-110 text-white font-bold text-sm flex items-center justify-center gap-2 transition-all active:scale-[0.99] shadow-lg shadow-indigo-600/25 cursor-pointer"
+                  className="px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:brightness-110 text-white font-bold text-sm flex items-center justify-center gap-2 transition-all shadow-lg cursor-pointer shrink-0"
                 >
-                  <span>Unlock Order Vault</span>
-                  <ArrowRight className="w-4 h-4" />
+                  Unlock Vault <ArrowRight className="w-4 h-4" />
                 </button>
               </form>
+              {lookupError && (
+                <p className="text-xs text-rose-400 bg-rose-500/10 p-3 rounded-xl border border-rose-500/20">{lookupError}</p>
+              )}
             </div>
           </div>
         )}
 
-        {/* ======================================================== */}
-        {/* TAB 2: SUPPORT TICKETS & RESOLUTION SYSTEM                */}
-        {/* ======================================================== */}
+        {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+        {/* TAB 2: TICKETS                           */}
+        {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
         {activeTab === "tickets" && (
-          <div className="space-y-6">
-            {/* Header info bar with "Create New Ticket" action */}
-            <div className="bg-[#10121a] rounded-3xl border border-white/[0.08] p-6 sm:p-7 shadow-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div className="space-y-1">
-                <div className="flex items-center gap-2">
-                  <div className="p-2 rounded-xl bg-blue-500/10 text-blue-400 border border-blue-500/20">
-                    <MessageSquare className="w-5 h-5" />
-                  </div>
-                  <h3 className="font-bold text-base text-white">
-                    Support Inquiries & Live Replies
-                  </h3>
-                </div>
-                <p className="text-xs text-neutral-400">
-                  Track your support inquiries in real-time. Replies from technicians update live.
+          <div className="space-y-5">
+            {/* Header bar */}
+            <div className="bg-[#10121a] rounded-3xl border border-white/[0.08] p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl">
+              <div>
+                <h3 className="font-bold text-sm text-white">Support Inquiries & Live Replies</h3>
+                <p className="text-xs text-neutral-400 mt-0.5">
+                  {effectiveEmail
+                    ? <>Showing all tickets for <strong className="text-white">{effectiveEmail}</strong>. Admin replies update every few seconds automatically.</>
+                    : "Sign in or enter your email above to auto-load your tickets."}
                 </p>
               </div>
-
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 shrink-0">
                 <button
                   type="button"
                   onClick={fetchTickets}
-                  className="p-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-neutral-300 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
-                  title="Refresh tickets"
+                  className="p-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-neutral-300 transition-colors cursor-pointer flex items-center gap-1.5 text-xs font-semibold"
+                  title="Refresh"
                 >
                   <RefreshCw className="w-3.5 h-3.5" />
                   <span className="hidden sm:inline">Refresh</span>
                 </button>
-
                 <Link
                   href="/support"
-                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:brightness-110 text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-md cursor-pointer"
+                  className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:brightness-110 text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-md"
                 >
-                  <Ticket className="w-3.5 h-3.5" />
-                  <span>Open New Ticket</span>
+                  <Ticket className="w-3.5 h-3.5" /> Open New Ticket
                 </Link>
               </div>
             </div>
 
-            {/* Quick Ticket Search Bar */}
-            <div className="bg-[#10121a] rounded-2xl border border-white/[0.08] p-4 shadow-sm">
+            {/* Quick Ticket Lookup (for incognito / non-logged-in users) */}
+            <div className="bg-[#10121a] rounded-2xl border border-white/[0.08] p-4">
               <form onSubmit={handleTicketSearch} className="flex gap-2">
                 <div className="relative flex-1">
                   <input
                     type="text"
-                    placeholder="Search by Ticket # (e.g. TICK-1234) or Email..."
+                    placeholder="Search by Ticket # (e.g. TICK-1234) or your email..."
                     value={ticketSearchInput}
                     onChange={(e) => setTicketSearchInput(e.target.value)}
                     className="w-full pl-4 pr-10 py-2.5 rounded-xl border border-white/10 bg-white/[0.04] text-white text-xs font-mono focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
                   />
                   <Search className="w-4 h-4 absolute right-3.5 top-1/2 -translate-y-1/2 text-neutral-400" />
                 </div>
-                <button
-                  type="submit"
-                  disabled={isLoadingTickets}
-                  className="px-4 py-2.5 rounded-xl bg-white/[0.08] hover:bg-white/[0.12] border border-white/10 text-white text-xs font-bold transition-colors cursor-pointer shrink-0"
-                >
-                  {isLoadingTickets ? "Searching..." : "Lookup Ticket"}
+                <button type="submit" className="px-4 py-2.5 rounded-xl bg-white/[0.08] hover:bg-white/[0.12] border border-white/10 text-white text-xs font-bold transition-colors cursor-pointer shrink-0">
+                  Find Ticket
                 </button>
               </form>
               {ticketSearchError && (
-                <p className="text-xs text-rose-400 mt-2 bg-rose-500/10 p-2.5 rounded-xl border border-rose-500/20">
-                  {ticketSearchError}
-                </p>
+                <p className="text-xs text-rose-400 mt-2 bg-rose-500/10 p-2.5 rounded-xl border border-rose-500/20">{ticketSearchError}</p>
               )}
             </div>
 
-            {/* Tickets Accordion / Thread Stream */}
-            {tickets.length > 0 ? (
+            {/* Ticket list */}
+            {isLoadingTickets ? (
+              <div className="bg-[#10121a] rounded-3xl border border-white/[0.08] p-12 text-center text-xs text-neutral-400 animate-pulse">
+                Loading your tickets...
+              </div>
+            ) : tickets.length > 0 ? (
               <div className="space-y-4">
                 {tickets.map((t) => {
                   const isExpanded = expandedTicketId === t.id;
-                  const lastMessage = t.messages?.[t.messages.length - 1];
                   const hasAdminReply = t.messages?.some((m) => m.sender === "ADMIN");
+                  const adminReplied = t.status === "IN_PROGRESS" || hasAdminReply;
 
                   return (
                     <div
@@ -552,38 +555,20 @@ export default function OrderLookupPage() {
                           : "border-white/[0.08] hover:border-white/[0.15]"
                       }`}
                     >
-                      {/* Ticket Summary Header Bar */}
+                      {/* Summary header */}
                       <button
                         type="button"
                         onClick={() => setExpandedTicketId(isExpanded ? null : t.id)}
                         className="w-full text-left p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 cursor-pointer"
                       >
-                        <div className="space-y-1.5 flex-1">
+                        <div className="space-y-1.5 flex-1 min-w-0">
                           <div className="flex flex-wrap items-center gap-2">
-                            <span className="font-mono text-xs font-bold text-blue-400">
-                              {t.ticketNumber}
-                            </span>
+                            <span className="font-mono text-xs font-bold text-blue-400">{t.ticketNumber}</span>
 
-                            {/* Status Badge */}
-                            <span
-                              className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1 ${
-                                t.status === "RESOLVED"
-                                  ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                                  : t.status === "CLOSED"
-                                  ? "bg-neutral-800 text-neutral-400 border border-neutral-700"
-                                  : t.status === "IN_PROGRESS" || hasAdminReply
-                                  ? "bg-blue-500/10 text-blue-300 border border-blue-500/20 animate-pulse"
-                                  : "bg-amber-500/10 text-amber-400 border border-amber-500/20"
-                              }`}
-                            >
-                              <span className="w-1.5 h-1.5 rounded-full bg-current" />
-                              {t.status === "RESOLVED"
-                                ? "Resolved"
-                                : t.status === "CLOSED"
-                                ? "Closed"
-                                : t.status === "IN_PROGRESS" || hasAdminReply
-                                ? "Specialist Replied"
-                                : "Under Review"}
+                            {/* Status badge */}
+                            <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1 ${STATUS_STYLES[t.status] || STATUS_STYLES.OPEN}`}>
+                              <span className={`w-1.5 h-1.5 rounded-full bg-current ${adminReplied && t.status !== "RESOLVED" && t.status !== "CLOSED" ? "animate-pulse" : ""}`} />
+                              {STATUS_LABEL[t.status] || t.status}
                             </span>
 
                             <span className="text-[10px] bg-white/[0.04] text-neutral-400 px-2 py-0.5 rounded border border-white/10 font-semibold">
@@ -597,29 +582,39 @@ export default function OrderLookupPage() {
                             )}
                           </div>
 
-                          <h4 className="font-bold text-sm text-white">{t.subject}</h4>
+                          <h4 className="font-bold text-sm text-white truncate">{t.subject}</h4>
 
-                          <p className="text-xs text-neutral-400">
-                            Created {t.createdAt} • {t.messages?.length || 1} message{t.messages?.length > 1 ? "s" : ""}
-                          </p>
+                          <div className="flex items-center gap-3 text-[11px] text-neutral-400">
+                            <span className="flex items-center gap-1">
+                              <Clock className="w-3 h-3" /> {t.createdAt}
+                            </span>
+                            <span>{t.messages?.length || 1} message{(t.messages?.length || 1) > 1 ? "s" : ""}</span>
+                            {t.resolvedAt && (
+                              <span className="flex items-center gap-1 text-emerald-400">
+                                <CheckCircle2 className="w-3 h-3" /> Resolved
+                              </span>
+                            )}
+                          </div>
                         </div>
 
-                        <div className="flex items-center gap-3 shrink-0">
+                        <div className="flex items-center gap-2 shrink-0">
+                          {/* Live badge when admin replied and not yet read */}
+                          {adminReplied && t.status !== "RESOLVED" && t.status !== "CLOSED" && !isExpanded && (
+                            <span className="flex items-center gap-1 text-[10px] font-bold text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 rounded-full animate-pulse">
+                              <span className="w-1.5 h-1.5 rounded-full bg-blue-400" /> New Reply
+                            </span>
+                          )}
                           <span className="text-xs text-blue-400 font-semibold flex items-center gap-1">
-                            {isExpanded ? "Collapse Conversation" : "View Responses"}
-                            {isExpanded ? (
-                              <ChevronUp className="w-4 h-4" />
-                            ) : (
-                              <ChevronDown className="w-4 h-4" />
-                            )}
+                            {isExpanded ? "Collapse" : "View Replies"}
+                            {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                           </span>
                         </div>
                       </button>
 
-                      {/* Expanded Conversation Thread */}
+                      {/* Expanded thread */}
                       {isExpanded && (
                         <div className="border-t border-white/[0.08] bg-[#0c0d14]">
-                          {/* Messages Timeline */}
+                          {/* Messages */}
                           <div className="p-6 space-y-4 max-h-[380px] overflow-y-auto">
                             {t.messages?.map((m) => (
                               <div
@@ -631,11 +626,7 @@ export default function OrderLookupPage() {
                                 }`}
                               >
                                 <div className="flex items-center justify-between text-[11px] gap-4">
-                                  <span
-                                    className={`font-bold flex items-center gap-1 ${
-                                      m.sender === "ADMIN" ? "text-blue-400" : "text-neutral-400"
-                                    }`}
-                                  >
+                                  <span className={`font-bold flex items-center gap-1 ${m.sender === "ADMIN" ? "text-blue-400" : "text-neutral-400"}`}>
                                     {m.sender === "ADMIN" && <ShieldCheck className="w-3.5 h-3.5" />}
                                     {m.senderName}
                                   </span>
@@ -644,47 +635,34 @@ export default function OrderLookupPage() {
                                 <p className="leading-relaxed whitespace-pre-wrap">{m.message}</p>
                               </div>
                             ))}
-                            <div ref={ticketMessagesEndRef} />
+                            <div ref={threadEndRef} />
                           </div>
 
-                          {/* Customer Reply Input */}
+                          {/* Reply input */}
                           {t.status !== "CLOSED" ? (
-                            <div className="p-4 bg-[#10121a] border-t border-white/[0.08]">
-                              <form
-                                onSubmit={(e) => {
-                                  e.preventDefault();
-                                  handleSendCustomerReply(t.id);
-                                }}
-                                className="flex gap-2"
+                            <form
+                              onSubmit={(e) => { e.preventDefault(); sendReply(t.id); }}
+                              className="p-4 bg-[#10121a] border-t border-white/[0.08] flex gap-2"
+                            >
+                              <input
+                                type="text"
+                                placeholder="Reply to the technician..."
+                                value={customerReplies[t.id] || ""}
+                                onChange={(e) => setCustomerReplies((p) => ({ ...p, [t.id]: e.target.value }))}
+                                className="flex-1 px-4 py-2.5 rounded-xl border border-white/10 bg-white/[0.04] text-xs text-white placeholder-neutral-500 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
+                              />
+                              <button
+                                type="submit"
+                                disabled={sendingReply[t.id] || !customerReplies[t.id]?.trim()}
+                                className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-md cursor-pointer shrink-0"
                               >
-                                <input
-                                  type="text"
-                                  placeholder="Type your reply to the technician..."
-                                  value={customerReplies[t.id] || ""}
-                                  onChange={(e) =>
-                                    setCustomerReplies((prev) => ({
-                                      ...prev,
-                                      [t.id]: e.target.value,
-                                    }))
-                                  }
-                                  className="flex-1 px-4 py-2.5 rounded-xl border border-white/10 bg-white/[0.04] text-xs text-white placeholder-neutral-500 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
-                                />
-                                <button
-                                  type="submit"
-                                  disabled={
-                                    isSubmittingReply[t.id] ||
-                                    !customerReplies[t.id]?.trim()
-                                  }
-                                  className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-md cursor-pointer shrink-0"
-                                >
-                                  <Send className="w-3.5 h-3.5" />
-                                  <span>{isSubmittingReply[t.id] ? "Sending..." : "Send Reply"}</span>
-                                </button>
-                              </form>
-                            </div>
+                                <Send className="w-3.5 h-3.5" />
+                                {sendingReply[t.id] ? "Sending…" : "Send"}
+                              </button>
+                            </form>
                           ) : (
-                            <div className="p-3 bg-neutral-900/60 text-center text-xs text-neutral-500 border-t border-white/[0.06]">
-                              This support ticket has been closed. If you require further assistance, please open a new ticket.
+                            <div className="p-3 text-center text-xs text-neutral-500 border-t border-white/[0.06]">
+                              This ticket is closed. <Link href="/support" className="text-blue-400 underline">Open a new one</Link> if you need further help.
                             </div>
                           )}
                         </div>
@@ -698,24 +676,24 @@ export default function OrderLookupPage() {
                 <div className="w-12 h-12 bg-white/[0.04] text-neutral-400 rounded-2xl flex items-center justify-center mx-auto border border-white/10">
                   <Ticket className="w-6 h-6" />
                 </div>
-                <h4 className="font-bold text-sm text-white">No Support Tickets Logged Yet</h4>
+                <h4 className="font-bold text-sm text-white">No Support Tickets Yet</h4>
                 <p className="text-xs text-neutral-400 max-w-sm mx-auto">
-                  Have questions about your order, license delivery, or need technician help?
-                  Submit a ticket and our team will respond within minutes.
+                  {effectiveEmail
+                    ? `No tickets found for ${effectiveEmail}. Once you submit a ticket it will appear here instantly.`
+                    : "Sign in or enter your billing email to load your ticket history."}
                 </p>
                 <Link
                   href="/support"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs transition-colors shadow-md cursor-pointer"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs transition-colors shadow-md"
                 >
-                  <Ticket className="w-3.5 h-3.5" />
-                  <span>Submit Support Ticket</span>
+                  <Ticket className="w-3.5 h-3.5" /> Submit Support Ticket
                 </Link>
               </div>
             )}
           </div>
         )}
 
-        {/* Security & Guarantees Footer */}
+        {/* Footer security row */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
           <div className="p-4 rounded-2xl bg-[#10121a]/80 border border-white/[0.08]">
             <Zap className="w-5 h-5 text-emerald-400 mx-auto mb-2" />
