@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 750" preserveAspectRatio="xMidYMid slice" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgFeat" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0a14" />
+      <stop offset="50%" stop-color="#140f21" />
+      <stop offset="100%" stop-color="#08070d" />
+    </linearGradient>
+    <linearGradient id="cardOrange" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fb923c" />
+      <stop offset="100%" stop-color="#ea580c" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="750" fill="url(#bgFeat)" />
+
+  <!-- Title Pill -->
+  <g transform="translate(60, 50)">
+    <rect width="300" height="38" rx="19" fill="#ffffff" fill-opacity="0.06" stroke="#ffffff" stroke-opacity="0.12" stroke-width="1" />
+    <circle cx="24" cy="19" r="5" fill="#f97316" />
+    <text x="38" y="24" fill="#fed7aa" font-family="sans-serif" font-size="12" font-weight="700" letter-spacing="1.5">FEATURE ARCHITECTURE</text>
+  </g>
+
+  <!-- Header Text -->
+  <g transform="translate(60, 110)">
+    <text x="0" y="40" font-family="sans-serif" font-size="34" font-weight="900" fill="#ffffff">
+      WP Rocket Core Technology Stack
+    </text>
+    <text x="0" y="70" font-family="sans-serif" font-size="16" font-weight="500" fill="#94a3b8">
+      Automated 80% speed improvements out of the box with zero complex coding required
+    </text>
+  </g>
+
+  <!-- 4 Feature Quadrants -->
+  <!-- Box 1: Page Caching -->
+  <g transform="translate(60, 210)">
+    <rect width="520" height="220" rx="24" fill="#14111d" stroke="#f97316" stroke-width="1.5" stroke-opacity="0.3" />
+    <g transform="translate(35, 35)">
+      <circle cx="25" cy="25" r="25" fill="#ea580c" fill-opacity="0.15" />
+      <text x="25" y="32" font-size="20" text-anchor="middle">⚡</text>
+      <text x="65" y="24" fill="#ffffff" font-family="sans-serif" font-size="20" font-weight="bold">Smart Page Caching &amp; Preload</text>
+      <text x="65" y="48" fill="#f97316" font-family="sans-serif" font-size="12" font-weight="600">Immediate static HTML generation</text>
+      <text x="0" y="95" fill="#94a3b8" font-family="sans-serif" font-size="14" font-weight="400">
+        Preloads sitemaps into server memory, creates separate cache buckets for mobile devices, and reduces Time to First Byte (TTFB) to under 200ms.
+      </text>
+      <rect y="125" width="230" height="26" rx="8" fill="#ffffff" fill-opacity="0.04" />
+      <text x="115" y="142" fill="#fed7aa" font-family="sans-serif" font-size="11" font-weight="bold" text-anchor="middle">✔ Zero-Config Instant Activation</text>
+    </g>
+  </g>
+
+  <!-- Box 2: File Optimization -->
+  <g transform="translate(620, 210)">
+    <rect width="520" height="220" rx="24" fill="#14111d" stroke="#f97316" stroke-width="1.5" stroke-opacity="0.3" />
+    <g transform="translate(35, 35)">
+      <circle cx="25" cy="25" r="25" fill="#ea580c" fill-opacity="0.15" />
+      <text x="25" y="32" font-size="20" text-anchor="middle">📁</text>
+      <text x="65" y="24" fill="#ffffff" font-family="sans-serif" font-size="20" font-weight="bold">Remove Unused CSS &amp; Delay JS</text>
+      <text x="65" y="48" fill="#f97316" font-family="sans-serif" font-size="12" font-weight="600">Solves Largest Contentful Paint (LCP)</text>
+      <text x="0" y="95" fill="#94a3b8" font-family="sans-serif" font-size="14" font-weight="400">
+        Cloud-based CSS analysis generates Critical Path CSS per page. Delays heavy scripts (analytics, ads, widgets) until actual user interaction.
+      </text>
+      <rect y="125" width="220" height="26" rx="8" fill="#ffffff" fill-opacity="0.04" />
+      <text x="110" y="142" fill="#fed7aa" font-family="sans-serif" font-size="11" font-weight="bold" text-anchor="middle">✔ Eliminates Render Blocking</text>
+    </g>
+  </g>
+
+  <!-- Box 3: Media & LazyLoad -->
+  <g transform="translate(60, 460)">
+    <rect width="520" height="220" rx="24" fill="#14111d" stroke="#f97316" stroke-width="1.5" stroke-opacity="0.3" />
+    <g transform="translate(35, 35)">
+      <circle cx="25" cy="25" r="25" fill="#ea580c" fill-opacity="0.15" />
+      <text x="25" y="32" font-size="20" text-anchor="middle">🖼️</text>
+      <text x="65" y="24" fill="#ffffff" font-family="sans-serif" font-size="20" font-weight="bold">LazyLoad &amp; WebP Delivery</text>
+      <text x="65" y="48" fill="#f97316" font-family="sans-serif" font-size="12" font-weight="600">Drastically reduces initial page weight</text>
+      <text x="0" y="95" fill="#94a3b8" font-family="sans-serif" font-size="14" font-weight="400">
+        Loads images, avatars, and videos only as the visitor scrolls down. Replaces YouTube iframes with lightweight preview thumbnails to save megabytes.
+      </text>
+      <rect y="125" width="220" height="26" rx="8" fill="#ffffff" fill-opacity="0.04" />
+      <text x="110" y="142" fill="#fed7aa" font-family="sans-serif" font-size="11" font-weight="bold" text-anchor="middle">✔ YouTube &amp; Iframe Facade</text>
+    </g>
+  </g>
+
+  <!-- Box 4: Database & CDN -->
+  <g transform="translate(620, 460)">
+    <rect width="520" height="220" rx="24" fill="#14111d" stroke="#f97316" stroke-width="1.5" stroke-opacity="0.3" />
+    <g transform="translate(35, 35)">
+      <circle cx="25" cy="25" r="25" fill="#ea580c" fill-opacity="0.15" />
+      <text x="25" y="32" font-size="20" text-anchor="middle">🗄️</text>
+      <text x="65" y="24" fill="#ffffff" font-family="sans-serif" font-size="20" font-weight="bold">Database Optimization &amp; CDN</text>
+      <text x="65" y="48" fill="#f97316" font-family="sans-serif" font-size="12" font-weight="600">Keep MySQL lean and global cache fast</text>
+      <text x="0" y="95" fill="#94a3b8" font-family="sans-serif" font-size="14" font-weight="400">
+        Purges bloated post revisions, auto-drafts, and expired transients automatically on schedule. 1-click Cloudflare, RocketCDN, or custom CDN integration.
+      </text>
+      <rect y="125" width="230" height="26" rx="8" fill="#ffffff" fill-opacity="0.04" />
+      <text x="115" y="142" fill="#fed7aa" font-family="sans-serif" font-size="11" font-weight="bold" text-anchor="middle">✔ Automated Weekly Database Purge</text>
+    </g>
+  </g>
+</svg>

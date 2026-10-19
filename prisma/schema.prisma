@@ -1,0 +1,262 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum DeliveryType {
+  SERVICE_SETUP    // e.g. WordPress Plugins/Themes requiring WP login credentials
+  INSTANT_CODE     // e.g. IDM Key, Steam Gift Code, Windows License (Instant Auto-Delivery)
+  MANUAL_HANDOFF   // e.g. AdSense Approved Website + Domain, Aged Channels
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  PROCESSING       // e.g. Waiting for Admin to install WP plugin or transfer domain
+  COMPLETED        // Finished & delivered
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentProvider {
+  STRIPE
+  PAYPAL
+  CRYPTO
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum RequirementFieldType {
+  TEXT
+  PASSWORD
+  URL
+  TEXTAREA
+}
+
+enum TicketPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  WAITING_CUSTOMER
+  RESOLVED
+  CLOSED
+}
+
+model User {
+  id           String          @id @default(cuid())
+  email        String          @unique
+  name         String?
+  passwordHash String?
+  role         Role            @default(USER)
+  avatarUrl    String?
+  orders       Order[]
+  tickets      SupportTicket[]
+  reviews      Review[]
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  slug        String    @unique
+  description String?
+  imageUrl    String?
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Product {
+  id               String               @id @default(cuid())
+  title            String
+  slug             String               @unique
+  shortDescription String?
+  description      String
+  price            Decimal              @db.Decimal(10, 2)
+  originalPrice    Decimal?             @db.Decimal(10, 2)
+  deliveryType     DeliveryType         @default(INSTANT_CODE)
+  isInstantDelivery Boolean             @default(true)
+  isPublished      Boolean              @default(true)
+  isFeatured       Boolean              @default(false)
+  categoryId       String
+  category         Category             @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  images           ProductImage[]
+  features         String[]             @default([])
+  requirements     ProductRequirement[] // For SERVICE_SETUP products (e.g. WP login URL, user, pass)
+  licensePool      LicenseKey[]         // For INSTANT_CODE auto-delivery pool
+  orderItems       OrderItem[]
+  reviews          Review[]
+  seoTitle         String?
+  seoDescription   String?
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+}
+
+model ProductRequirement {
+  id          String               @id @default(cuid())
+  productId   String
+  product     Product              @relation(fields: [productId], references: [id], onDelete: Cascade)
+  label       String               // e.g. "WordPress Admin Login URL"
+  fieldKey    String               // e.g. "wp_admin_url"
+  fieldType   RequirementFieldType @default(TEXT)
+  placeholder String?
+  helpText    String?
+  isRequired  Boolean              @default(true)
+  orderIndex  Int                  @default(0)
+  createdAt   DateTime             @default(now())
+}
+
+model LicenseKey {
+  id          String     @id @default(cuid())
+  productId   String
+  product     Product    @relation(fields: [productId], references: [id], onDelete: Cascade)
+  keyCode     String     // e.g. "IDM-ABCD-1234-EFGH" or Steam Gift Card code
+  isRedeemed  Boolean    @default(false)
+  redeemedAt  DateTime?
+  orderItemId String?
+  orderItem   OrderItem? @relation(fields: [orderItemId], references: [id], onDelete: SetNull)
+  createdAt   DateTime   @default(now())
+}
+
+model ProductImage {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url       String
+  altText   String?
+  isPrimary Boolean  @default(false)
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model Order {
+  id             String          @id @default(cuid())
+  orderNumber    String          @unique
+  userId         String?
+  user           User?           @relation(fields: [userId], references: [id], onDelete: SetNull)
+  customerEmail  String
+  customerName   String?
+  status         OrderStatus     @default(PENDING)
+  subtotal       Decimal         @db.Decimal(10, 2)
+  totalAmount    Decimal         @db.Decimal(10, 2)
+  paymentMethod  String
+  items          OrderItem[]
+  payment        Payment?
+  supportTickets SupportTicket[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+}
+
+model OrderItem {
+  id               String                @id @default(cuid())
+  orderId          String
+  order            Order                 @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId        String?
+  product          Product?              @relation(fields: [productId], references: [id], onDelete: SetNull)
+  productTitle     String
+  deliveryType     DeliveryType
+  unitPrice        Decimal               @db.Decimal(10, 2)
+  quantity         Int                   @default(1)
+  total            Decimal               @db.Decimal(10, 2)
+  submissions      OrderItemSubmission[] // Pre-checkout inputs (WP login, pass, notes)
+  deliveredKeys    LicenseKey[]          // Auto-delivered keys for INSTANT_CODE
+  deliveredAsset   DeliveredAsset?       // Manual delivery credentials for MANUAL_HANDOFF
+}
+
+model OrderItemSubmission {
+  id          String    @id @default(cuid())
+  orderItemId String
+  orderItem   OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+  fieldKey    String    // e.g. "wp_admin_url", "wp_admin_username", "wp_admin_password"
+  fieldLabel  String
+  fieldValue  String    // Captured customer credentials
+  createdAt   DateTime  @default(now())
+}
+
+model DeliveredAsset {
+  id              String    @id @default(cuid())
+  orderItemId     String    @unique
+  orderItem       OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+  assetTitle      String    // e.g. "TechTrendsBlog.com Domain & Google Account"
+  loginIdentifier String?   // e.g. "adsense.admin@gmail.com"
+  passwordOrKey   String?   // e.g. "Temporary password or domain EPP code"
+  transferNotes   String?   // Instructions on domain registrar transfer
+  isDelivered     Boolean   @default(false)
+  deliveredAt     DateTime?
+  updatedAt       DateTime  @updatedAt
+}
+
+model Payment {
+  id            String          @id @default(cuid())
+  orderId       String          @unique
+  order         Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  provider      PaymentProvider
+  status        PaymentStatus   @default(PENDING)
+  transactionId String?
+  amount        Decimal         @db.Decimal(10, 2)
+  currency      String          @default("USD")
+  cryptoWallet  String?
+  cryptoTxHash  String?
+  rawMetadata   Json?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+}
+
+model SupportTicket {
+  id            String          @id @default(cuid())
+  ticketNumber  String          @unique // e.g. "TICK-78219"
+  userId        String?
+  user          User?           @relation(fields: [userId], references: [id], onDelete: SetNull)
+  orderId       String?
+  order         Order?          @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  customerEmail String
+  customerName  String
+  subject       String
+  priority      TicketPriority  @default(MEDIUM)
+  status        TicketStatus    @default(OPEN)
+  messages      TicketMessage[]
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+}
+
+model TicketMessage {
+  id         String        @id @default(cuid())
+  ticketId   String
+  ticket     SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  senderRole Role          @default(USER)
+  senderName String
+  message    String
+  createdAt  DateTime      @default(now())
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rating    Int      @default(5)
+  comment   String?
+  createdAt DateTime @default(now())
+}

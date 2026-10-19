@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 750" preserveAspectRatio="xMidYMid slice" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0a14" />
+      <stop offset="50%" stop-color="#120c1f" />
+      <stop offset="100%" stop-color="#07060c" />
+    </linearGradient>
+    <linearGradient id="rocketOrange" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fb923c" />
+      <stop offset="100%" stop-color="#ea580c" />
+    </linearGradient>
+    <linearGradient id="greenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4ade80" />
+      <stop offset="100%" stop-color="#16a34a" />
+    </linearGradient>
+    <linearGradient id="redGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f87171" />
+      <stop offset="100%" stop-color="#dc2626" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="750" fill="url(#bgGrad)" />
+
+  <!-- Grid overlay -->
+  <g opacity="0.05" stroke="#f97316" stroke-width="1">
+    <line x1="0" y1="150" x2="1200" y2="150" />
+    <line x1="0" y1="300" x2="1200" y2="300" />
+    <line x1="0" y1="450" x2="1200" y2="450" />
+    <line x1="0" y1="600" x2="1200" y2="600" />
+    <line x1="300" y1="0" x2="300" y2="750" />
+    <line x1="600" y1="0" x2="600" y2="750" />
+    <line x1="900" y1="0" x2="900" y2="750" />
+  </g>
+
+  <!-- Title Pill -->
+  <g transform="translate(60, 50)">
+    <rect width="320" height="38" rx="19" fill="#ffffff" fill-opacity="0.06" stroke="#ffffff" stroke-opacity="0.12" stroke-width="1" />
+    <circle cx="24" cy="19" r="5" fill="#f97316" />
+    <text x="38" y="24" fill="#fed7aa" font-family="sans-serif" font-size="12" font-weight="700" letter-spacing="1.5">CORE WEB VITALS BENCHMARK</text>
+  </g>
+
+  <!-- Header Text -->
+  <g transform="translate(60, 110)">
+    <text x="0" y="40" font-family="sans-serif" font-size="34" font-weight="900" fill="#ffffff">
+      Google PageSpeed Optimization Results
+    </text>
+    <text x="0" y="70" font-family="sans-serif" font-size="16" font-weight="500" fill="#94a3b8">
+      Measured performance on real WordPress production servers before and after WP Rocket activation
+    </text>
+  </g>
+
+  <!-- Comparison Columns -->
+  <!-- Left Card: WITHOUT WP ROCKET -->
+  <g transform="translate(60, 220)">
+    <rect width="510" height="460" rx="28" fill="#14111d" stroke="#ef4444" stroke-width="1.5" stroke-opacity="0.3" />
+    
+    <g transform="translate(35, 35)">
+      <rect width="180" height="30" rx="15" fill="#ef4444" fill-opacity="0.15" />
+      <text x="90" y="20" fill="#f87171" font-family="sans-serif" font-size="12" font-weight="700" text-anchor="middle">❌ DEFAULT WORDPRESS</text>
+
+      <!-- Score Ring Area -->
+      <g transform="translate(0, 50)">
+        <text x="0" y="55" fill="#f87171" font-family="monospace" font-size="56" font-weight="bold">38 / 100</text>
+        <text x="0" y="80" fill="#94a3b8" font-family="sans-serif" font-size="13">Mobile PageSpeed Score (Failed)</text>
+      </g>
+
+      <!-- Metrics Breakdown -->
+      <g transform="translate(0, 160)">
+        <!-- LCP -->
+        <rect width="440" height="50" rx="14" fill="#0b0914" />
+        <text x="20" y="30" fill="#ffffff" font-family="sans-serif" font-size="13" font-weight="600">Largest Contentful Paint (LCP)</text>
+        <text x="420" y="30" fill="#f87171" font-family="monospace" font-size="14" font-weight="bold" text-anchor="end">4.6 s (POOR)</text>
+
+        <!-- INP -->
+        <rect y="60" width="440" height="50" rx="14" fill="#0b0914" />
+        <text x="20" y="90" fill="#ffffff" font-family="sans-serif" font-size="13" font-weight="600">Interaction to Next Paint (INP)</text>
+        <text x="420" y="90" fill="#f87171" font-family="monospace" font-size="14" font-weight="bold" text-anchor="end">480 ms (POOR)</text>
+
+        <!-- TTFB -->
+        <rect y="120" width="440" height="50" rx="14" fill="#0b0914" />
+        <text x="20" y="150" fill="#ffffff" font-family="sans-serif" font-size="13" font-weight="600">Time to First Byte (TTFB)</text>
+        <text x="420" y="150" fill="#f87171" font-family="monospace" font-size="14" font-weight="bold" text-anchor="end">1.95 s (SLOW)</text>
+
+        <!-- CLS -->
+        <rect y="180" width="440" height="50" rx="14" fill="#0b0914" />
+        <text x="20" y="210" fill="#ffffff" font-family="sans-serif" font-size="13" font-weight="600">Cumulative Layout Shift (CLS)</text>
+        <text x="420" y="210" fill="#f87171" font-family="monospace" font-size="14" font-weight="bold" text-anchor="end">0.31 (FAILED)</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- Right Card: WITH WP ROCKET -->
+  <g transform="translate(630, 220)">
+    <rect width="510" height="460" rx="28" fill="#14111d" stroke="#22c55e" stroke-width="2" stroke-opacity="0.5" />
+    
+    <g transform="translate(35, 35)">
+      <rect width="210" height="30" rx="15" fill="#22c55e" fill-opacity="0.15" />
+      <text x="105" y="20" fill="#4ade80" font-family="sans-serif" font-size="12" font-weight="700" text-anchor="middle">🚀 WITH WP ROCKET PRO</text>
+
+      <!-- Score Ring Area -->
+      <g transform="translate(0, 50)">
+        <text x="0" y="55" fill="#22c55e" font-family="monospace" font-size="56" font-weight="bold">99 / 100</text>
+        <text x="0" y="80" fill="#86efac" font-family="sans-serif" font-size="13">Mobile PageSpeed Score (PASSED)</text>
+      </g>
+
+      <!-- Metrics Breakdown -->
+      <g transform="translate(0, 160)">
+        <!-- LCP -->
+        <rect width="440" height="50" rx="14" fill="#0b0914" stroke="#22c55e" stroke-width="1" stroke-opacity="0.2" />
+        <text x="20" y="30" fill="#ffffff" font-family="sans-serif" font-size="13" font-weight="600">Largest Contentful Paint (LCP)</text>
+        <text x="420" y="30" fill="#4ade80" font-family="monospace" font-size="14" font-weight="bold" text-anchor="end">0.78 s (GOOD)</text>
+
+        <!-- INP -->
+        <rect y="60" width="440" height="50" rx="14" fill="#0b0914" stroke="#22c55e" stroke-width="1" stroke-opacity="0.2" />
+        <text x="20" y="90" fill="#ffffff" font-family="sans-serif" font-size="13" font-weight="600">Interaction to Next Paint (INP)</text>
+        <text x="420" y="90" fill="#4ade80" font-family="monospace" font-size="14" font-weight="bold" text-anchor="end">42 ms (GOOD)</text>
+
+        <!-- TTFB -->
+        <rect y="120" width="440" height="50" rx="14" fill="#0b0914" stroke="#22c55e" stroke-width="1" stroke-opacity="0.2" />
+        <text x="20" y="150" fill="#ffffff" font-family="sans-serif" font-size="13" font-weight="600">Time to First Byte (TTFB)</text>
+        <text x="420" y="150" fill="#4ade80" font-family="monospace" font-size="14" font-weight="bold" text-anchor="end">0.18 s (INSTANT)</text>
+
+        <!-- CLS -->
+        <rect y="180" width="440" height="50" rx="14" fill="#0b0914" stroke="#22c55e" stroke-width="1" stroke-opacity="0.2" />
+        <text x="20" y="210" fill="#ffffff" font-family="sans-serif" font-size="13" font-weight="600">Cumulative Layout Shift (CLS)</text>
+        <text x="420" y="210" fill="#4ade80" font-family="monospace" font-size="14" font-weight="bold" text-anchor="end">0.005 (PASSED)</text>
+      </g>
+    </g>
+  </g>
+</svg>
