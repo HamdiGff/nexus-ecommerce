@@ -99,6 +99,13 @@ export default function LiveChatWidget() {
 
   // Poll server for live updates (admin replies and message sync)
   useEffect(() => {
+    // Request notification permission for customer
+    if (typeof window !== "undefined" && "Notification" in window) {
+      if (Notification.permission === "default") {
+        Notification.requestPermission();
+      }
+    }
+
     if (!userEmail) return;
 
     const syncMessages = async () => {
@@ -116,8 +123,21 @@ export default function LiveChatWidget() {
 
           if (serverMsgs.length > 0) {
             setMessages((prev) => {
-              // Only update if server has new messages
               if (serverMsgs.length > prev.length) {
+                const latest = serverMsgs[serverMsgs.length - 1];
+                if (latest.sender === "support") {
+                  // Trigger native notification if tab is in background or widget is closed
+                  if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "granted") {
+                    new Notification("Support Specialist Replied", {
+                      body: latest.text,
+                      icon: "/favicon.ico",
+                    });
+                  }
+                  if (!isOpen) {
+                    setUnreadCount((c) => c + 1);
+                  }
+                }
+
                 try {
                   localStorage.setItem(`nexus_chat_msgs_${userEmail}`, JSON.stringify(serverMsgs));
                 } catch {
@@ -135,9 +155,9 @@ export default function LiveChatWidget() {
     };
 
     syncMessages();
-    const interval = setInterval(syncMessages, 2500);
+    const interval = setInterval(syncMessages, 2000);
     return () => clearInterval(interval);
-  }, [userEmail]);
+  }, [userEmail, isOpen]);
 
   useEffect(() => {
     if (isOpen && isRegistered) {

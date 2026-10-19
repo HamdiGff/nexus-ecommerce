@@ -301,6 +301,13 @@ export default function AdminDashboardPage() {
 
   // Sync tickets & live chats from global API routes (survives incognito/browsers)
   useEffect(() => {
+    // Request notification permission once for Windows/Browser alerts
+    if (typeof window !== "undefined" && "Notification" in window) {
+      if (Notification.permission === "default") {
+        Notification.requestPermission();
+      }
+    }
+
     const fetchRealtimeSupport = async () => {
       try {
         // 1. Fetch tickets
@@ -308,15 +315,44 @@ export default function AdminDashboardPage() {
         const tickData = await tickRes.json();
         if (tickData.success && Array.isArray(tickData.tickets) && tickData.tickets.length > 0) {
           setTickets(tickData.tickets);
-          setSelectedTicket((prev) => prev || tickData.tickets[0]);
+          setSelectedTicket((prev) => {
+            if (!prev) return tickData.tickets[0];
+            const updated = tickData.tickets.find((t: any) => t.id === prev.id);
+            return updated || prev;
+          });
         }
 
         // 2. Fetch live chats
         const chatRes = await fetch("/api/chat");
         const chatData = await chatRes.json();
         if (chatData.success && Array.isArray(chatData.chats) && chatData.chats.length > 0) {
-          setLiveChats(chatData.chats);
-          setSelectedChat((prev) => prev || chatData.chats[0]);
+          setLiveChats((prevChats) => {
+            // Check if there are new incoming customer messages to trigger Windows notification
+            chatData.chats.forEach((newChat: any) => {
+              const oldChat = prevChats.find((c) => c.id === newChat.id);
+              if (oldChat && newChat.messages.length > oldChat.messages.length) {
+                const latestMsg = newChat.messages[newChat.messages.length - 1];
+                if (latestMsg.sender === "visitor") {
+                  // Trigger browser/Windows Notification
+                  if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "granted") {
+                    new Notification(`💬 New Message from ${newChat.visitorName}`, {
+                      body: latestMsg.text,
+                      icon: "/favicon.ico",
+                    });
+                  }
+                }
+              }
+            });
+
+            return chatData.chats;
+          });
+
+          // Keep currently open chat updated with new messages immediately
+          setSelectedChat((prev) => {
+            if (!prev) return chatData.chats[0];
+            const updated = chatData.chats.find((c: any) => c.id === prev.id || c.visitorEmail === prev.visitorEmail);
+            return updated || prev;
+          });
         }
       } catch {
         // ignore
@@ -324,7 +360,7 @@ export default function AdminDashboardPage() {
     };
 
     fetchRealtimeSupport();
-    const interval = setInterval(fetchRealtimeSupport, 3000);
+    const interval = setInterval(fetchRealtimeSupport, 2000);
     return () => clearInterval(interval);
   }, []);
 
