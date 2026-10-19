@@ -580,16 +580,17 @@ export default function AdminDashboardPage() {
     setReplyMessage("");
   };
 
-  const handleSendLiveReply = (e: React.FormEvent) => {
+  const handleSendLiveReply = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedChat || !liveChatReply.trim()) return;
 
+    const replyText = liveChatReply.trim();
     const newMsg = {
       id: `cm-${Date.now()}`,
       sender: "agent" as const,
       senderName: "Admin Specialist",
-      text: liveChatReply.trim(),
-      time: "Just now",
+      text: replyText,
+      time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
     };
 
     const updated = {
@@ -602,6 +603,22 @@ export default function AdminDashboardPage() {
     setSelectedChat(updated);
     setLiveChats((prev) => prev.map((c) => (c.id === updated.id ? updated : c)));
     setLiveChatReply("");
+
+    // Broadcast reply to server API so customer sees it in real-time
+    try {
+      await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          visitorName: selectedChat.visitorName,
+          visitorEmail: selectedChat.visitorEmail,
+          message: replyText,
+          sender: "agent",
+        }),
+      });
+    } catch {
+      // ignore
+    }
   };
 
   const handleCreateProduct = (e: React.FormEvent) => {

@@ -27,13 +27,26 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { visitorName, visitorEmail, message, sender, topic, ipLocation, deviceInfo } = body;
+    const { visitorName, visitorEmail, message, sender, topic } = body;
 
     if (!visitorEmail || !message) {
       return NextResponse.json(
         { success: false, error: "Missing required fields" },
         { status: 400 }
       );
+    }
+
+    // Detect Real IP and Country from Vercel / Cloudflare headers
+    const forwarded = req.headers.get("x-forwarded-for");
+    const realIp = forwarded ? forwarded.split(",")[0].trim() : req.headers.get("x-real-ip") || "127.0.0.1";
+    const vercelCountry = req.headers.get("x-vercel-ip-country");
+    const vercelCity = req.headers.get("x-vercel-ip-city");
+    
+    let resolvedLocation = "United States (US)";
+    if (vercelCountry) {
+      resolvedLocation = vercelCity ? `${decodeURIComponent(vercelCity)}, ${vercelCountry}` : vercelCountry;
+    } else if (body.ipLocation && body.ipLocation !== "United States (US)") {
+      resolvedLocation = body.ipLocation;
     }
 
     const chats = global.__GLOBAL_LIVE_CHATS__ || [];
@@ -53,12 +66,12 @@ export async function POST(req: Request) {
         id: `chat-${Date.now()}`,
         visitorName: visitorName || normalizedEmail.split("@")[0],
         visitorEmail: normalizedEmail,
-        ipAddress: "192.168.1.1",
-        ipLocation: ipLocation || "United States (US)",
-        deviceInfo: deviceInfo || "Chrome on Windows",
+        ipAddress: realIp,
+        ipLocation: resolvedLocation,
+        deviceInfo: body.deviceInfo || req.headers.get("user-agent")?.slice(0, 40) || "Web Browser",
         currentPage: "/",
         referrer: "Direct",
-        sessionDuration: "Just started",
+        sessionDuration: "Active now",
         inquiryTopic: topic || "General Inquiry",
         status: "WAITING_REPLY",
         unread: true,
@@ -67,6 +80,9 @@ export async function POST(req: Request) {
       chats.unshift(session);
     } else {
       session.messages.push(newMsg);
+      if (session.ipLocation === "United States (US)" && resolvedLocation !== "United States (US)") {
+        session.ipLocation = resolvedLocation;
+      }
       if (sender !== "agent") {
         session.status = "WAITING_REPLY";
         session.unread = true;

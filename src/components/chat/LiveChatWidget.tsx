@@ -63,24 +63,80 @@ export default function LiveChatWidget() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  // Restore saved email from localStorage on mount
+  // Restore saved email and messages from localStorage on mount & sync from server
   useEffect(() => {
     try {
       const savedUser = localStorage.getItem("nexus_livechat_user");
       if (savedUser) {
         const parsed = JSON.parse(savedUser);
         if (parsed.email) {
-          setUserEmail(parsed.email);
+          const email = parsed.email.trim().toLowerCase();
+          setUserEmail(email);
           setUserName(parsed.name || "Customer");
-          setFormEmail(parsed.email);
+          setFormEmail(email);
           setFormName(parsed.name || "");
           setIsRegistered(true);
+
+          // Restore saved messages from localStorage if present
+          const storedMsgs = localStorage.getItem(`nexus_chat_msgs_${email}`);
+          if (storedMsgs) {
+            try {
+              const msgs = JSON.parse(storedMsgs);
+              if (Array.isArray(msgs) && msgs.length > 0) {
+                setMessages(msgs);
+              }
+            } catch {
+              // ignore
+            }
+          }
         }
       }
     } catch {
       // ignore storage error
     }
   }, []);
+
+  // Poll server for live updates (admin replies and message sync)
+  useEffect(() => {
+    if (!userEmail) return;
+
+    const syncMessages = async () => {
+      try {
+        const res = await fetch(`/api/chat?email=${encodeURIComponent(userEmail)}`);
+        const data = await res.json();
+        if (data.success && data.chat && Array.isArray(data.chat.messages)) {
+          const serverMsgs: ChatMessage[] = data.chat.messages.map((m: any) => ({
+            id: m.id,
+            sender: m.sender === "agent" ? "support" : "customer",
+            senderName: m.senderName,
+            text: m.text,
+            timestamp: m.time || "Just now",
+          }));
+
+          if (serverMsgs.length > 0) {
+            setMessages((prev) => {
+              // Only update if server has new messages
+              if (serverMsgs.length > prev.length) {
+                try {
+                  localStorage.setItem(`nexus_chat_msgs_${userEmail}`, JSON.stringify(serverMsgs));
+                } catch {
+                  // ignore
+                }
+                return serverMsgs;
+              }
+              return prev;
+            });
+          }
+        }
+      } catch {
+        // ignore
+      }
+    };
+
+    syncMessages();
+    const interval = setInterval(syncMessages, 2500);
+    return () => clearInterval(interval);
+  }, [userEmail]);
 
   useEffect(() => {
     if (isOpen && isRegistered) {
