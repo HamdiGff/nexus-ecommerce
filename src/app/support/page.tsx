@@ -85,28 +85,27 @@ export default function SupportPage() {
 
   // Real-time polling for active ticket so technician replies appear automatically
   useEffect(() => {
-    if (!activeTicket) return;
+    if (!activeTicket?.id && !activeTicket?.ticketNumber) return;
 
+    const ticketQuery = activeTicket.id || activeTicket.ticketNumber;
     const pollActiveTicket = async () => {
       try {
-        const res = await fetch("/api/tickets", { cache: "no-store" });
+        const queryParam = activeTicket.id 
+          ? `ticketId=${encodeURIComponent(activeTicket.id)}` 
+          : `ticketNumber=${encodeURIComponent(activeTicket.ticketNumber)}`;
+        const res = await fetch(`/api/tickets?${queryParam}`, { cache: "no-store" });
         const data = await res.json();
-        if (data.success && Array.isArray(data.tickets)) {
-          const fresh = data.tickets.find(
-            (t: any) => t.id === activeTicket.id || t.ticketNumber === activeTicket.ticketNumber
-          );
-          if (fresh) {
-            setActiveTicket(fresh);
-          }
+        if (data.success && data.ticket) {
+          setActiveTicket(data.ticket);
         }
       } catch {
         // ignore
       }
     };
 
-    const interval = setInterval(pollActiveTicket, 3000);
+    const interval = setInterval(pollActiveTicket, 2500);
     return () => clearInterval(interval);
-  }, [activeTicket]);
+  }, [activeTicket?.id, activeTicket?.ticketNumber]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

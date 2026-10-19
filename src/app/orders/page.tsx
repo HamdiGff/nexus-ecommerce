@@ -24,6 +24,7 @@ import {
   CheckCircle2,
   XCircle,
   AlertCircle,
+  BarChart3,
 } from "lucide-react";
 import { useAuthStore } from "@/lib/store/authStore";
 import { formatPrice } from "@/lib/utils";
@@ -67,7 +68,9 @@ export default function OrderLookupPage() {
   const [ticketSearchInput, setTicketSearchInput] = useState("");
   const [ticketSearchError, setTicketSearchError] = useState<string | null>(null);
 
-  const threadEndRef = useRef<HTMLDivElement>(null);
+  // ── Per-ticket scroll refs ────────────────────────────────────────────
+  // Map from ticketId → the bottom sentinel div element
+  const threadEndRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   // The email used to query – prefer logged-in, fallback to manually typed
   const effectiveEmail = (user?.email || emailQuery).toLowerCase().trim();
@@ -119,6 +122,7 @@ export default function OrderLookupPage() {
   }, [effectiveEmail, user]);
 
   // ── Fetch tickets by email (and localStorage ticket numbers as fallback) ──
+  // NOTE: No expandedTicketId in deps — auto-expand is handled by a separate effect.
   const fetchTickets = useCallback(async () => {
     let fetched: SupportTicketRecord[] = [];
 
@@ -148,30 +152,42 @@ export default function OrderLookupPage() {
           Object.values(stored).forEach((arr: any) => allNums.push(...arr));
         }
 
-        // Fetch any ticket numbers not already in fetched list
+        // Fetch any ticket numbers not already in fetched list — parallel
         const existingNums = new Set(fetched.map((t) => t.ticketNumber));
         const missing = allNums.filter((n) => !existingNums.has(n));
 
-        for (const num of missing.slice(0, 20)) {
-          try {
-            const r = await fetch(`/api/tickets?ticketNumber=${encodeURIComponent(num)}`, { cache: "no-store" });
-            const d = await r.json();
-            if (d.success && d.ticket) fetched.unshift(d.ticket);
-          } catch { /* ignore */ }
-        }
+        const results = await Promise.all(
+          missing.slice(0, 20).map(async (num) => {
+            try {
+              const r = await fetch(
+                `/api/tickets?ticketNumber=${encodeURIComponent(num)}`,
+                { cache: "no-store" }
+              );
+              const d = await r.json();
+              return (d.success && d.ticket) ? d.ticket : null;
+            } catch { return null; }
+          })
+        );
+        results
+          .filter(Boolean)
+          .forEach((ticket) => fetched.unshift(ticket));
       } catch { /* ignore */ }
     }
 
-    if (fetched.length > 0) {
-      setTickets(fetched);
-      if (!expandedTicketId) {
-        setExpandedTicketId(fetched[0].id);
-      }
-    } else {
-      setTickets([]);
-    }
+    // Always update tickets (preserves empty state correctly)
+    setTickets(fetched);
     setIsLoadingTickets(false);
   }, [effectiveEmail]);
+
+  // ── Auto-expand first ticket when list first loads (separate effect) ────
+  // Only fires when ticket count changes from 0→N, avoiding stale closure
+  const prevTicketCount = useRef(0);
+  useEffect(() => {
+    if (tickets.length > 0 && prevTicketCount.current === 0) {
+      setExpandedTicketId(tickets[0].id);
+    }
+    prevTicketCount.current = tickets.length;
+  }, [tickets.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Initial load
   useEffect(() => {
@@ -186,10 +202,16 @@ export default function OrderLookupPage() {
     return () => clearInterval(iv);
   }, [effectiveEmail, fetchTickets]);
 
-  // Auto-scroll thread when ticket updates
+  // ── Auto-scroll: fires when messages change or expanded ticket changes ──
+  // Uses per-ticket ref map so the correct sentinel is always targeted.
   useEffect(() => {
-    if (expandedTicketId) {
-      setTimeout(() => threadEndRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
+    if (!expandedTicketId) return;
+    const el = threadEndRefs.current[expandedTicketId];
+    if (el) {
+      // Use requestAnimationFrame to wait for the DOM paint before scrolling
+      requestAnimationFrame(() => {
+        el.scrollIntoView({ behavior: "smooth", block: "end" });
+      });
     }
   }, [expandedTicketId, tickets]);
 
@@ -219,18 +241,14 @@ export default function OrderLookupPage() {
           setTicketSearchError(`No tickets found for email: ${q}`);
         }
       } else {
-        const res = await fetch("/api/tickets", { cache: "no-store" });
+        const num = q.toUpperCase().startsWith("TICK-") ? q.toUpperCase() : q;
+        const res = await fetch(`/api/tickets?ticketNumber=${encodeURIComponent(num)}`, { cache: "no-store" });
         const data = await res.json();
-        if (data.success && Array.isArray(data.tickets)) {
-          const match = data.tickets.find(
-            (t: SupportTicketRecord) => t.ticketNumber.toUpperCase() === q.toUpperCase() || t.id === q
-          );
-          if (match) {
-            setTickets([match]);
-            setExpandedTicketId(match.id);
-          } else {
-            setTicketSearchError(`Ticket "${q}" not found. Please verify the ticket number.`);
-          }
+        if (data.success && data.ticket) {
+          setTickets([data.ticket]);
+          setExpandedTicketId(data.ticket.id);
+        } else {
+          setTicketSearchError(`Ticket "${q}" not found. Please verify the ticket number.`);
         }
       }
     } catch {
@@ -258,9 +276,22 @@ export default function OrderLookupPage() {
       if (data.success && data.ticket) {
         setTickets((prev) => prev.map((t) => (t.id === ticketId ? data.ticket : t)));
         setCustomerReplies((p) => ({ ...p, [ticketId]: "" }));
+        // Scroll to bottom after sending
+        requestAnimationFrame(() => {
+          threadEndRefs.current[ticketId]?.scrollIntoView({ behavior: "smooth", block: "end" });
+        });
       }
     } catch { /* ignore */ }
     setSendingReply((p) => ({ ...p, [ticketId]: false }));
+  };
+
+  // ── Ticket stats ──────────────────────────────────────────────────────────
+  const ticketStats = {
+    total: tickets.length,
+    open: tickets.filter((t) => t.status === "OPEN").length,
+    inProgress: tickets.filter((t) => t.status === "IN_PROGRESS").length,
+    resolved: tickets.filter((t) => t.status === "RESOLVED").length,
+    closed: tickets.filter((t) => t.status === "CLOSED").length,
   };
 
   // ── Render ────────────────────────────────────────────────────────────────
@@ -278,7 +309,7 @@ export default function OrderLookupPage() {
             <Key className="w-7 h-7 text-blue-400" />
           </div>
           <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-            Customer Portal & Digital Vault
+            Customer Portal &amp; Digital Vault
           </h1>
           <p className="text-xs sm:text-sm text-neutral-400 max-w-xl mx-auto leading-relaxed">
             View your purchased licenses, track WordPress activations, and read live replies from our support team.
@@ -294,7 +325,7 @@ export default function OrderLookupPage() {
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-xs text-amber-300">
               <LogIn className="w-3.5 h-3.5" />
               <span>
-                <Link href="/" className="text-amber-200 underline underline-offset-2">Sign in</Link> to auto-load your orders & tickets
+                <Link href="/" className="text-amber-200 underline underline-offset-2">Sign in</Link> to auto-load your orders &amp; tickets
               </span>
             </div>
           )}
@@ -337,7 +368,7 @@ export default function OrderLookupPage() {
               }`}
             >
               <PackageCheck className="w-4 h-4" />
-              My Orders & Licenses
+              My Orders &amp; Licenses
               {userOrders.length > 0 && (
                 <span className={`px-2 py-0.5 rounded-full text-[10px] ${activeTab === "orders" ? "bg-white/20" : "bg-neutral-800 text-neutral-300"}`}>
                   {userOrders.length}
@@ -387,7 +418,7 @@ export default function OrderLookupPage() {
                     </div>
                     <div>
                       <h2 className="text-base font-bold text-white">Your Purchased Digital Assets</h2>
-                      <p className="text-xs text-neutral-400">Click any order to view your license keys & fulfillment details.</p>
+                      <p className="text-xs text-neutral-400">Click any order to view your license keys &amp; fulfillment details.</p>
                     </div>
                   </div>
                   <span className="text-xs bg-emerald-500/10 text-emerald-300 px-3 py-1 rounded-full border border-emerald-500/20 font-semibold">
@@ -424,7 +455,7 @@ export default function OrderLookupPage() {
                             href={`/orders/${orderId}`}
                             className="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-md"
                           >
-                            Open Vault & Key <ArrowRight className="w-3.5 h-3.5" />
+                            Open Vault &amp; Key <ArrowRight className="w-3.5 h-3.5" />
                           </Link>
                           <Link
                             href="/support"
@@ -486,7 +517,7 @@ export default function OrderLookupPage() {
             {/* Header bar */}
             <div className="bg-[#10121a] rounded-3xl border border-white/[0.08] p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl">
               <div>
-                <h3 className="font-bold text-sm text-white">Support Inquiries & Live Replies</h3>
+                <h3 className="font-bold text-sm text-white">Support Inquiries &amp; Live Replies</h3>
                 <p className="text-xs text-neutral-400 mt-0.5">
                   {effectiveEmail
                     ? <>Showing all tickets for <strong className="text-white">{effectiveEmail}</strong>. Admin replies update every few seconds automatically.</>
@@ -511,6 +542,38 @@ export default function OrderLookupPage() {
                 </Link>
               </div>
             </div>
+
+            {/* Ticket Stats Bar */}
+            {tickets.length > 0 && (
+              <div className="bg-[#10121a] rounded-2xl border border-white/[0.08] p-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <BarChart3 className="w-3.5 h-3.5 text-blue-400" />
+                  <span className="text-xs font-bold text-white">Ticket Overview</span>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-center">
+                  <div className="bg-white/[0.03] rounded-xl p-3 border border-white/[0.06]">
+                    <div className="text-lg font-extrabold text-white">{ticketStats.total}</div>
+                    <div className="text-[10px] text-neutral-400 font-semibold mt-0.5">Total</div>
+                  </div>
+                  <div className="bg-amber-500/[0.05] rounded-xl p-3 border border-amber-500/20">
+                    <div className="text-lg font-extrabold text-amber-400">{ticketStats.open}</div>
+                    <div className="text-[10px] text-amber-400/70 font-semibold mt-0.5">Under Review</div>
+                  </div>
+                  <div className="bg-blue-500/[0.05] rounded-xl p-3 border border-blue-500/20">
+                    <div className="text-lg font-extrabold text-blue-400">{ticketStats.inProgress}</div>
+                    <div className="text-[10px] text-blue-400/70 font-semibold mt-0.5">Replied</div>
+                  </div>
+                  <div className="bg-emerald-500/[0.05] rounded-xl p-3 border border-emerald-500/20">
+                    <div className="text-lg font-extrabold text-emerald-400">{ticketStats.resolved}</div>
+                    <div className="text-[10px] text-emerald-400/70 font-semibold mt-0.5">Resolved</div>
+                  </div>
+                  <div className="bg-neutral-800/60 rounded-xl p-3 border border-neutral-700/40">
+                    <div className="text-lg font-extrabold text-neutral-400">{ticketStats.closed}</div>
+                    <div className="text-[10px] text-neutral-500 font-semibold mt-0.5">Closed</div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Quick Ticket Lookup (for incognito / non-logged-in users) */}
             <div className="bg-[#10121a] rounded-2xl border border-white/[0.08] p-4">
@@ -614,7 +677,7 @@ export default function OrderLookupPage() {
                       {/* Expanded thread */}
                       {isExpanded && (
                         <div className="border-t border-white/[0.08] bg-[#0c0d14]">
-                          {/* Messages */}
+                          {/* Messages scroll container */}
                           <div className="p-6 space-y-4 max-h-[380px] overflow-y-auto">
                             {t.messages?.map((m) => (
                               <div
@@ -635,7 +698,10 @@ export default function OrderLookupPage() {
                                 <p className="leading-relaxed whitespace-pre-wrap">{m.message}</p>
                               </div>
                             ))}
-                            <div ref={threadEndRef} />
+                            {/* Per-ticket sentinel div for auto-scroll */}
+                            <div
+                              ref={(el) => { threadEndRefs.current[t.id] = el; }}
+                            />
                           </div>
 
                           {/* Reply input */}
@@ -649,6 +715,12 @@ export default function OrderLookupPage() {
                                 placeholder="Reply to the technician..."
                                 value={customerReplies[t.id] || ""}
                                 onChange={(e) => setCustomerReplies((p) => ({ ...p, [t.id]: e.target.value }))}
+                                onKeyDown={(e) => {
+                                  if (e.key === "Enter" && !e.shiftKey) {
+                                    e.preventDefault();
+                                    sendReply(t.id);
+                                  }
+                                }}
                                 className="flex-1 px-4 py-2.5 rounded-xl border border-white/10 bg-white/[0.04] text-xs text-white placeholder-neutral-500 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
                               />
                               <button

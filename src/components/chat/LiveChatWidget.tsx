@@ -87,10 +87,18 @@ export default function LiveChatWidget() {
               const msgs = JSON.parse(storedMsgs);
               if (Array.isArray(msgs) && msgs.length > 0) {
                 setMessages(msgs);
+                // If there are already messages, mark initial reply as sent
+                if (msgs.some((m: any) => m.sender === "customer")) {
+                  setHasSentInitialReply(true);
+                }
               }
             } catch {
               // ignore
             }
+          }
+
+          if (localStorage.getItem(`nexus_chat_replied_${email}`) === "true") {
+            setHasSentInitialReply(true);
           }
         }
       }
@@ -246,6 +254,11 @@ export default function LiveChatWidget() {
     // Only send the automated greeting response on the very FIRST customer message
     if (!hasSentInitialReply) {
       setHasSentInitialReply(true);
+      if (userEmail) {
+        try {
+          localStorage.setItem(`nexus_chat_replied_${userEmail}`, "true");
+        } catch { /* ignore */ }
+      }
       setIsAgentTyping(true);
 
       setTimeout(() => {
