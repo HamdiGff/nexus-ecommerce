@@ -58,6 +58,7 @@ export default function LiveChatWidget() {
   const [formName, setFormName] = useState("");
   const [selectedTopic, setSelectedTopic] = useState("WordPress Activation");
   const [emailError, setEmailError] = useState("");
+  const [hasSentInitialReply, setHasSentInitialReply] = useState(false);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -216,51 +217,78 @@ export default function LiveChatWidget() {
       // ignore
     }
 
-    // Simulate realistic live support response
-    setIsAgentTyping(true);
+    // Only send the automated greeting response on the very FIRST customer message
+    if (!hasSentInitialReply) {
+      setHasSentInitialReply(true);
+      setIsAgentTyping(true);
 
-    setTimeout(() => {
-      let reply = "Thanks for contacting us! Our technical dispatch team has logged your inquiry. If you have an active order number (e.g. NEX-XXXXXX), share it with us for instant verification.";
+      setTimeout(() => {
+        let reply =
+          "Thanks for contacting us! Our technical dispatch team has logged your inquiry. If you have an active order number (e.g. NEX-XXXXXX), share it with us for instant verification.";
 
-      const lower = text.toLowerCase();
-      if (lower.includes("rank math") || lower.includes("wp rocket") || lower.includes("wordpress") || lower.includes("credential")) {
-        reply = "🛠️ For WordPress plugins like Rank Math Pro & WP Rocket, our technician connects your site to our official agency dashboard within 30-45 minutes after you provide the temporary credentials during checkout. You can revoke the temporary user right after activation!";
-      } else if (lower.includes("idm") || lower.includes("steam") || lower.includes("key") || lower.includes("serial") || lower.includes("code")) {
-        reply = "⚡ License keys for IDM and Steam gift cards are auto-delivered immediately on your confirmation screen and emailed to you. You can also view them anytime in our Order Lookup Vault!";
-      } else if (lower.includes("adsense") || lower.includes("website") || lower.includes("domain")) {
-        reply = "🌐 For Google AdSense approved websites, our transfer manager delivers the dedicated Gmail logins and domain authorization (EPP) code directly to your Customer Order Vault within 2-6 hours.";
-      } else if (lower.includes("human") || lower.includes("agent") || lower.includes("live")) {
-        reply = "👨‍💻 Connecting you directly to an available senior technician. Please hold on for just a moment while they review your chat session.";
-      }
+        const lower = text.toLowerCase();
+        if (
+          lower.includes("rank math") ||
+          lower.includes("wp rocket") ||
+          lower.includes("wordpress") ||
+          lower.includes("credential")
+        ) {
+          reply =
+            "🛠️ For WordPress plugins like Rank Math Pro & WP Rocket, our technician connects your site to our official agency dashboard within 30-45 minutes after you provide the temporary credentials during checkout. You can revoke the temporary user right after activation!";
+        } else if (
+          lower.includes("idm") ||
+          lower.includes("steam") ||
+          lower.includes("key") ||
+          lower.includes("serial") ||
+          lower.includes("code")
+        ) {
+          reply =
+            "⚡ License keys for IDM and Steam gift cards are auto-delivered immediately on your confirmation screen and emailed to you. You can also view them anytime in our Order Lookup Vault!";
+        } else if (
+          lower.includes("adsense") ||
+          lower.includes("website") ||
+          lower.includes("domain")
+        ) {
+          reply =
+            "🌐 For Google AdSense approved websites, our transfer manager delivers the dedicated Gmail logins and domain authorization (EPP) code directly to your Customer Order Vault within 2-6 hours.";
+        } else if (
+          lower.includes("human") ||
+          lower.includes("agent") ||
+          lower.includes("live")
+        ) {
+          reply =
+            "👨‍💻 Connecting you directly to an available senior technician. Please hold on for just a moment while they review your chat session.";
+        }
 
-      const supportMsg: ChatMessage = {
-        id: `msg-${Date.now() + 1}`,
-        sender: "support",
-        senderName: "Sarah (Senior Tech Support)",
-        text: reply,
-        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-      };
+        const supportMsg: ChatMessage = {
+          id: `msg-${Date.now() + 1}`,
+          sender: "support",
+          senderName: "Sarah (Senior Tech Support)",
+          text: reply,
+          timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        };
 
-      setMessages((prev) => [...prev, supportMsg]);
-      setIsAgentTyping(false);
+        setMessages((prev) => [...prev, supportMsg]);
+        setIsAgentTyping(false);
 
-      // Also record bot response on server
-      try {
-        fetch("/api/chat", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            visitorName: "Sarah (Senior Tech Support)",
-            visitorEmail: userEmail,
-            message: reply,
-            sender: "agent",
-            topic: selectedTopic,
-          }),
-        });
-      } catch {
-        // ignore
-      }
-    }, 1200);
+        // Also record bot response on server
+        try {
+          fetch("/api/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              visitorName: "Sarah (Senior Tech Support)",
+              visitorEmail: userEmail,
+              message: reply,
+              sender: "agent",
+              topic: selectedTopic,
+            }),
+          });
+        } catch {
+          // ignore
+        }
+      }, 1200);
+    }
   };
 
   const handleQuickQuestion = (question: string) => {
