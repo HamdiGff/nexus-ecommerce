@@ -107,55 +107,11 @@ export default function OrderLookupPage() {
             </button>
           </form>
 
-          {/* Sample quick demo buttons */}
-          <div className="pt-4 border-t border-white/[0.08] space-y-2">
-            <span className="text-[10px] font-semibold text-neutral-400 block uppercase tracking-wider">
-              Quick Test Orders (Click to Try):
+          {/* Note */}
+          <div className="pt-4 border-t border-white/[0.08] text-center">
+            <span className="text-[11px] text-neutral-500">
+              Your order number is delivered to your billing email immediately after checkout.
             </span>
-            <div className="flex flex-wrap gap-2">
-              <button
-                type="button"
-                onClick={() => setOrderNumber("NEX-772910")}
-                className="px-2.5 py-1 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 text-xs font-mono text-blue-300 border border-blue-500/30 font-semibold"
-              >
-                NEX-772910 (Alex Mercer — WP Rocket)
-              </button>
-              <button
-                type="button"
-                onClick={() => setOrderNumber("NEX-883102")}
-                className="px-2.5 py-1 rounded-lg bg-white/[0.05] hover:bg-white/[0.1] text-xs font-mono text-neutral-300 border border-white/[0.08]"
-              >
-                NEX-883102 (Astra Theme Setup)
-              </button>
-              <button
-                type="button"
-                onClick={() => setOrderNumber("NEX-554219")}
-                className="px-2.5 py-1 rounded-lg bg-purple-500/10 hover:bg-purple-500/20 text-xs font-mono text-purple-300 border border-purple-500/30"
-              >
-                NEX-554219 (ChatGPT Plus AI Account)
-              </button>
-              <button
-                type="button"
-                onClick={() => setOrderNumber("NEX-442198")}
-                className="px-2.5 py-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-xs font-mono text-emerald-300 border border-emerald-500/30"
-              >
-                NEX-442198 (Steam $50 Gift Code)
-              </button>
-              <button
-                type="button"
-                onClick={() => setOrderNumber("NEX-331905")}
-                className="px-2.5 py-1 rounded-lg bg-white/[0.05] hover:bg-white/[0.1] text-xs font-mono text-neutral-300 border border-white/[0.08]"
-              >
-                NEX-331905 (Windows 11 Pro Key)
-              </button>
-              <button
-                type="button"
-                onClick={() => setOrderNumber("NEX-948208")}
-                className="px-2.5 py-1 rounded-lg bg-white/[0.05] hover:bg-white/[0.1] text-xs font-mono text-neutral-300 border border-white/[0.08]"
-              >
-                NEX-948208 (AdSense Site Transfer)
-              </button>
-            </div>
           </div>
         </div>
 

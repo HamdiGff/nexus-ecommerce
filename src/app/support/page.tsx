@@ -16,12 +16,12 @@ import {
 
 export default function SupportPage() {
   const [form, setForm] = useState({
-    name: "Alex Taylor",
-    email: "alex.taylor@example.com",
-    orderNumber: "NEX-948210",
+    name: "",
+    email: "",
+    orderNumber: "",
     priority: "MEDIUM",
-    subject: "Inquiry regarding WordPress license activation",
-    message: "Hi, I just placed an order and wanted to confirm if the temporary credentials were received properly.",
+    subject: "",
+    message: "",
   });
 
   const [submittedTicket, setSubmittedTicket] = useState<string | null>(null);
