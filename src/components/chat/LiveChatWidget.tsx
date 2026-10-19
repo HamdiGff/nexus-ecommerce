@@ -60,9 +60,14 @@ export default function LiveChatWidget() {
   const [emailError, setEmailError] = useState("");
   const [hasSentInitialReply, setHasSentInitialReply] = useState(false);
 
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+  const prevChatMsgCountRef = useRef(0);
+
   const scrollToBottom = () => {
     requestAnimationFrame(() => {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      if (chatContainerRef.current) {
+        chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+      }
     });
   };
 
@@ -176,9 +181,12 @@ export default function LiveChatWidget() {
   useEffect(() => {
     if (isOpen && isRegistered) {
       setUnreadCount(0);
-      scrollToBottom();
+      if (messages.length > prevChatMsgCountRef.current || isAgentTyping) {
+        prevChatMsgCountRef.current = messages.length;
+        scrollToBottom();
+      }
     }
-  }, [isOpen, isRegistered, messages, isAgentTyping]);
+  }, [isOpen, isRegistered, messages.length, isAgentTyping]);
 
   const handleStartChat = (e: React.FormEvent) => {
     e.preventDefault();
@@ -505,7 +513,7 @@ export default function LiveChatWidget() {
               </div>
 
               {/* Messages Stream */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-3.5 text-xs">
+              <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-4 space-y-3.5 text-xs">
                 {messages.map((m) => {
                   const isUser = m.sender === "customer";
                   return (
@@ -540,8 +548,6 @@ export default function LiveChatWidget() {
                     </div>
                   </div>
                 )}
-
-                <div ref={messagesEndRef} />
               </div>
 
               {/* Quick Reply Pills */}

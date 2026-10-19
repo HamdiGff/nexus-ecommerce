@@ -1,4 +1,7 @@
 import { NextResponse } from "next/server";
+import fs from "fs";
+import path from "path";
+import os from "os";
 
 declare global {
   // eslint-disable-next-line no-var
@@ -15,13 +18,36 @@ const NO_CACHE_HEADERS = {
   "Expires": "0",
 };
 
+function getTickets(): any[] {
+  let inMemory = global.__GLOBAL_SUPPORT_TICKETS__ || [];
+  try {
+    const file = path.join(os.tmpdir(), "nexus_tickets.json");
+    if (fs.existsSync(file)) {
+      const parsed = JSON.parse(fs.readFileSync(file, "utf8"));
+      if (Array.isArray(parsed) && parsed.length >= inMemory.length) {
+        global.__GLOBAL_SUPPORT_TICKETS__ = parsed;
+        return parsed;
+      }
+    }
+  } catch { /* fallback to memory */ }
+  return inMemory;
+}
+
+function saveTickets(tickets: any[]) {
+  global.__GLOBAL_SUPPORT_TICKETS__ = tickets;
+  try {
+    const file = path.join(os.tmpdir(), "nexus_tickets.json");
+    fs.writeFileSync(file, JSON.stringify(tickets, null, 2), "utf8");
+  } catch { /* ignore */ }
+}
+
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const email = searchParams.get("email")?.toLowerCase()?.trim();
   const ticketId = searchParams.get("ticketId");
   const ticketNumber = searchParams.get("ticketNumber")?.toUpperCase()?.trim();
 
-  const tickets = global.__GLOBAL_SUPPORT_TICKETS__ || [];
+  const tickets = getTickets();
 
   // Lookup by single ticket ID or number
   if (ticketId) {
@@ -62,15 +88,16 @@ export async function POST(req: Request) {
       status,
     } = body;
 
-    const tickets = global.__GLOBAL_SUPPORT_TICKETS__ || [];
+    const tickets = getTickets();
 
     // ── Action: DELETE ticket (admin-only) ─────────────────────────────
     if (action === "delete" && ticketId) {
       const before = tickets.length;
-      global.__GLOBAL_SUPPORT_TICKETS__ = tickets.filter(
+      const updated = tickets.filter(
         (t) => t.id !== ticketId && t.ticketNumber !== ticketId
       );
-      const deleted = before !== global.__GLOBAL_SUPPORT_TICKETS__!.length;
+      const deleted = before !== updated.length;
+      saveTickets(updated);
       return NextResponse.json({ success: true, deleted }, { headers: NO_CACHE_HEADERS });
     }
 
@@ -105,7 +132,7 @@ export async function POST(req: Request) {
       }
       ticket.updatedAt = new Date().toISOString();
 
-      global.__GLOBAL_SUPPORT_TICKETS__ = tickets;
+      saveTickets(tickets);
       return NextResponse.json({ success: true, ticket, message: newMsg }, { headers: NO_CACHE_HEADERS });
     }
 
@@ -119,7 +146,7 @@ export async function POST(req: Request) {
           ticket.resolvedAt = new Date().toISOString();
         }
       }
-      global.__GLOBAL_SUPPORT_TICKETS__ = tickets;
+      saveTickets(tickets);
       return NextResponse.json({ success: true, ticket }, { headers: NO_CACHE_HEADERS });
     }
 
@@ -165,7 +192,7 @@ export async function POST(req: Request) {
     };
 
     tickets.unshift(newTicket);
-    global.__GLOBAL_SUPPORT_TICKETS__ = tickets;
+    saveTickets(tickets);
 
     return NextResponse.json({ success: true, ticket: newTicket }, { headers: NO_CACHE_HEADERS });
   } catch (err: any) {

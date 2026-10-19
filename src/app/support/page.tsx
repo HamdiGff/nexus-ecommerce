@@ -47,7 +47,9 @@ export default function SupportPage() {
   const [trackError, setTrackError] = useState<string | null>(null);
   const [isSearching, setIsSearching] = useState(false);
 
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const prevMsgCountRef = useRef(0);
+  const prevTicketIdRef = useRef<string | null>(null);
 
   // Auto-populate form when user logs in / page loads
   useEffect(() => {
@@ -60,34 +62,52 @@ export default function SupportPage() {
     }
   }, [user]);
 
-  // Persist submitted ticket numbers to localStorage keyed by email
+  // Persist submitted ticket numbers and records to localStorage
   const persistTicketForUser = (ticket: SupportTicketRecord) => {
     if (typeof window === "undefined") return;
     try {
       const stored = JSON.parse(localStorage.getItem("nexus-my-tickets") || "{}");
       const key = ticket.customerEmail.toLowerCase();
       if (!stored[key]) stored[key] = [];
-      // Store ticket number if not already there
       if (!stored[key].includes(ticket.ticketNumber)) {
         stored[key].unshift(ticket.ticketNumber);
-        // Keep max 50 entries
         if (stored[key].length > 50) stored[key] = stored[key].slice(0, 50);
       }
       localStorage.setItem("nexus-my-tickets", JSON.stringify(stored));
+
+      const allSaved: SupportTicketRecord[] = JSON.parse(localStorage.getItem("nexus-saved-tickets") || "[]");
+      const existsIndex = allSaved.findIndex((t) => t.id === ticket.id || t.ticketNumber === ticket.ticketNumber);
+      if (existsIndex >= 0) {
+        allSaved[existsIndex] = ticket;
+      } else {
+        allSaved.unshift(ticket);
+      }
+      localStorage.setItem("nexus-saved-tickets", JSON.stringify(allSaved.slice(0, 50)));
     } catch { /* ignore */ }
   };
 
-
-  // Auto-scroll when messages update in active ticket
+  // Auto-scroll inside container ONLY when a new message arrives or ticket changes
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [activeTicket?.messages]);
+    if (!activeTicket) return;
+    const msgCount = activeTicket.messages?.length || 0;
+    const isNewTicket = activeTicket.id !== prevTicketIdRef.current;
+    const hasNewMsg = msgCount > prevMsgCountRef.current;
+
+    if (isNewTicket || hasNewMsg) {
+      prevMsgCountRef.current = msgCount;
+      prevTicketIdRef.current = activeTicket.id;
+      requestAnimationFrame(() => {
+        if (messagesContainerRef.current) {
+          messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+        }
+      });
+    }
+  }, [activeTicket?.id, activeTicket?.messages?.length]);
 
   // Real-time polling for active ticket so technician replies appear automatically
   useEffect(() => {
     if (!activeTicket?.id && !activeTicket?.ticketNumber) return;
 
-    const ticketQuery = activeTicket.id || activeTicket.ticketNumber;
     const pollActiveTicket = async () => {
       try {
         const queryParam = activeTicket.id 
@@ -96,7 +116,18 @@ export default function SupportPage() {
         const res = await fetch(`/api/tickets?${queryParam}`, { cache: "no-store" });
         const data = await res.json();
         if (data.success && data.ticket) {
-          setActiveTicket(data.ticket);
+          const newTicket: SupportTicketRecord = data.ticket;
+          setActiveTicket((prev) => {
+            if (!prev) return newTicket;
+            const msgsChanged = (newTicket.messages?.length || 0) !== (prev.messages?.length || 0);
+            const statusChanged = newTicket.status !== prev.status;
+            const updatedChanged = newTicket.updatedAt !== prev.updatedAt;
+            if (msgsChanged || statusChanged || updatedChanged) {
+              persistTicketForUser(newTicket);
+              return newTicket;
+            }
+            return prev;
+          });
         }
       } catch {
         // ignore
@@ -346,7 +377,7 @@ export default function SupportPage() {
             </div>
 
             {/* Conversation Stream */}
-            <div className="p-6 sm:p-8 space-y-4 max-h-[420px] overflow-y-auto bg-[#0c0d14]">
+            <div ref={messagesContainerRef} className="p-6 sm:p-8 space-y-4 max-h-[420px] overflow-y-auto bg-[#0c0d14]">
               {activeTicket.messages?.map((m) => (
                 <div
                   key={m.id}
@@ -370,7 +401,6 @@ export default function SupportPage() {
                   <p className="leading-relaxed whitespace-pre-wrap">{m.message}</p>
                 </div>
               ))}
-              <div ref={messagesEndRef} />
             </div>
 
             {/* Reply Input Box */}

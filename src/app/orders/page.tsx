@@ -68,9 +68,15 @@ export default function OrderLookupPage() {
   const [ticketSearchInput, setTicketSearchInput] = useState("");
   const [ticketSearchError, setTicketSearchError] = useState<string | null>(null);
 
-  // ── Per-ticket scroll refs ────────────────────────────────────────────
-  // Map from ticketId → the bottom sentinel div element
-  const threadEndRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  // ── Per-ticket message container refs & tracking ──────────────────────────
+  const messageContainersRef = useRef<Record<string, HTMLDivElement | null>>({});
+  const lastMsgCountRef = useRef<Record<string, number>>({});
+  const currentTicketsRef = useRef<SupportTicketRecord[]>([]);
+
+  // Keep currentTicketsRef in sync with state
+  useEffect(() => {
+    currentTicketsRef.current = tickets;
+  }, [tickets]);
 
   // The email used to query – prefer logged-in, fallback to manually typed
   const effectiveEmail = (user?.email || emailQuery).toLowerCase().trim();
@@ -121,12 +127,34 @@ export default function OrderLookupPage() {
     setIsLoadingOrders(false);
   }, [effectiveEmail, user]);
 
-  // ── Fetch tickets by email (and localStorage ticket numbers as fallback) ──
-  // NOTE: No expandedTicketId in deps — auto-expand is handled by a separate effect.
+  // ── Fetch tickets: Non-destructive merge with local cache & server ────────
   const fetchTickets = useCallback(async () => {
-    let fetched: SupportTicketRecord[] = [];
+    // 1. Read persistent local cache
+    let localCache: SupportTicketRecord[] = [];
+    if (typeof window !== "undefined") {
+      try {
+        const stored = localStorage.getItem("nexus-saved-tickets");
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed)) localCache = parsed;
+        }
+      } catch { /* ignore */ }
+    }
 
-    // 1. By email if available
+    // Build map from localCache and currently mounted tickets
+    const ticketMap = new Map<string, SupportTicketRecord>();
+    localCache.forEach((t) => {
+      if (t.id) ticketMap.set(t.id, t);
+      if (t.ticketNumber) ticketMap.set(t.ticketNumber, t);
+    });
+    currentTicketsRef.current.forEach((t) => {
+      if (t.id) ticketMap.set(t.id, t);
+      if (t.ticketNumber) ticketMap.set(t.ticketNumber, t);
+    });
+
+    let serverTickets: SupportTicketRecord[] = [];
+
+    // 2. Fetch by email from server if available
     if (effectiveEmail) {
       try {
         const res = await fetch(
@@ -135,59 +163,116 @@ export default function OrderLookupPage() {
         );
         const data = await res.json();
         if (data.success && Array.isArray(data.tickets)) {
-          fetched = data.tickets;
+          serverTickets = data.tickets;
         }
       } catch { /* ignore */ }
     }
 
-    // 2. Supplement from localStorage ticket numbers (for users who submitted via /support)
+    // 3. Supplement from localStorage ticket numbers
     if (typeof window !== "undefined") {
       try {
         const stored = JSON.parse(localStorage.getItem("nexus-my-tickets") || "{}");
-        // Collect all ticket numbers that belong to this email (or all if no email)
         const allNums: string[] = [];
         if (effectiveEmail && stored[effectiveEmail]) {
           allNums.push(...stored[effectiveEmail]);
         } else if (!effectiveEmail) {
-          Object.values(stored).forEach((arr: any) => allNums.push(...arr));
+          Object.values(stored).forEach((arr: any) => {
+            if (Array.isArray(arr)) allNums.push(...arr);
+          });
         }
 
-        // Fetch any ticket numbers not already in fetched list — parallel
-        const existingNums = new Set(fetched.map((t) => t.ticketNumber));
-        const missing = allNums.filter((n) => !existingNums.has(n));
+        const existingNums = new Set(serverTickets.map((t) => t.ticketNumber));
+        const missing = allNums.filter((n) => !existingNums.has(n) && !ticketMap.has(n));
 
-        const results = await Promise.all(
-          missing.slice(0, 20).map(async (num) => {
-            try {
-              const r = await fetch(
-                `/api/tickets?ticketNumber=${encodeURIComponent(num)}`,
-                { cache: "no-store" }
-              );
-              const d = await r.json();
-              return (d.success && d.ticket) ? d.ticket : null;
-            } catch { return null; }
-          })
-        );
-        results
-          .filter(Boolean)
-          .forEach((ticket) => fetched.unshift(ticket));
+        if (missing.length > 0) {
+          const results = await Promise.all(
+            missing.slice(0, 10).map(async (num) => {
+              try {
+                const r = await fetch(
+                  `/api/tickets?ticketNumber=${encodeURIComponent(num)}`,
+                  { cache: "no-store" }
+                );
+                const d = await r.json();
+                return (d.success && d.ticket) ? d.ticket : null;
+              } catch { return null; }
+            })
+          );
+          results.filter(Boolean).forEach((ticket) => {
+            serverTickets.unshift(ticket);
+          });
+        }
       } catch { /* ignore */ }
     }
 
-    // Always update tickets (preserves empty state correctly)
-    setTickets(fetched);
+    // Merge server tickets (server data has latest admin replies and statuses)
+    serverTickets.forEach((st) => {
+      ticketMap.set(st.id, st);
+      if (st.ticketNumber) ticketMap.set(st.ticketNumber, st);
+    });
+
+    // Unique tickets array filtered by effectiveEmail if provided
+    const uniqueTickets: SupportTicketRecord[] = [];
+    const seenIds = new Set<string>();
+    Array.from(ticketMap.values()).forEach((t) => {
+      if (!seenIds.has(t.id)) {
+        seenIds.add(t.id);
+        if (effectiveEmail) {
+          if (!t.customerEmail || t.customerEmail.toLowerCase().trim() === effectiveEmail) {
+            uniqueTickets.push(t);
+          }
+        } else {
+          uniqueTickets.push(t);
+        }
+      }
+    });
+
+    // Sort by createdAt / updatedAt descending
+    uniqueTickets.sort((a, b) => {
+      const timeA = new Date(a.updatedAt || a.createdAt).getTime() || 0;
+      const timeB = new Date(b.updatedAt || b.createdAt).getTime() || 0;
+      return timeB - timeA;
+    });
+
+    // Cache merged tickets back to localStorage
+    if (typeof window !== "undefined" && uniqueTickets.length > 0) {
+      try {
+        localStorage.setItem("nexus-saved-tickets", JSON.stringify(uniqueTickets.slice(0, 50)));
+      } catch { /* ignore */ }
+    }
+
+    // Only update React state if tickets have genuinely changed (prevents re-render flicker)
+    const prev = currentTicketsRef.current;
+    let hasChanged = prev.length !== uniqueTickets.length;
+    if (!hasChanged) {
+      for (let i = 0; i < prev.length; i++) {
+        const p = prev[i];
+        const u = uniqueTickets[i];
+        if (
+          p.id !== u.id ||
+          p.status !== u.status ||
+          (p.messages?.length || 0) !== (u.messages?.length || 0) ||
+          p.updatedAt !== u.updatedAt
+        ) {
+          hasChanged = true;
+          break;
+        }
+      }
+    }
+
+    if (hasChanged) {
+      setTickets(uniqueTickets);
+    }
     setIsLoadingTickets(false);
   }, [effectiveEmail]);
 
-  // ── Auto-expand first ticket when list first loads (separate effect) ────
-  // Only fires when ticket count changes from 0→N, avoiding stale closure
+  // ── Auto-expand first ticket when list first loads ────────────────────────
   const prevTicketCount = useRef(0);
   useEffect(() => {
     if (tickets.length > 0 && prevTicketCount.current === 0) {
       setExpandedTicketId(tickets[0].id);
     }
     prevTicketCount.current = tickets.length;
-  }, [tickets.length]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [tickets.length]);
 
   // Initial load
   useEffect(() => {
@@ -195,24 +280,29 @@ export default function OrderLookupPage() {
     fetchTickets();
   }, [fetchOrders, fetchTickets]);
 
-  // Real-time polling for tickets every 2.5 s so admin replies appear without reload
+  // Real-time polling for tickets every 2.5 s
   useEffect(() => {
-    // Poll if user is logged in, email query is set, or tickets already exist in state
     const iv = setInterval(() => {
       fetchTickets();
     }, 2500);
     return () => clearInterval(iv);
   }, [fetchTickets]);
 
-  // ── Auto-scroll: fires when messages change or expanded ticket changes ──
-  // Uses per-ticket ref map so the correct sentinel is always targeted.
+  // ── Auto-scroll: strictly inside container, never scrolling the browser window ──
   useEffect(() => {
     if (!expandedTicketId) return;
-    const el = threadEndRefs.current[expandedTicketId];
-    if (el) {
-      // Use requestAnimationFrame to wait for the DOM paint before scrolling
+    const currentTicket = tickets.find((t) => t.id === expandedTicketId);
+    const msgCount = currentTicket?.messages?.length || 0;
+    const lastCount = lastMsgCountRef.current[expandedTicketId];
+
+    // Only scroll if expanding for the first time OR when a new message arrives
+    if (lastCount === undefined || msgCount > lastCount) {
+      lastMsgCountRef.current[expandedTicketId] = msgCount;
       requestAnimationFrame(() => {
-        el.scrollIntoView({ behavior: "smooth", block: "end" });
+        const container = messageContainersRef.current[expandedTicketId];
+        if (container) {
+          container.scrollTop = container.scrollHeight;
+        }
       });
     }
   }, [expandedTicketId, tickets]);
@@ -239,6 +329,13 @@ export default function OrderLookupPage() {
         if (data.success && data.tickets?.length > 0) {
           setTickets(data.tickets);
           setExpandedTicketId(data.tickets[0].id);
+          try {
+            const cached: SupportTicketRecord[] = JSON.parse(localStorage.getItem("nexus-saved-tickets") || "[]");
+            const map = new Map<string, SupportTicketRecord>();
+            cached.forEach((t) => map.set(t.id, t));
+            data.tickets.forEach((t: SupportTicketRecord) => map.set(t.id, t));
+            localStorage.setItem("nexus-saved-tickets", JSON.stringify(Array.from(map.values()).slice(0, 50)));
+          } catch { /* ignore */ }
         } else {
           setTicketSearchError(`No tickets found for email: ${q}`);
         }
@@ -249,6 +346,13 @@ export default function OrderLookupPage() {
         if (data.success && data.ticket) {
           setTickets([data.ticket]);
           setExpandedTicketId(data.ticket.id);
+          try {
+            const cached: SupportTicketRecord[] = JSON.parse(localStorage.getItem("nexus-saved-tickets") || "[]");
+            const idx = cached.findIndex((t) => t.id === data.ticket.id);
+            if (idx >= 0) cached[idx] = data.ticket;
+            else cached.unshift(data.ticket);
+            localStorage.setItem("nexus-saved-tickets", JSON.stringify(cached.slice(0, 50)));
+          } catch { /* ignore */ }
           if (data.ticket.customerEmail && !effectiveEmail) {
             setEmailQuery(data.ticket.customerEmail);
           }
@@ -258,6 +362,13 @@ export default function OrderLookupPage() {
           if (dataId.success && dataId.ticket) {
             setTickets([dataId.ticket]);
             setExpandedTicketId(dataId.ticket.id);
+            try {
+              const cached: SupportTicketRecord[] = JSON.parse(localStorage.getItem("nexus-saved-tickets") || "[]");
+              const idx = cached.findIndex((t) => t.id === dataId.ticket.id);
+              if (idx >= 0) cached[idx] = dataId.ticket;
+              else cached.unshift(dataId.ticket);
+              localStorage.setItem("nexus-saved-tickets", JSON.stringify(cached.slice(0, 50)));
+            } catch { /* ignore */ }
             if (dataId.ticket.customerEmail && !effectiveEmail) {
               setEmailQuery(dataId.ticket.customerEmail);
             }
@@ -291,9 +402,22 @@ export default function OrderLookupPage() {
       if (data.success && data.ticket) {
         setTickets((prev) => prev.map((t) => (t.id === ticketId ? data.ticket : t)));
         setCustomerReplies((p) => ({ ...p, [ticketId]: "" }));
-        // Scroll to bottom after sending
+
+        // Update local storage cache
+        try {
+          const cached: SupportTicketRecord[] = JSON.parse(localStorage.getItem("nexus-saved-tickets") || "[]");
+          const idx = cached.findIndex((t) => t.id === ticketId);
+          if (idx >= 0) cached[idx] = data.ticket;
+          else cached.unshift(data.ticket);
+          localStorage.setItem("nexus-saved-tickets", JSON.stringify(cached.slice(0, 50)));
+        } catch { /* ignore */ }
+
+        // Scroll strictly inside message container after sending
         requestAnimationFrame(() => {
-          threadEndRefs.current[ticketId]?.scrollIntoView({ behavior: "smooth", block: "end" });
+          const container = messageContainersRef.current[ticketId];
+          if (container) {
+            container.scrollTop = container.scrollHeight;
+          }
         });
       }
     } catch { /* ignore */ }
@@ -693,7 +817,10 @@ export default function OrderLookupPage() {
                       {isExpanded && (
                         <div className="border-t border-white/[0.08] bg-[#0c0d14]">
                           {/* Messages scroll container */}
-                          <div className="p-6 space-y-4 max-h-[380px] overflow-y-auto">
+                          <div
+                            ref={(el) => { messageContainersRef.current[t.id] = el; }}
+                            className="p-6 space-y-4 max-h-[380px] overflow-y-auto"
+                          >
                             {t.messages?.map((m) => (
                               <div
                                 key={m.id}
@@ -713,10 +840,6 @@ export default function OrderLookupPage() {
                                 <p className="leading-relaxed whitespace-pre-wrap">{m.message}</p>
                               </div>
                             ))}
-                            {/* Per-ticket sentinel div for auto-scroll */}
-                            <div
-                              ref={(el) => { threadEndRefs.current[t.id] = el; }}
-                            />
                           </div>
 
                           {/* Reply input */}
