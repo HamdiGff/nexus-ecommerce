@@ -33,8 +33,47 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { name, email, orderNumber, priority, subject, message } = body;
+    const { action, ticketId, name, email, orderNumber, priority, subject, message, sender, status } = body;
 
+    const tickets = global.__GLOBAL_SUPPORT_TICKETS__ || [];
+
+    // Action 1: Add a message reply to an existing ticket (from Admin or Customer)
+    if (action === "reply" && ticketId) {
+      const ticket = tickets.find((t) => t.id === ticketId || t.ticketNumber === ticketId);
+      if (!ticket) {
+        return NextResponse.json({ success: false, error: "Ticket not found" }, { status: 404 });
+      }
+
+      const newMsg = {
+        id: `msg-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+        sender: sender || "ADMIN",
+        senderName: sender === "CUSTOMER" ? (name || "Customer") : "NEXUS Support Specialist",
+        message: message,
+        time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      };
+
+      ticket.messages.push(newMsg);
+      if (status) {
+        ticket.status = status;
+      } else if (sender === "ADMIN") {
+        ticket.status = "IN_PROGRESS";
+      }
+
+      global.__GLOBAL_SUPPORT_TICKETS__ = tickets;
+      return NextResponse.json({ success: true, ticket, message: newMsg });
+    }
+
+    // Action 2: Update status directly (e.g. RESOLVED / CLOSED)
+    if (action === "update_status" && ticketId && status) {
+      const ticket = tickets.find((t) => t.id === ticketId || t.ticketNumber === ticketId);
+      if (ticket) {
+        ticket.status = status;
+      }
+      global.__GLOBAL_SUPPORT_TICKETS__ = tickets;
+      return NextResponse.json({ success: true, ticket });
+    }
+
+    // Action 3: Create a brand new ticket
     if (!email || !subject || !message) {
       return NextResponse.json(
         { success: false, error: "Missing required fields" },
@@ -42,7 +81,6 @@ export async function POST(req: Request) {
       );
     }
 
-    const tickets = global.__GLOBAL_SUPPORT_TICKETS__ || [];
     const ticketNumber = `TICK-${Math.floor(1000 + Math.random() * 9000)}`;
 
     const newTicket = {

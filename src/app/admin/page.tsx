@@ -108,7 +108,7 @@ interface SupportTicketRecord {
   orderNumber?: string;
   subject: string;
   priority: "LOW" | "MEDIUM" | "HIGH" | "URGENT";
-  status: "OPEN" | "IN_PROGRESS" | "RESOLVED";
+  status: "OPEN" | "IN_PROGRESS" | "RESOLVED" | "CLOSED";
   createdAt: string;
   messages: Array<{
     id: string;
@@ -327,7 +327,24 @@ export default function AdminDashboardPage() {
         const tickRes = await fetch("/api/tickets");
         const tickData = await tickRes.json();
         if (tickData.success && Array.isArray(tickData.tickets) && tickData.tickets.length > 0) {
-          setTickets(tickData.tickets);
+          setTickets((prevTicks) => {
+            // Check if there are new customer messages to trigger Windows/browser notification
+            tickData.tickets.forEach((newTick: any) => {
+              const oldTick = prevTicks.find((t) => t.id === newTick.id);
+              if (oldTick && newTick.messages?.length > oldTick.messages?.length) {
+                const latestMsg = newTick.messages[newTick.messages.length - 1];
+                if (latestMsg?.sender === "CUSTOMER") {
+                  if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "granted") {
+                    new Notification(`🎫 Ticket Reply: ${newTick.ticketNumber}`, {
+                      body: `${newTick.customerName}: ${latestMsg.message}`,
+                      icon: "/favicon.ico",
+                    });
+                  }
+                }
+              }
+            });
+            return tickData.tickets;
+          });
           setSelectedTicket((prev) => {
             if (!prev) return tickData.tickets[0];
             const updated = tickData.tickets.find((t: any) => t.id === prev.id);
@@ -606,16 +623,17 @@ export default function AdminDashboardPage() {
     setGiftCodeTargetOrder(null);
   };
 
-  const handleSendTicketReply = (e: React.FormEvent) => {
+  const handleSendTicketReply = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedTicket || !replyMessage.trim()) return;
 
+    const replyText = replyMessage.trim();
     const newReply = {
       id: `m-${Date.now()}`,
       sender: "ADMIN" as const,
       senderName: "NEXUS Support Specialist",
-      message: replyMessage.trim(),
-      time: "Just now",
+      message: replyText,
+      time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
     };
 
     const updated = {
@@ -627,6 +645,51 @@ export default function AdminDashboardPage() {
     setSelectedTicket(updated);
     setTickets((prev) => prev.map((t) => (t.id === updated.id ? updated : t)));
     setReplyMessage("");
+
+    // Broadcast reply to server API so customer sees it in real-time
+    try {
+      await fetch("/api/tickets", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "reply",
+          ticketId: selectedTicket.id,
+          message: replyText,
+          sender: "ADMIN",
+        }),
+      });
+    } catch {
+      // ignore
+    }
+  };
+
+  const handleUpdateTicketStatus = async (
+    ticketId: string,
+    newStatus: "OPEN" | "IN_PROGRESS" | "RESOLVED" | "CLOSED"
+  ) => {
+    try {
+      const res = await fetch("/api/tickets", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "update_status",
+          ticketId,
+          status: newStatus,
+        }),
+      });
+      const data = await res.json();
+      if (data.success && data.ticket) {
+        setSelectedTicket(data.ticket);
+        setTickets((prev) => prev.map((t) => (t.id === ticketId ? data.ticket : t)));
+      }
+    } catch {
+      setTickets((prev) =>
+        prev.map((t) => (t.id === ticketId ? { ...t, status: newStatus as any } : t))
+      );
+      if (selectedTicket?.id === ticketId) {
+        setSelectedTicket((prev) => (prev ? { ...prev, status: newStatus as any } : null));
+      }
+    }
   };
 
   const handleSendLiveReply = async (e: React.FormEvent) => {
@@ -1745,13 +1808,21 @@ export default function AdminDashboardPage() {
               {selectedTicket ? (
                 <>
                   {/* Ticket Header */}
-                  <div className="p-6 border-b border-neutral-200 flex items-start justify-between">
+                  <div className="p-6 border-b border-neutral-200 flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                     <div>
                       <div className="flex items-center gap-2">
                         <span className="font-mono font-bold text-xs text-neutral-600">
                           {selectedTicket.ticketNumber}
                         </span>
-                        <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                        <span
+                          className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${
+                            selectedTicket.status === "RESOLVED"
+                              ? "bg-emerald-100 text-emerald-800"
+                              : selectedTicket.status === "CLOSED"
+                              ? "bg-neutral-100 text-neutral-600"
+                              : "bg-blue-100 text-blue-800"
+                          }`}
+                        >
                           {selectedTicket.status}
                         </span>
                       </div>
@@ -1762,6 +1833,44 @@ export default function AdminDashboardPage() {
                         Customer: {selectedTicket.customerName} ({selectedTicket.customerEmail})
                         {selectedTicket.orderNumber && ` • Order: ${selectedTicket.orderNumber}`}
                       </p>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0">
+                      {selectedTicket.status !== "RESOLVED" ? (
+                        <button
+                          type="button"
+                          onClick={() => handleUpdateTicketStatus(selectedTicket.id, "RESOLVED")}
+                          className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
+                        >
+                          <CheckCircle2 className="w-3.5 h-3.5" /> Mark Resolved
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => handleUpdateTicketStatus(selectedTicket.id, "OPEN")}
+                          className="px-3 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
+                        >
+                          <RefreshCw className="w-3.5 h-3.5" /> Reopen Ticket
+                        </button>
+                      )}
+
+                      {selectedTicket.status !== "CLOSED" ? (
+                        <button
+                          type="button"
+                          onClick={() => handleUpdateTicketStatus(selectedTicket.id, "CLOSED")}
+                          className="px-3 py-1.5 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-700 font-bold text-xs transition-colors cursor-pointer"
+                        >
+                          Close
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => handleUpdateTicketStatus(selectedTicket.id, "OPEN")}
+                          className="px-3 py-1.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white font-bold text-xs transition-colors cursor-pointer"
+                        >
+                          Reopen
+                        </button>
+                      )}
                     </div>
                   </div>
 

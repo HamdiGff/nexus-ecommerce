@@ -177,3 +177,24 @@ export function findOrderRecord(orderIdOrNumber: string): OrderRecord | null {
 
   return found || null;
 }
+
+export interface TicketMessage {
+  id: string;
+  sender: "CUSTOMER" | "ADMIN";
+  senderName: string;
+  message: string;
+  time: string;
+}
+
+export interface SupportTicketRecord {
+  id: string;
+  ticketNumber: string;
+  customerName: string;
+  customerEmail: string;
+  orderNumber?: string;
+  subject: string;
+  priority: "LOW" | "MEDIUM" | "HIGH" | "URGENT";
+  status: "OPEN" | "IN_PROGRESS" | "RESOLVED" | "CLOSED";
+  createdAt: string;
+  messages: TicketMessage[];
+}

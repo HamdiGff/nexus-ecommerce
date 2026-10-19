@@ -1,83 +1,126 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
+declare global {
+  // eslint-disable-next-line no-var
+  var __GLOBAL_ORDERS__: any[] | undefined;
+}
+
+if (!global.__GLOBAL_ORDERS__) {
+  global.__GLOBAL_ORDERS__ = [];
+}
+
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const email = searchParams.get("email")?.toLowerCase()?.trim();
+  const orderNumber = searchParams.get("orderNumber")?.toUpperCase()?.trim();
+
+  const orders = global.__GLOBAL_ORDERS__ || [];
+
+  const headers = {
+    "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+    "Pragma": "no-cache",
+    "Expires": "0",
+  };
+
+  if (orderNumber) {
+    const found = orders.find(
+      (o) =>
+        o.orderNumber?.toUpperCase() === orderNumber ||
+        o.orderId?.toUpperCase() === orderNumber ||
+        o.id?.toUpperCase() === orderNumber
+    );
+    return NextResponse.json({ success: true, order: found || null }, { headers });
+  }
+
+  if (email) {
+    const matching = orders.filter((o) => {
+      const ordEmail = (o.customerEmail || o.customer?.email || "").toLowerCase().trim();
+      return ordEmail === email;
+    });
+    return NextResponse.json({ success: true, orders: matching }, { headers });
+  }
+
+  return NextResponse.json({ success: true, orders }, { headers });
+}
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { items, customer, paymentMethod, total } = body;
+    const { items, customer, paymentMethod, total, orderId, orderNumber: incomingNumber, submissions, generatedLicenseKeys, timestamp } = body;
 
-    const orderNumber = `NEX-${Math.floor(100000 + Math.random() * 900000)}`;
+    const orderNumber = incomingNumber || orderId || `NEX-${Math.floor(100000 + Math.random() * 900000)}`;
 
-    // Try persisting to Prisma if PostgreSQL is connected
+    const normalizedOrder = {
+      id: orderNumber,
+      orderNumber,
+      orderId: orderNumber,
+      customerEmail: (customer?.email || "").toLowerCase().trim(),
+      customerName:
+        `${customer?.firstName || ""} ${customer?.lastName || ""}`.trim() ||
+        customer?.name ||
+        "Customer",
+      customer,
+      status: "PAID",
+      subtotal: total || 0,
+      total: total || 0,
+      totalAmount: total || 0,
+      paymentMethod: paymentMethod || "Credit Card (Stripe)",
+      items: items || [],
+      submissions: submissions || {},
+      generatedLicenseKeys: generatedLicenseKeys || {},
+      timestamp:
+        timestamp ||
+        new Date().toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      createdAt: new Date().toISOString(),
+    };
+
+    // Save to global memory store so it is accessible cross-browser / cross-session
+    if (!global.__GLOBAL_ORDERS__) {
+      global.__GLOBAL_ORDERS__ = [];
+    }
+    const existingIndex = global.__GLOBAL_ORDERS__.findIndex(
+      (o) => o.orderNumber === orderNumber || o.id === orderNumber
+    );
+    if (existingIndex !== -1) {
+      global.__GLOBAL_ORDERS__[existingIndex] = { ...global.__GLOBAL_ORDERS__[existingIndex], ...normalizedOrder };
+    } else {
+      global.__GLOBAL_ORDERS__.unshift(normalizedOrder);
+    }
+
+    // Attempt Prisma database persistence as well
     try {
-      const order = await prisma.order.create({
+      const dbOrder = await prisma.order.create({
         data: {
           orderNumber,
-          customerEmail: customer.email,
-          customerName: `${customer.firstName || ""} ${customer.lastName || ""}`.trim() || customer.name || "Customer",
+          customerEmail: customer?.email || "",
+          customerName: normalizedOrder.customerName,
           status: "PAID",
-          subtotal: total,
-          totalAmount: total,
-          paymentMethod,
-          payment: {
-            create: {
-              provider: paymentMethod.includes("Crypto")
-                ? "CRYPTO"
-                : paymentMethod.includes("PayPal")
-                ? "PAYPAL"
-                : "STRIPE",
-              status: "COMPLETED",
-              amount: total,
-              currency: "USD",
-            },
-          },
+          subtotal: total || 0,
+          totalAmount: total || 0,
+          paymentMethod: paymentMethod || "Credit Card (Stripe)",
           items: {
-            create: items.map((item: any) => ({
-              productId: item.productId,
+            create: (items || []).map((item: any) => ({
+              productId: item.productId || item.id,
               productTitle: item.title,
               deliveryType: item.deliveryType || "INSTANT_CODE",
-              unitPrice: item.price,
+              unitPrice: item.price || 0,
               quantity: item.quantity || 1,
-              total: item.price * (item.quantity || 1),
-              submissions: item.submissions
-                ? {
-                    create: Object.entries(item.submissions).map(([key, val]) => ({
-                      fieldKey: key,
-                      fieldLabel: key.replace(/_/g, " ").toUpperCase(),
-                      fieldValue: String(val),
-                    })),
-                  }
-                : undefined,
+              total: (item.price || 0) * (item.quantity || 1),
             })),
           },
         },
-        include: {
-          items: {
-            include: {
-              submissions: true,
-              deliveredKeys: true,
-              deliveredAsset: true,
-            },
-          },
-          payment: true,
-        },
       });
-
-      return NextResponse.json({ success: true, order });
-    } catch (dbError) {
-      console.warn("Database fallback mode active (using mock persistence):", dbError);
-      return NextResponse.json({
-        success: true,
-        order: {
-          orderNumber,
-          customer,
-          total,
-          paymentMethod,
-          items,
-          status: "PAID",
-          createdAt: new Date().toISOString(),
-        },
-      });
+      return NextResponse.json({ success: true, order: dbOrder || normalizedOrder });
+    } catch {
+      // Prisma offline/mock fallback
+      return NextResponse.json({ success: true, order: normalizedOrder });
     }
   } catch (error: any) {
     return NextResponse.json(

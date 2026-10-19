@@ -236,13 +236,20 @@ export default function CheckoutPage() {
         }),
       };
 
-      // Persist to local order history for verified review check & vault lookup
+      // Persist to local order history and server API for verified review check & vault lookup
       try {
         const existing = JSON.parse(localStorage.getItem("nexus-recent-orders") || "[]");
         localStorage.setItem("nexus-recent-orders", JSON.stringify([generatedOrder, ...existing]));
       } catch {
         // ignore
       }
+
+      // Sync order with backend server so customer can view it across browsers & devices
+      fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(generatedOrder),
+      }).catch(() => {});
 
       setOrderComplete(generatedOrder);
       clearCart();
