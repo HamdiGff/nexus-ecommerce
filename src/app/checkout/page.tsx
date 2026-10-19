@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   CreditCard,
@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { useCartStore, CartItem } from "@/lib/store/cartStore";
 import { useCouponStore } from "@/lib/store/couponStore";
+import { useAuthStore } from "@/lib/store/authStore";
 import { formatPrice } from "@/lib/utils";
 import { generateOrderPdf } from "@/lib/pdfGenerator";
 import { findOrderRecord } from "@/data/mockOrders";
@@ -86,12 +87,24 @@ export default function CheckoutPage() {
     }
   };
 
-  // Customer contact state
+  // Customer contact state linked to logged in user
+  const loggedInUser = useAuthStore((state) => state.user);
   const [customer, setCustomer] = useState({
-    name: "Alex Taylor",
-    email: "alex.taylor@example.com",
+    name: loggedInUser?.name || "",
+    email: loggedInUser?.email || "",
     notes: "",
   });
+
+  // Sync if user signs in while on page
+  useEffect(() => {
+    if (loggedInUser) {
+      setCustomer((prev) => ({
+        ...prev,
+        name: prev.name || loggedInUser.name,
+        email: prev.email || loggedInUser.email,
+      }));
+    }
+  }, [loggedInUser]);
 
   // Dynamic submissions per cart item (especially for SERVICE_SETUP items)
   const [itemCredentials, setItemCredentials] = useState<
