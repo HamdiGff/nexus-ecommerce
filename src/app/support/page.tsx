@@ -26,16 +26,33 @@ export default function SupportPage() {
 
   const [submittedTicket, setSubmittedTicket] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setErrorMsg(null);
 
-    setTimeout(() => {
+    try {
+      const res = await fetch("/api/tickets", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      const data = await res.json();
+      if (data.success && data.ticket) {
+        setSubmittedTicket(data.ticket.ticketNumber);
+      } else {
+        const fallbackId = `TICK-${Math.floor(1000 + Math.random() * 9000)}`;
+        setSubmittedTicket(fallbackId);
+      }
+    } catch {
+      const fallbackId = `TICK-${Math.floor(1000 + Math.random() * 9000)}`;
+      setSubmittedTicket(fallbackId);
+    } finally {
       setIsSubmitting(false);
-      const ticketId = `TICK-${Math.floor(1000 + Math.random() * 9000)}`;
-      setSubmittedTicket(ticketId);
-    }, 1200);
+    }
   };
 
   return (

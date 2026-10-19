@@ -294,8 +294,39 @@ export default function AdminDashboardPage() {
   const [products, setProducts] = useState<DigitalProduct[]>(MOCK_DIGITAL_PRODUCTS);
   const [liveChats, setLiveChats] = useState<LiveChatSession[]>(INITIAL_LIVE_CHATS);
   const [selectedChat, setSelectedChat] = useState<LiveChatSession | null>(INITIAL_LIVE_CHATS[0] || null);
+  const [selectedTicket, setSelectedTicket] = useState<SupportTicketRecord | null>(INITIAL_TICKETS[0] || null);
+  const [replyMessage, setReplyMessage] = useState("");
   const [liveChatReply, setLiveChatReply] = useState("");
   const [chatFilter, setChatFilter] = useState<"ALL" | "WITH_ORDERS" | "WAITING">("ALL");
+
+  // Sync tickets & live chats from global API routes (survives incognito/browsers)
+  useEffect(() => {
+    const fetchRealtimeSupport = async () => {
+      try {
+        // 1. Fetch tickets
+        const tickRes = await fetch("/api/tickets");
+        const tickData = await tickRes.json();
+        if (tickData.success && Array.isArray(tickData.tickets) && tickData.tickets.length > 0) {
+          setTickets(tickData.tickets);
+          setSelectedTicket((prev) => prev || tickData.tickets[0]);
+        }
+
+        // 2. Fetch live chats
+        const chatRes = await fetch("/api/chat");
+        const chatData = await chatRes.json();
+        if (chatData.success && Array.isArray(chatData.chats) && chatData.chats.length > 0) {
+          setLiveChats(chatData.chats);
+          setSelectedChat((prev) => prev || chatData.chats[0]);
+        }
+      } catch {
+        // ignore
+      }
+    };
+
+    fetchRealtimeSupport();
+    const interval = setInterval(fetchRealtimeSupport, 3000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Filter state for fulfillment
   const [fulfillmentFilter, setFulfillmentFilter] = useState<
@@ -340,10 +371,6 @@ export default function AdminDashboardPage() {
     faceValue: "$50.00 USD",
     redemptionGuide: "Open Steam Client > Games Menu > Redeem a Steam Wallet Code > Paste key and click Continue.",
   });
-
-  // Ticket reply state
-  const [selectedTicket, setSelectedTicket] = useState<SupportTicketRecord | null>(INITIAL_TICKETS[0] || null);
-  const [replyMessage, setReplyMessage] = useState("");
 
   // Product Creator Modal State
   const [showProductModal, setShowProductModal] = useState(false);

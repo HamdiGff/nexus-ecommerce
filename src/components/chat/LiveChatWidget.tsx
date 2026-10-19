@@ -128,7 +128,7 @@ export default function LiveChatWidget() {
     setMessages((prev) => [...prev, welcomeMsg]);
   };
 
-  const handleSendMessage = (textToSend?: string) => {
+  const handleSendMessage = async (textToSend?: string) => {
     const text = (textToSend || inputText).trim();
     if (!text) return;
 
@@ -142,6 +142,23 @@ export default function LiveChatWidget() {
 
     setMessages((prev) => [...prev, userMsg]);
     if (!textToSend) setInputText("");
+
+    // Broadcast to server API so admin panel receives it
+    try {
+      fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          visitorName: userName || "Customer",
+          visitorEmail: userEmail,
+          message: text,
+          sender: "visitor",
+          topic: selectedTopic,
+        }),
+      });
+    } catch {
+      // ignore
+    }
 
     // Simulate realistic live support response
     setIsAgentTyping(true);
@@ -170,6 +187,23 @@ export default function LiveChatWidget() {
 
       setMessages((prev) => [...prev, supportMsg]);
       setIsAgentTyping(false);
+
+      // Also record bot response on server
+      try {
+        fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            visitorName: "Sarah (Senior Tech Support)",
+            visitorEmail: userEmail,
+            message: reply,
+            sender: "agent",
+            topic: selectedTopic,
+          }),
+        });
+      } catch {
+        // ignore
+      }
     }, 1200);
   };
 
