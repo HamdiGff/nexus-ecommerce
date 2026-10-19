@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import {
   TrendingUp,
@@ -298,6 +298,19 @@ export default function AdminDashboardPage() {
   const [replyMessage, setReplyMessage] = useState("");
   const [liveChatReply, setLiveChatReply] = useState("");
   const [chatFilter, setChatFilter] = useState<"ALL" | "WITH_ORDERS" | "WAITING">("ALL");
+
+  const adminChatEndRef = useRef<HTMLDivElement>(null);
+  const adminTicketEndRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll admin live chat when new messages arrive
+  useEffect(() => {
+    adminChatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [selectedChat?.messages]);
+
+  // Auto-scroll admin ticket thread when replies are added
+  useEffect(() => {
+    adminTicketEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [selectedTicket?.messages]);
 
   // Sync tickets & live chats from global API routes (survives incognito/browsers)
   useEffect(() => {
@@ -1770,6 +1783,7 @@ export default function AdminDashboardPage() {
                         <p className="leading-relaxed">{m.message}</p>
                       </div>
                     ))}
+                    <div ref={adminTicketEndRef} />
                   </div>
 
                   {/* Reply Input Form */}
@@ -2137,6 +2151,7 @@ export default function AdminDashboardPage() {
                           <p className="leading-relaxed">{m.text}</p>
                         </div>
                       ))}
+                      <div ref={adminChatEndRef} />
                     </div>
 
                     {/* Quick Contextual Canned Responses */}

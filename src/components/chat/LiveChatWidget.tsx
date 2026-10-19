@@ -61,7 +61,9 @@ export default function LiveChatWidget() {
   const [hasSentInitialReply, setHasSentInitialReply] = useState(false);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    requestAnimationFrame(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    });
   };
 
   // Restore saved email and messages from localStorage on mount & sync from server
