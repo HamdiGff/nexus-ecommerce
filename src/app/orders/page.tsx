@@ -195,12 +195,14 @@ export default function OrderLookupPage() {
     fetchTickets();
   }, [fetchOrders, fetchTickets]);
 
-  // Real-time polling for tickets every 3 s so admin replies appear without reload
+  // Real-time polling for tickets every 2.5 s so admin replies appear without reload
   useEffect(() => {
-    if (!effectiveEmail) return;
-    const iv = setInterval(fetchTickets, 3000);
+    // Poll if user is logged in, email query is set, or tickets already exist in state
+    const iv = setInterval(() => {
+      fetchTickets();
+    }, 2500);
     return () => clearInterval(iv);
-  }, [effectiveEmail, fetchTickets]);
+  }, [fetchTickets]);
 
   // ── Auto-scroll: fires when messages change or expanded ticket changes ──
   // Uses per-ticket ref map so the correct sentinel is always targeted.
@@ -247,8 +249,21 @@ export default function OrderLookupPage() {
         if (data.success && data.ticket) {
           setTickets([data.ticket]);
           setExpandedTicketId(data.ticket.id);
+          if (data.ticket.customerEmail && !effectiveEmail) {
+            setEmailQuery(data.ticket.customerEmail);
+          }
         } else {
-          setTicketSearchError(`Ticket "${q}" not found. Please verify the ticket number.`);
+          const resId = await fetch(`/api/tickets?ticketId=${encodeURIComponent(q)}`, { cache: "no-store" });
+          const dataId = await resId.json();
+          if (dataId.success && dataId.ticket) {
+            setTickets([dataId.ticket]);
+            setExpandedTicketId(dataId.ticket.id);
+            if (dataId.ticket.customerEmail && !effectiveEmail) {
+              setEmailQuery(dataId.ticket.customerEmail);
+            }
+          } else {
+            setTicketSearchError(`Ticket "${q}" not found. Please verify the ticket number.`);
+          }
         }
       }
     } catch {

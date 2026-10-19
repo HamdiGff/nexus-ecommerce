@@ -648,7 +648,7 @@ export default function AdminDashboardPage() {
 
     // Broadcast reply to server API so customer sees it in real-time
     try {
-      await fetch("/api/tickets", {
+      const res = await fetch("/api/tickets", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -658,8 +658,13 @@ export default function AdminDashboardPage() {
           sender: "ADMIN",
         }),
       });
+      const data = await res.json();
+      if (data.success && data.ticket) {
+        setSelectedTicket(data.ticket);
+        setTickets((prev) => prev.map((t) => (t.id === data.ticket.id ? data.ticket : t)));
+      }
     } catch {
-      // ignore
+      // Keep optimistic update
     }
   };
 

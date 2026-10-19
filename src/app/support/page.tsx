@@ -225,16 +225,17 @@ export default function SupportPage() {
           setTrackError(`No tickets found for email: ${q}`);
         }
       } else {
-        const res = await fetch("/api/tickets", { cache: "no-store" });
+        const num = q.toUpperCase().startsWith("TICK-") ? q.toUpperCase() : q;
+        const res = await fetch(`/api/tickets?ticketNumber=${encodeURIComponent(num)}`, { cache: "no-store" });
         const data = await res.json();
-        if (data.success && Array.isArray(data.tickets)) {
-          const found = data.tickets.find(
-            (t: any) =>
-              t.ticketNumber?.toUpperCase() === q.toUpperCase() ||
-              t.id?.toUpperCase() === q.toUpperCase()
-          );
-          if (found) {
-            setActiveTicket(found);
+        if (data.success && data.ticket) {
+          setActiveTicket(data.ticket);
+        } else {
+          // Fallback to checking by ticketId
+          const resId = await fetch(`/api/tickets?ticketId=${encodeURIComponent(q)}`, { cache: "no-store" });
+          const dataId = await resId.json();
+          if (dataId.success && dataId.ticket) {
+            setActiveTicket(dataId.ticket);
           } else {
             setTrackError(`Ticket #${q} not found. Please check the ticket ID.`);
           }
