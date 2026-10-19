@@ -9,18 +9,25 @@ if (!global.__GLOBAL_SUPPORT_TICKETS__) {
   global.__GLOBAL_SUPPORT_TICKETS__ = [];
 }
 
+
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const email = searchParams.get("email")?.toLowerCase();
+  const email = searchParams.get("email")?.toLowerCase()?.trim();
 
   const tickets = global.__GLOBAL_SUPPORT_TICKETS__ || [];
 
+  const headers = {
+    "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+    "Pragma": "no-cache",
+    "Expires": "0",
+  };
+
   if (email) {
-    const userTickets = tickets.filter((t) => t.customerEmail.toLowerCase() === email);
-    return NextResponse.json({ success: true, tickets: userTickets });
+    const userTickets = tickets.filter((t) => t.customerEmail.toLowerCase().trim() === email);
+    return NextResponse.json({ success: true, tickets: userTickets }, { headers });
   }
 
-  return NextResponse.json({ success: true, tickets });
+  return NextResponse.json({ success: true, tickets }, { headers });
 }
 
 export async function POST(req: Request) {

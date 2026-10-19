@@ -110,7 +110,10 @@ export default function LiveChatWidget() {
 
     const syncMessages = async () => {
       try {
-        const res = await fetch(`/api/chat?email=${encodeURIComponent(userEmail)}`);
+        const res = await fetch(`/api/chat?email=${encodeURIComponent(userEmail.trim().toLowerCase())}`, {
+          cache: "no-store",
+          headers: { Pragma: "no-cache", "Cache-Control": "no-cache" },
+        });
         const data = await res.json();
         if (data.success && data.chat && Array.isArray(data.chat.messages)) {
           const serverMsgs: ChatMessage[] = data.chat.messages.map((m: any) => ({
@@ -123,10 +126,11 @@ export default function LiveChatWidget() {
 
           if (serverMsgs.length > 0) {
             setMessages((prev) => {
-              if (serverMsgs.length > prev.length) {
+              // Check if server has any message that is not in prev or server has more messages
+              const hasNew = serverMsgs.some((sm) => !prev.some((pm) => pm.id === sm.id || (pm.text === sm.text && pm.sender === sm.sender)));
+              if (hasNew || serverMsgs.length > prev.length) {
                 const latest = serverMsgs[serverMsgs.length - 1];
                 if (latest.sender === "support") {
-                  // Trigger native notification if tab is in background or widget is closed
                   if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "granted") {
                     new Notification("Support Specialist Replied", {
                       body: latest.text,

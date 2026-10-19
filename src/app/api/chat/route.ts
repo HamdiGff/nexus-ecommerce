@@ -10,18 +10,25 @@ if (!global.__GLOBAL_LIVE_CHATS__) {
   global.__GLOBAL_LIVE_CHATS__ = [];
 }
 
+
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const email = searchParams.get("email")?.toLowerCase();
+  const email = searchParams.get("email")?.toLowerCase()?.trim();
 
   const chats = global.__GLOBAL_LIVE_CHATS__ || [];
 
+  const headers = {
+    "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+    "Pragma": "no-cache",
+    "Expires": "0",
+  };
+
   if (email) {
-    const userChat = chats.find((c) => c.visitorEmail.toLowerCase() === email);
-    return NextResponse.json({ success: true, chat: userChat || null });
+    const userChat = chats.find((c) => c.visitorEmail.toLowerCase().trim() === email);
+    return NextResponse.json({ success: true, chat: userChat || null }, { headers });
   }
 
-  return NextResponse.json({ success: true, chats });
+  return NextResponse.json({ success: true, chats }, { headers });
 }
 
 export async function POST(req: Request) {
