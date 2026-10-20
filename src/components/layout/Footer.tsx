@@ -58,7 +58,7 @@ export default function Footer() {
 
   return (
     <>
-      <footer className="bg-[#05070B] text-neutral-300 pt-20 pb-12 border-t border-white/[0.08] relative overflow-hidden">
+      <footer className="bg-[#05070B] text-neutral-300 pt-12 sm:pt-20 pb-8 sm:pb-12 border-t border-white/[0.08] relative overflow-hidden">
         {/* Glow Effects & Ambient Mesh */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[1px] bg-gradient-to-r from-transparent via-blue-500/50 to-transparent pointer-events-none" />
         <div className="absolute -top-32 left-1/4 w-[600px] h-[350px] bg-blue-600/10 rounded-full blur-[140px] pointer-events-none" />
@@ -74,85 +74,85 @@ export default function Footer() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           
           {/* ========================================================= */}
-          {/* VALUE PROPOSITION STRIP: 4 Interactive High-Tech Glass Cards */}
+          {/* VALUE PROPOSITION STRIP: Compact 2x2 on Mobile, 4-col Desktop */}
           {/* ========================================================= */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pb-16 border-b border-white/[0.08]">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4 pb-10 sm:pb-16 border-b border-white/[0.08]">
             
             {/* Value 1: Instant Auto-Delivery */}
-            <div className="group relative p-5 rounded-2xl bg-neutral-900/40 border border-white/[0.06] hover:border-emerald-500/40 hover:bg-white/[0.03] transition-all duration-300 shadow-lg shadow-black/20 hover:shadow-emerald-500/10">
-              <div className="flex items-start gap-4">
-                <div className="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl border border-emerald-500/20 group-hover:scale-105 group-hover:bg-emerald-500/20 transition-all shrink-0">
-                  <Zap className="w-5 h-5" />
+            <div className="group relative p-3 sm:p-5 rounded-xl sm:rounded-2xl bg-neutral-900/40 border border-white/[0.06] hover:border-emerald-500/40 hover:bg-white/[0.03] transition-all duration-300 shadow-lg shadow-black/20 hover:shadow-emerald-500/10">
+              <div className="flex flex-col sm:flex-row items-start gap-2.5 sm:gap-4">
+                <div className="p-2 sm:p-3 bg-emerald-500/10 text-emerald-400 rounded-lg sm:rounded-xl border border-emerald-500/20 group-hover:scale-105 group-hover:bg-emerald-500/20 transition-all shrink-0">
+                  <Zap className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
                 <div>
-                  <div className="flex items-center gap-1.5 mb-1">
-                    <h4 className="text-white font-bold text-xs uppercase tracking-wider">Instant Delivery</h4>
-                    <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                  <div className="flex items-center gap-1.5 mb-0.5 sm:mb-1">
+                    <h4 className="text-white font-bold text-[11px] sm:text-xs uppercase tracking-wider">Instant Delivery</h4>
+                    <span className="hidden sm:inline-block px-1.5 py-0.5 rounded text-[9px] font-mono font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
                       &lt;60s
                     </span>
                   </div>
-                  <p className="text-[11px] text-neutral-400 leading-relaxed">
-                    Automated code dispenser on screen & email receipt immediately after checkout.
+                  <p className="text-[10px] sm:text-[11px] text-neutral-400 leading-snug sm:leading-relaxed line-clamp-2 sm:line-clamp-none">
+                    Automated code dispenser on screen & email receipt in &lt;60s.
                   </p>
                 </div>
               </div>
             </div>
 
             {/* Value 2: WordPress White-Glove SLA */}
-            <div className="group relative p-5 rounded-2xl bg-neutral-900/40 border border-white/[0.06] hover:border-blue-500/40 hover:bg-white/[0.03] transition-all duration-300 shadow-lg shadow-black/20 hover:shadow-blue-500/10">
-              <div className="flex items-start gap-4">
-                <div className="p-3 bg-blue-500/10 text-blue-400 rounded-xl border border-blue-500/20 group-hover:scale-105 group-hover:bg-blue-500/20 transition-all shrink-0">
-                  <Wrench className="w-5 h-5" />
+            <div className="group relative p-3 sm:p-5 rounded-xl sm:rounded-2xl bg-neutral-900/40 border border-white/[0.06] hover:border-blue-500/40 hover:bg-white/[0.03] transition-all duration-300 shadow-lg shadow-black/20 hover:shadow-blue-500/10">
+              <div className="flex flex-col sm:flex-row items-start gap-2.5 sm:gap-4">
+                <div className="p-2 sm:p-3 bg-blue-500/10 text-blue-400 rounded-lg sm:rounded-xl border border-blue-500/20 group-hover:scale-105 group-hover:bg-blue-500/20 transition-all shrink-0">
+                  <Wrench className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
                 <div>
-                  <div className="flex items-center gap-1.5 mb-1">
-                    <h4 className="text-white font-bold text-xs uppercase tracking-wider">Agency SLA Setup</h4>
-                    <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                  <div className="flex items-center gap-1.5 mb-0.5 sm:mb-1">
+                    <h4 className="text-white font-bold text-[11px] sm:text-xs uppercase tracking-wider">Agency SLA Setup</h4>
+                    <span className="hidden sm:inline-block px-1.5 py-0.5 rounded text-[9px] font-mono font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20">
                       30-45M
                     </span>
                   </div>
-                  <p className="text-[11px] text-neutral-400 leading-relaxed">
-                    Certified technician activations for Elementor, Rank Math, WP Rocket & Astra Pro.
+                  <p className="text-[10px] sm:text-[11px] text-neutral-400 leading-snug sm:leading-relaxed line-clamp-2 sm:line-clamp-none">
+                    Official technician activations for Elementor, WP Rocket & Astra.
                   </p>
                 </div>
               </div>
             </div>
 
             {/* Value 3: AdSense Escrow & Security */}
-            <div className="group relative p-5 rounded-2xl bg-neutral-900/40 border border-white/[0.06] hover:border-amber-500/40 hover:bg-white/[0.03] transition-all duration-300 shadow-lg shadow-black/20 hover:shadow-amber-500/10">
-              <div className="flex items-start gap-4">
-                <div className="p-3 bg-amber-500/10 text-amber-400 rounded-xl border border-amber-500/20 group-hover:scale-105 group-hover:bg-amber-500/20 transition-all shrink-0">
-                  <Globe className="w-5 h-5" />
+            <div className="group relative p-3 sm:p-5 rounded-xl sm:rounded-2xl bg-neutral-900/40 border border-white/[0.06] hover:border-amber-500/40 hover:bg-white/[0.03] transition-all duration-300 shadow-lg shadow-black/20 hover:shadow-amber-500/10">
+              <div className="flex flex-col sm:flex-row items-start gap-2.5 sm:gap-4">
+                <div className="p-2 sm:p-3 bg-amber-500/10 text-amber-400 rounded-lg sm:rounded-xl border border-amber-500/20 group-hover:scale-105 group-hover:bg-amber-500/20 transition-all shrink-0">
+                  <Globe className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
                 <div>
-                  <div className="flex items-center gap-1.5 mb-1">
-                    <h4 className="text-white font-bold text-xs uppercase tracking-wider">AdSense Transfer</h4>
-                    <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                  <div className="flex items-center gap-1.5 mb-0.5 sm:mb-1">
+                    <h4 className="text-white font-bold text-[11px] sm:text-xs uppercase tracking-wider">AdSense Transfer</h4>
+                    <span className="hidden sm:inline-block px-1.5 py-0.5 rounded text-[9px] font-mono font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">
                       14D SLA
                     </span>
                   </div>
-                  <p className="text-[11px] text-neutral-400 leading-relaxed">
-                    Clean Gmail, free domain push, backup SQL & zero policy violation guarantee.
+                  <p className="text-[10px] sm:text-[11px] text-neutral-400 leading-snug sm:leading-relaxed line-clamp-2 sm:line-clamp-none">
+                    Clean Gmail, free domain push, backup SQL & zero violation guarantee.
                   </p>
                 </div>
               </div>
             </div>
 
             {/* Value 4: Zero Risk Guarantee & Crypto */}
-            <div className="group relative p-5 rounded-2xl bg-neutral-900/40 border border-white/[0.06] hover:border-purple-500/40 hover:bg-white/[0.03] transition-all duration-300 shadow-lg shadow-black/20 hover:shadow-purple-500/10">
-              <div className="flex items-start gap-4">
-                <div className="p-3 bg-purple-500/10 text-purple-400 rounded-xl border border-purple-500/20 group-hover:scale-105 group-hover:bg-purple-500/20 transition-all shrink-0">
-                  <ShieldCheck className="w-5 h-5" />
+            <div className="group relative p-3 sm:p-5 rounded-xl sm:rounded-2xl bg-neutral-900/40 border border-white/[0.06] hover:border-purple-500/40 hover:bg-white/[0.03] transition-all duration-300 shadow-lg shadow-black/20 hover:shadow-purple-500/10">
+              <div className="flex flex-col sm:flex-row items-start gap-2.5 sm:gap-4">
+                <div className="p-2 sm:p-3 bg-purple-500/10 text-purple-400 rounded-lg sm:rounded-xl border border-purple-500/20 group-hover:scale-105 group-hover:bg-purple-500/20 transition-all shrink-0">
+                  <ShieldCheck className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
                 <div>
-                  <div className="flex items-center gap-1.5 mb-1">
-                    <h4 className="text-white font-bold text-xs uppercase tracking-wider">Escrow Security</h4>
-                    <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-semibold bg-purple-500/10 text-purple-400 border border-purple-500/20">
+                  <div className="flex items-center gap-1.5 mb-0.5 sm:mb-1">
+                    <h4 className="text-white font-bold text-[11px] sm:text-xs uppercase tracking-wider">Escrow Security</h4>
+                    <span className="hidden sm:inline-block px-1.5 py-0.5 rounded text-[9px] font-mono font-semibold bg-purple-500/10 text-purple-400 border border-purple-500/20">
                       ENCRYPTED
                     </span>
                   </div>
-                  <p className="text-[11px] text-neutral-400 leading-relaxed">
-                    256-bit checkout, Stripe, PayPal & Web3 Crypto with automated post-delivery data purge.
+                  <p className="text-[10px] sm:text-[11px] text-neutral-400 leading-snug sm:leading-relaxed line-clamp-2 sm:line-clamp-none">
+                    256-bit checkout, Stripe, PayPal, Crypto with auto-purge guarantee.
                   </p>
                 </div>
               </div>
@@ -163,10 +163,10 @@ export default function Footer() {
           {/* ========================================================= */}
           {/* MAIN FOOTER NAVIGATION & NEWSLETTER GRID */}
           {/* ========================================================= */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-10 mt-12 pb-12 border-b border-white/[0.08] items-start">
+          <div className="grid grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-10 mt-10 sm:mt-12 pb-10 sm:pb-12 border-b border-white/[0.08] items-start">
             
-            {/* BRAND COLUMN (4 cols on lg) */}
-            <div className="lg:col-span-4 space-y-4">
+            {/* BRAND COLUMN (Full width on mobile/tablet, 4 cols on lg) */}
+            <div className="col-span-2 lg:col-span-4 space-y-4">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-neutral-800 to-neutral-950 border border-white/20 flex items-center justify-center font-bold text-white text-lg shadow-inner shadow-white/10">
                   <span className="text-transparent bg-clip-text bg-gradient-to-tr from-blue-400 via-indigo-300 to-white">
@@ -217,8 +217,8 @@ export default function Footer() {
               </div>
             </div>
 
-            {/* COLUMN 1: WordPress Agency Tools (2 cols on lg) */}
-            <div className="lg:col-span-2 space-y-3.5">
+            {/* COLUMN 1: WordPress Agency Tools (Side-by-side on mobile: col-span-1) */}
+            <div className="col-span-1 lg:col-span-2 space-y-3.5">
               <div className="flex items-center gap-1.5 pb-1 border-b border-white/[0.05]">
                 <Wrench className="w-3.5 h-3.5 text-blue-400" />
                 <h5 className="text-white font-bold text-xs uppercase tracking-wider">
@@ -231,8 +231,8 @@ export default function Footer() {
                     href="/products/elementor-pro"
                     className="group flex items-center justify-between hover:text-white transition-colors"
                   >
-                    <span>Elementor Pro</span>
-                    <span className="text-[9px] px-1 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 font-mono group-hover:border-blue-400">
+                    <span className="truncate pr-1">Elementor Pro</span>
+                    <span className="hidden sm:inline-block text-[9px] px-1 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 font-mono group-hover:border-blue-400">
                       PRO
                     </span>
                   </Link>
@@ -242,8 +242,8 @@ export default function Footer() {
                     href="/products/rank-math-pro"
                     className="group flex items-center justify-between hover:text-white transition-colors"
                   >
-                    <span>Rank Math PRO</span>
-                    <span className="text-[9px] px-1 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono group-hover:border-amber-400">
+                    <span className="truncate pr-1">Rank Math PRO</span>
+                    <span className="hidden sm:inline-block text-[9px] px-1 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono group-hover:border-amber-400">
                       SEO
                     </span>
                   </Link>
@@ -253,8 +253,8 @@ export default function Footer() {
                     href="/products/wp-rocket"
                     className="group flex items-center justify-between hover:text-white transition-colors"
                   >
-                    <span>WP Rocket</span>
-                    <span className="text-[9px] px-1 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono group-hover:border-emerald-400">
+                    <span className="truncate pr-1">WP Rocket</span>
+                    <span className="hidden sm:inline-block text-[9px] px-1 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono group-hover:border-emerald-400">
                       CACHE
                     </span>
                   </Link>
@@ -264,8 +264,8 @@ export default function Footer() {
                     href="/products/astra-pro-theme"
                     className="group flex items-center justify-between hover:text-white transition-colors"
                   >
-                    <span>Astra Pro Theme</span>
-                    <span className="text-[9px] px-1 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20 font-mono group-hover:border-purple-400">
+                    <span className="truncate pr-1">Astra Pro</span>
+                    <span className="hidden sm:inline-block text-[9px] px-1 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20 font-mono group-hover:border-purple-400">
                       AGENCY
                     </span>
                   </Link>
@@ -275,19 +275,19 @@ export default function Footer() {
                     href="/category/wordpress"
                     className="inline-flex items-center gap-1 text-[11px] text-blue-400 hover:text-blue-300 font-medium transition-colors group"
                   >
-                    <span>All WP Licenses</span>
+                    <span>All Licenses</span>
                     <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </li>
               </ul>
             </div>
 
-            {/* COLUMN 2: Google AdSense Websites (2 cols on lg) */}
-            <div className="lg:col-span-2 space-y-3.5">
+            {/* COLUMN 2: Google AdSense Websites (Side-by-side on mobile: col-span-1) */}
+            <div className="col-span-1 lg:col-span-2 space-y-3.5">
               <div className="flex items-center gap-1.5 pb-1 border-b border-white/[0.05]">
                 <Globe className="w-3.5 h-3.5 text-amber-400" />
                 <h5 className="text-white font-bold text-xs uppercase tracking-wider">
-                  Google AdSense
+                  AdSense Sites
                 </h5>
               </div>
               <ul className="space-y-2.5 text-xs text-neutral-400">
@@ -296,8 +296,8 @@ export default function Footer() {
                     href="/products/google-adsense-approved-websites"
                     className="group flex items-center justify-between hover:text-white transition-colors"
                   >
-                    <span>Fresh Tech Blogs</span>
-                    <span className="text-[9px] px-1 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono group-hover:border-emerald-400">
+                    <span className="truncate pr-1">Fresh Tech Blogs</span>
+                    <span className="hidden sm:inline-block text-[9px] px-1 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono group-hover:border-emerald-400">
                       HOT
                     </span>
                   </Link>
@@ -307,8 +307,8 @@ export default function Footer() {
                     href="/products/google-adsense-approved-websites"
                     className="group flex items-center justify-between hover:text-white transition-colors"
                   >
-                    <span>PIN-Verified Sites</span>
-                    <span className="text-[9px] px-1 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono group-hover:border-amber-400">
+                    <span className="truncate pr-1">PIN-Verified</span>
+                    <span className="hidden sm:inline-block text-[9px] px-1 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono group-hover:border-amber-400">
                       READY
                     </span>
                   </Link>
@@ -318,8 +318,8 @@ export default function Footer() {
                     href="/products/google-adsense-approved-websites"
                     className="group flex items-center justify-between hover:text-white transition-colors"
                   >
-                    <span>5+ Payouts &amp; GAM</span>
-                    <span className="text-[9px] px-1 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 font-mono group-hover:border-blue-400">
+                    <span className="truncate pr-1">5+ Payouts &amp; GAM</span>
+                    <span className="hidden sm:inline-block text-[9px] px-1 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 font-mono group-hover:border-blue-400">
                       VIP
                     </span>
                   </Link>
@@ -329,8 +329,8 @@ export default function Footer() {
                     onClick={() => setActiveModal("adsense-guarantee")}
                     className="hover:text-amber-300 text-left transition-colors flex items-center gap-1"
                   >
-                    <span>Transfer Guarantee</span>
-                    <ExternalLink className="w-2.5 h-2.5 text-amber-400" />
+                    <span className="truncate">Guarantee</span>
+                    <ExternalLink className="w-2.5 h-2.5 text-amber-400 shrink-0" />
                   </button>
                 </li>
                 <li className="pt-1.5">
@@ -338,15 +338,15 @@ export default function Footer() {
                     href="/category/adsense-websites"
                     className="inline-flex items-center gap-1 text-[11px] text-amber-400 hover:text-amber-300 font-medium transition-colors group"
                   >
-                    <span>Browse All Sites</span>
+                    <span>Browse All</span>
                     <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </li>
               </ul>
             </div>
 
-            {/* COLUMN 3: NOTIFY ME & RESTOCK DROPS (Shifted to the RIGHT side alongside menus) (4 cols on lg) */}
-            <div className="lg:col-span-4">
+            {/* COLUMN 3: NOTIFY ME & RESTOCK DROPS (Full width on mobile/tablet, 4 cols on lg) */}
+            <div className="col-span-2 lg:col-span-4">
               <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.08] space-y-3 shadow-lg shadow-black/20 hover:border-white/15 transition-all">
                 <div className="flex items-center justify-between">
                   <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-200 flex items-center gap-1.5">
@@ -409,20 +409,20 @@ export default function Footer() {
           {/* ========================================================= */}
           {/* FLOATING PAYMENT RAILS & SECURITY SEALS DOCK BAR */}
           {/* ========================================================= */}
-          <div className="py-4 flex flex-col md:flex-row items-center justify-between gap-4 border-b border-white/[0.06]">
+          <div className="py-4 flex flex-col md:flex-row items-center justify-between gap-3 sm:gap-4 border-b border-white/[0.06]">
             
             {/* Floating Dock: All Logos Unified Side-by-Side */}
-            <div className="flex flex-wrap items-center justify-center md:justify-start gap-2.5">
-              <span className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider shrink-0 flex items-center gap-1.5 mr-0.5">
+            <div className="w-full md:w-auto flex flex-col sm:flex-row items-center justify-center md:justify-start gap-2">
+              <span className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider shrink-0 flex items-center gap-1.5">
                 <CreditCard className="w-3 h-3 text-blue-400" />
                 <span>Accepted Rails:</span>
               </span>
 
-              {/* The Floating Capsule Bar */}
-              <div className="inline-flex items-center flex-wrap gap-1.5 sm:gap-2 px-3 py-1.5 rounded-full bg-neutral-900/80 border border-white/10 backdrop-blur-md shadow-lg shadow-black/40 hover:border-white/20 transition-all duration-300">
+              {/* The Floating Capsule Bar (Wraps smoothly on mobile) */}
+              <div className="inline-flex items-center justify-center flex-wrap gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 rounded-2xl sm:rounded-full bg-neutral-900/80 border border-white/10 backdrop-blur-md shadow-lg shadow-black/40 hover:border-white/20 transition-all duration-300">
                 {/* Stripe */}
                 <div 
-                  className="h-6 px-2 rounded-md bg-white flex items-center justify-center shadow-xs hover:-translate-y-1 hover:shadow-md hover:scale-105 transition-all duration-200 cursor-default" 
+                  className="h-6 px-2 rounded-md bg-white flex items-center justify-center shadow-xs hover:-translate-y-0.5 hover:scale-105 transition-all duration-200 cursor-default shrink-0" 
                   title="Stripe 256-Bit SSL Checkout"
                 >
                   <img src="/payments/stripe.svg" alt="Stripe" className="h-3 w-auto object-contain" />
@@ -430,7 +430,7 @@ export default function Footer() {
 
                 {/* PayPal */}
                 <div 
-                  className="h-6 px-2 rounded-md bg-white flex items-center justify-center shadow-xs hover:-translate-y-1 hover:shadow-md hover:scale-105 transition-all duration-200 cursor-default" 
+                  className="h-6 px-2 rounded-md bg-white flex items-center justify-center shadow-xs hover:-translate-y-0.5 hover:scale-105 transition-all duration-200 cursor-default shrink-0" 
                   title="PayPal Smart Payment"
                 >
                   <img src="/payments/paypal.svg" alt="PayPal" className="h-3 w-auto object-contain" />
@@ -438,7 +438,7 @@ export default function Footer() {
 
                 {/* Visa */}
                 <div 
-                  className="h-6 px-1.5 rounded-md bg-white flex items-center justify-center shadow-xs hover:-translate-y-1 hover:shadow-md hover:scale-105 transition-all duration-200 cursor-default" 
+                  className="h-6 px-1.5 rounded-md bg-white flex items-center justify-center shadow-xs hover:-translate-y-0.5 hover:scale-105 transition-all duration-200 cursor-default shrink-0" 
                   title="Visa Debit & Credit"
                 >
                   <img src="/payments/visa.svg" alt="Visa" className="h-2 w-auto object-contain" />
@@ -446,7 +446,7 @@ export default function Footer() {
 
                 {/* Mastercard */}
                 <div 
-                  className="h-6 px-1.5 rounded-md bg-white flex items-center justify-center shadow-xs hover:-translate-y-1 hover:shadow-md hover:scale-105 transition-all duration-200 cursor-default" 
+                  className="h-6 px-1.5 rounded-md bg-white flex items-center justify-center shadow-xs hover:-translate-y-0.5 hover:scale-105 transition-all duration-200 cursor-default shrink-0" 
                   title="Mastercard Worldwide"
                 >
                   <img src="/payments/mastercard.svg" alt="Mastercard" className="h-3.5 w-auto object-contain" />
@@ -454,7 +454,7 @@ export default function Footer() {
 
                 {/* Apple Pay */}
                 <div 
-                  className="h-6 px-2 rounded-md bg-white flex items-center justify-center shadow-xs hover:-translate-y-1 hover:shadow-md hover:scale-105 transition-all duration-200 cursor-default" 
+                  className="h-6 px-2 rounded-md bg-white flex items-center justify-center shadow-xs hover:-translate-y-0.5 hover:scale-105 transition-all duration-200 cursor-default shrink-0" 
                   title="Apple Pay Instant Token"
                 >
                   <img src="/payments/apple-pay.svg" alt="Apple Pay" className="h-3 w-auto object-contain" />
@@ -462,18 +462,18 @@ export default function Footer() {
 
                 {/* Google Pay */}
                 <div 
-                  className="h-6 px-2 rounded-md bg-white flex items-center justify-center shadow-xs hover:-translate-y-1 hover:shadow-md hover:scale-105 transition-all duration-200 cursor-default" 
+                  className="h-6 px-2 rounded-md bg-white flex items-center justify-center shadow-xs hover:-translate-y-0.5 hover:scale-105 transition-all duration-200 cursor-default shrink-0" 
                   title="Google Pay Quick Wallet"
                 >
                   <img src="/payments/google-pay.svg" alt="Google Pay" className="h-3 w-auto object-contain" />
                 </div>
 
-                {/* Micro vertical divider between Cards and Crypto */}
-                <div className="h-3.5 w-[1px] bg-white/15 mx-0.5" />
+                {/* Micro vertical divider */}
+                <div className="h-3.5 w-[1px] bg-white/15 mx-0.5 hidden xs:block" />
 
                 {/* Bitcoin */}
                 <div 
-                  className="h-6 w-6 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center hover:-translate-y-1 hover:border-amber-400 hover:shadow-md hover:shadow-amber-500/30 hover:scale-105 transition-all duration-200 cursor-default" 
+                  className="h-6 w-6 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center hover:-translate-y-0.5 hover:border-amber-400 hover:scale-105 transition-all duration-200 cursor-default shrink-0" 
                   title="Bitcoin (BTC Native SegWit)"
                 >
                   <img src="/payments/bitcoin.svg" alt="Bitcoin" className="w-3.5 h-3.5 object-contain rounded-full" />
@@ -481,7 +481,7 @@ export default function Footer() {
 
                 {/* Ethereum */}
                 <div 
-                  className="h-6 w-6 rounded-full bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center hover:-translate-y-1 hover:border-cyan-400 hover:shadow-md hover:shadow-cyan-500/30 hover:scale-105 transition-all duration-200 cursor-default" 
+                  className="h-6 w-6 rounded-full bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center hover:-translate-y-0.5 hover:border-cyan-400 hover:scale-105 transition-all duration-200 cursor-default shrink-0" 
                   title="Ethereum (ETH ERC-20)"
                 >
                   <img src="/payments/ethereum.svg" alt="Ethereum" className="w-3.5 h-3.5 object-contain rounded-full" />
@@ -489,7 +489,7 @@ export default function Footer() {
 
                 {/* Tether USDT */}
                 <div 
-                  className="h-6 w-6 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center hover:-translate-y-1 hover:border-emerald-400 hover:shadow-md hover:shadow-emerald-500/30 hover:scale-105 transition-all duration-200 cursor-default" 
+                  className="h-6 w-6 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center hover:-translate-y-0.5 hover:border-emerald-400 hover:scale-105 transition-all duration-200 cursor-default shrink-0" 
                   title="Tether (USDT Polygon & TRC-20)"
                 >
                   <img src="/payments/tether.svg" alt="USDT" className="w-3.5 h-3.5 object-contain rounded-full" />
@@ -497,7 +497,7 @@ export default function Footer() {
 
                 {/* Solana */}
                 <div 
-                  className="h-6 w-6 rounded-full bg-purple-500/10 border border-purple-500/20 flex items-center justify-center hover:-translate-y-1 hover:border-purple-400 hover:shadow-md hover:shadow-purple-500/30 hover:scale-105 transition-all duration-200 cursor-default" 
+                  className="h-6 w-6 rounded-full bg-purple-500/10 border border-purple-500/20 flex items-center justify-center hover:-translate-y-0.5 hover:border-purple-400 hover:scale-105 transition-all duration-200 cursor-default shrink-0" 
                   title="Solana (SOL)"
                 >
                   <img src="/payments/solana.svg" alt="Solana" className="w-3.5 h-3.5 object-contain rounded-full" />
@@ -505,8 +505,8 @@ export default function Footer() {
               </div>
             </div>
 
-            {/* Escrow & Security Trust Badges (Compact Floating Pills) */}
-            <div className="flex items-center gap-2 text-[10px] text-neutral-400 font-mono shrink-0">
+            {/* Escrow & Security Trust Badges */}
+            <div className="flex items-center justify-center gap-2 text-[10px] text-neutral-400 font-mono shrink-0">
               <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/[0.03] border border-white/[0.06] text-neutral-300 hover:border-emerald-500/30 transition-all cursor-default">
                 <Lock className="w-3 h-3 text-emerald-400" />
                 <span>256-Bit SSL</span>
@@ -522,12 +522,12 @@ export default function Footer() {
           {/* ========================================================= */}
           {/* BOTTOM COPYRIGHT & LEGAL MODAL TRIGGERS */}
           {/* ========================================================= */}
-          <div className="mt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-neutral-500 gap-4">
+          <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-neutral-500 gap-3 sm:gap-4 text-center sm:text-left">
             <div className="flex items-center gap-2">
-              <p>© 2026 NEXUS DIGITAL COMMERCE INC. ALL RIGHTS RESERVED.</p>
+              <p className="text-[11px] sm:text-xs">© 2026 NEXUS DIGITAL COMMERCE INC. ALL RIGHTS RESERVED.</p>
             </div>
             
-            <div className="flex flex-wrap items-center gap-6 text-[11px]">
+            <div className="flex flex-wrap items-center justify-center sm:justify-end gap-3 sm:gap-6 text-[11px]">
               <button
                 onClick={() => setActiveModal("terms")}
                 className="hover:text-neutral-300 transition-colors underline-offset-4 hover:underline"
@@ -538,19 +538,19 @@ export default function Footer() {
                 onClick={() => setActiveModal("privacy")}
                 className="hover:text-neutral-300 transition-colors underline-offset-4 hover:underline"
               >
-                Privacy &amp; Data Purge Policy
+                Privacy &amp; Data Purge
               </button>
               <button
                 onClick={() => setActiveModal("adsense-guarantee")}
                 className="hover:text-neutral-300 transition-colors underline-offset-4 hover:underline text-amber-400/80 hover:text-amber-300"
               >
-                AdSense Compliance Warranty
+                AdSense Warranty
               </button>
               <Link
                 href="/support"
                 className="hover:text-neutral-300 transition-colors underline-offset-4 hover:underline"
               >
-                Contact Support Desk
+                Support Desk
               </Link>
             </div>
           </div>
