@@ -50,8 +50,12 @@ export default function ProductDetailClient({ product: initialProduct }: Product
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
 
+  const cartItems = useCartStore((state) => state.items);
   const addItem = useCartStore((state) => state.addItem);
   const triggerQuickAddEffect = useQuickAddStore((state) => state.triggerQuickAddEffect);
+
+  const inCartItem = cartItems.find((i) => i.productId === product.id || i.slug === product.slug);
+  const inCartQty = inCartItem?.quantity || 0;
 
   const handleAddToCart = (e?: React.MouseEvent) => {
     const targetEl = e?.currentTarget as HTMLElement | undefined;
@@ -427,6 +431,11 @@ export default function ProductDetailClient({ product: initialProduct }: Product
                     <>
                       <Check className="w-5 h-5 stroke-[2.5] animate-in zoom-in-75 duration-200" />
                       <span>Added to Bag!</span>
+                    </>
+                  ) : inCartQty > 0 ? (
+                    <>
+                      <Check className="w-5 h-5 stroke-[2.5] text-emerald-300" />
+                      <span>Add More ({inCartQty} in Bag) • {formatPrice(selectedVariant.price * quantity)}</span>
                     </>
                   ) : (
                     <>

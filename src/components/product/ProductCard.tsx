@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Star, ShoppingBag, Check, Zap, Wrench, Globe, ArrowUpRight, Layers, ShieldCheck } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DigitalProduct } from "@/data/mockProducts";
 import { formatPrice } from "@/lib/utils";
 import { useCartStore } from "@/lib/store/cartStore";
@@ -13,10 +13,24 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
+  const [mounted, setMounted] = useState(false);
   const [added, setAdded] = useState(false);
   const [imgError, setImgError] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const cartItems = useCartStore((state) => state.items);
   const addItem = useCartStore((state) => state.addItem);
   const triggerQuickAddEffect = useQuickAddStore((state) => state.triggerQuickAddEffect);
+
+  // Check if this product is already in the cart and its total count
+  const cartItem = mounted
+    ? cartItems.find((item) => item.productId === product.id || item.slug === product.slug)
+    : null;
+  const cartCount = cartItem?.quantity || 0;
+  const isInCart = mounted && cartCount > 0;
 
   // Determine lowest variant price for accurate "From $X" or base price
   const lowestVariant = product.variants && product.variants.length > 0
@@ -87,15 +101,34 @@ export default function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <div className="group relative rounded-2xl bg-gradient-to-b from-[#121420]/95 via-[#0e1019]/95 to-[#090b12]/98 backdrop-blur-xl border border-white/[0.08] hover:border-blue-500/40 transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-[0_16px_40px_rgba(37,99,235,0.15)] flex flex-col justify-between overflow-hidden">
-      {/* Top Laser Shimmer Beam on Hover */}
-      <div className="absolute top-0 inset-x-0 h-[1.5px] bg-gradient-to-r from-transparent via-blue-400/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20 pointer-events-none" />
+    <div
+      className={`group relative rounded-2xl bg-gradient-to-b from-[#121420]/95 via-[#0e1019]/95 to-[#090b12]/98 backdrop-blur-xl border transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-[0_16px_40px_rgba(37,99,235,0.15)] flex flex-col justify-between overflow-hidden ${
+        isInCart
+          ? "border-emerald-500/40 shadow-[0_4px_25px_rgba(16,185,129,0.12)] ring-1 ring-emerald-500/20"
+          : "border-white/[0.08] hover:border-blue-500/40"
+      }`}
+    >
+      {/* Top Laser Shimmer Beam */}
+      <div
+        className={`absolute top-0 inset-x-0 h-[1.5px] bg-gradient-to-r from-transparent to-transparent z-20 pointer-events-none transition-opacity duration-500 ${
+          isInCart
+            ? "via-emerald-400 opacity-100"
+            : "via-blue-400/80 opacity-0 group-hover:opacity-100"
+        }`}
+      />
 
       {/* Top Floating Badges */}
       <div className="absolute top-2.5 left-2.5 right-2.5 z-20 flex items-center justify-between pointer-events-none">
-        {/* Delivery Type Badge */}
-        <div>
-          {product.deliveryType === "INSTANT_CODE" && (
+        {/* Left Badge: In Bag Indicator if present, otherwise Delivery Type */}
+        <div className="flex items-center gap-1.5">
+          {isInCart && (
+            <span className="bg-emerald-950/90 backdrop-blur-md border border-emerald-500/60 text-emerald-300 text-[10px] font-black px-2.5 py-0.5 rounded-full flex items-center gap-1 shadow-lg shadow-emerald-950/80">
+              <Check className="w-3 h-3 stroke-[3] text-emerald-400" />
+              <span>In Bag ({cartCount})</span>
+            </span>
+          )}
+
+          {!isInCart && product.deliveryType === "INSTANT_CODE" && (
             <span className="bg-[#0b1c14]/90 backdrop-blur-md border border-emerald-500/40 text-emerald-300 text-[10px] font-extrabold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-md shadow-black/60">
               <span className="flex h-1.5 w-1.5 relative">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
@@ -105,13 +138,13 @@ export default function ProductCard({ product }: ProductCardProps) {
               Instant
             </span>
           )}
-          {product.deliveryType === "SERVICE_SETUP" && (
+          {!isInCart && product.deliveryType === "SERVICE_SETUP" && (
             <span className="bg-[#0b1528]/90 backdrop-blur-md border border-blue-500/40 text-blue-300 text-[10px] font-extrabold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-md shadow-black/60">
               <Wrench className="w-2.5 h-2.5 text-blue-400" />
               Setup
             </span>
           )}
-          {product.deliveryType === "MANUAL_HANDOFF" && (
+          {!isInCart && product.deliveryType === "MANUAL_HANDOFF" && (
             <span className="bg-[#1c0f2b]/90 backdrop-blur-md border border-purple-500/40 text-purple-300 text-[10px] font-extrabold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-md shadow-black/60">
               <Globe className="w-2.5 h-2.5 text-purple-400" />
               Asset
@@ -247,16 +280,18 @@ export default function ProductCard({ product }: ProductCardProps) {
           </div>
 
           <div className="flex items-center gap-1.5 relative">
-            {/* Quick Add To Bag Button with Unique Floating + Ripple Feedback */}
+            {/* Quick Add To Bag Button with Visual Status */}
             <button
               onClick={handleAddToCart}
-              className={`relative p-2 rounded-lg font-bold transition-all duration-300 active:scale-90 flex items-center justify-center shadow-sm ${
+              className={`relative px-2.5 py-2 rounded-lg font-bold transition-all duration-300 active:scale-90 flex items-center justify-center gap-1 shadow-sm cursor-pointer ${
                 added
-                  ? "bg-emerald-500 text-neutral-950 shadow-emerald-500/40 scale-105"
+                  ? "bg-emerald-400 text-neutral-950 shadow-emerald-400/50 scale-105"
+                  : isInCart
+                  ? "bg-emerald-500 text-neutral-950 hover:bg-emerald-400 border border-emerald-400 shadow-md shadow-emerald-500/25 ring-1 ring-emerald-400/50"
                   : "bg-white text-neutral-950 hover:bg-neutral-200"
               }`}
-              title="Quick Add to Bag"
-              aria-label="Add to cart"
+              title={isInCart ? `Already in Bag (${cartCount}) • Click to add another` : "Quick Add to Bag"}
+              aria-label={isInCart ? `In Bag: ${cartCount}` : "Add to cart"}
             >
               {/* Expanding Ripple Ring on Click */}
               {added && (
@@ -272,6 +307,11 @@ export default function ProductCard({ product }: ProductCardProps) {
 
               {added ? (
                 <Check className="w-3.5 h-3.5 stroke-[3] animate-in zoom-in-75 duration-200 text-neutral-950" />
+              ) : isInCart ? (
+                <div className="flex items-center gap-1">
+                  <Check className="w-3.5 h-3.5 stroke-[3] text-neutral-950" />
+                  <span className="text-[10.5px] font-mono font-black text-neutral-950">{cartCount}</span>
+                </div>
               ) : (
                 <ShoppingBag className="w-3.5 h-3.5" />
               )}
