@@ -31,6 +31,7 @@ import {
   Gamepad2,
   Server,
   Layers,
+  CreditCard,
 } from "lucide-react";
 
 type ModalType = "terms" | "privacy" | "adsense-guarantee" | null;
@@ -508,38 +509,86 @@ export default function Footer() {
           {/* ========================================================= */}
           {/* PAYMENT RAILS & SECURITY SEALS BAR */}
           {/* ========================================================= */}
-          <div className="py-8 flex flex-col md:flex-row items-center justify-between gap-6 border-b border-white/[0.06]">
+          <div className="py-8 flex flex-col lg:flex-row items-center justify-between gap-6 border-b border-white/[0.06]">
             
             {/* Payment Rails / Currencies */}
-            <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
-              <span className="text-[11px] font-mono text-neutral-400 uppercase tracking-wider mr-1">
+            <div className="flex flex-col sm:flex-row items-center gap-3 text-center sm:text-left">
+              <span className="text-[11px] font-mono text-neutral-400 uppercase tracking-wider shrink-0 flex items-center gap-1.5">
+                <CreditCard className="w-3.5 h-3.5 text-blue-400" />
                 Accepted Rails:
               </span>
-              <span className="px-2.5 py-1 rounded-lg bg-neutral-900/60 border border-white/[0.08] text-[11px] font-mono text-neutral-300 hover:border-blue-500/30 transition-colors">
-                💳 Stripe (Cards / Apple Pay)
-              </span>
-              <span className="px-2.5 py-1 rounded-lg bg-neutral-900/60 border border-white/[0.08] text-[11px] font-mono text-neutral-300 hover:border-blue-500/30 transition-colors">
-                🅿️ PayPal Smart
-              </span>
-              <span className="px-2.5 py-1 rounded-lg bg-amber-500/[0.06] border border-amber-500/20 text-[11px] font-mono text-amber-400 hover:border-amber-400/40 transition-colors">
-                ₿ Bitcoin SegWit
-              </span>
-              <span className="px-2.5 py-1 rounded-lg bg-cyan-500/[0.06] border border-cyan-500/20 text-[11px] font-mono text-cyan-400 hover:border-cyan-400/40 transition-colors">
-                Ξ Ethereum ERC-20
-              </span>
-              <span className="px-2.5 py-1 rounded-lg bg-emerald-500/[0.06] border border-emerald-500/20 text-[11px] font-mono text-emerald-400 hover:border-emerald-400/40 transition-colors">
-                ₮ USDT Polygon
-              </span>
+
+              {/* Rails Container */}
+              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                {/* Traditional Cards & Instant Wallets */}
+                <div className="flex items-center gap-1.5 p-1 rounded-xl bg-white/[0.03] border border-white/[0.08]">
+                  {/* Stripe Badge */}
+                  <div className="h-7 px-2.5 rounded-lg bg-white flex items-center justify-center shadow-xs border border-white/20 hover:scale-105 transition-all cursor-default" title="Stripe Secure Payments">
+                    <img src="/payments/stripe.svg" alt="Stripe" className="h-3.5 w-auto object-contain" />
+                  </div>
+
+                  {/* PayPal Badge */}
+                  <div className="h-7 px-2.5 rounded-lg bg-white flex items-center justify-center shadow-xs border border-white/20 hover:scale-105 transition-all cursor-default" title="PayPal Smart Checkout">
+                    <img src="/payments/paypal.svg" alt="PayPal" className="h-3.5 w-auto object-contain" />
+                  </div>
+
+                  {/* Visa Badge */}
+                  <div className="h-7 px-2 rounded-lg bg-white flex items-center justify-center shadow-xs border border-white/20 hover:scale-105 transition-all cursor-default" title="Visa Credit & Debit">
+                    <img src="/payments/visa.svg" alt="Visa" className="h-2.5 w-auto object-contain" />
+                  </div>
+
+                  {/* Mastercard Badge */}
+                  <div className="h-7 px-2 rounded-lg bg-white flex items-center justify-center shadow-xs border border-white/20 hover:scale-105 transition-all cursor-default" title="Mastercard Worldwide">
+                    <img src="/payments/mastercard.svg" alt="Mastercard" className="h-4 w-auto object-contain" />
+                  </div>
+
+                  {/* Apple Pay Badge */}
+                  <div className="h-7 px-2.5 rounded-lg bg-white flex items-center justify-center shadow-xs border border-white/20 hover:scale-105 transition-all cursor-default" title="Apple Pay 1-Click">
+                    <img src="/payments/apple-pay.svg" alt="Apple Pay" className="h-3.5 w-auto object-contain" />
+                  </div>
+
+                  {/* Google Pay Badge */}
+                  <div className="h-7 px-2.5 rounded-lg bg-white flex items-center justify-center shadow-xs border border-white/20 hover:scale-105 transition-all cursor-default" title="Google Pay Fast Checkout">
+                    <img src="/payments/google-pay.svg" alt="Google Pay" className="h-3.5 w-auto object-contain" />
+                  </div>
+                </div>
+
+                {/* Crypto Rails (Web3) */}
+                <div className="flex items-center gap-1.5 p-1 rounded-xl bg-neutral-900/60 border border-white/[0.08]">
+                  {/* Bitcoin */}
+                  <div className="h-7 px-2.5 rounded-lg bg-amber-500/[0.08] border border-amber-500/20 hover:border-amber-400/40 flex items-center gap-1.5 hover:scale-105 transition-all cursor-default" title="Bitcoin Native SegWit">
+                    <img src="/payments/bitcoin.svg" alt="Bitcoin" className="w-4 h-4 shrink-0 rounded-full" />
+                    <span className="text-[11px] font-mono font-semibold text-amber-400">BTC</span>
+                  </div>
+
+                  {/* Ethereum */}
+                  <div className="h-7 px-2.5 rounded-lg bg-cyan-500/[0.08] border border-cyan-500/20 hover:border-cyan-400/40 flex items-center gap-1.5 hover:scale-105 transition-all cursor-default" title="Ethereum Mainnet / ERC-20">
+                    <img src="/payments/ethereum.svg" alt="Ethereum" className="w-4 h-4 shrink-0 rounded-full" />
+                    <span className="text-[11px] font-mono font-semibold text-cyan-400">ETH</span>
+                  </div>
+
+                  {/* Tether USDT */}
+                  <div className="h-7 px-2.5 rounded-lg bg-emerald-500/[0.08] border border-emerald-500/20 hover:border-emerald-400/40 flex items-center gap-1.5 hover:scale-105 transition-all cursor-default" title="Tether USDT (Polygon & TRC-20)">
+                    <img src="/payments/tether.svg" alt="USDT Tether" className="w-4 h-4 shrink-0 rounded-full" />
+                    <span className="text-[11px] font-mono font-semibold text-emerald-400">USDT</span>
+                  </div>
+
+                  {/* Solana */}
+                  <div className="h-7 px-2.5 rounded-lg bg-purple-500/[0.08] border border-purple-500/20 hover:border-purple-400/40 flex items-center gap-1.5 hover:scale-105 transition-all cursor-default" title="Solana Fast Settlement">
+                    <img src="/payments/solana.svg" alt="Solana" className="w-4 h-4 shrink-0 rounded-full" />
+                    <span className="text-[11px] font-mono font-semibold text-purple-400">SOL</span>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Escrow & Security Trust Badges */}
-            <div className="flex items-center gap-4 text-[11px] text-neutral-400 font-mono">
-              <span className="flex items-center gap-1.5 text-neutral-300">
+            <div className="flex items-center gap-4 text-[11px] text-neutral-400 font-mono shrink-0">
+              <span className="flex items-center gap-1.5 text-neutral-300 px-3 py-1.5 rounded-xl bg-white/[0.03] border border-white/[0.08]">
                 <Lock className="w-3.5 h-3.5 text-emerald-400" />
                 <span>256-Bit SSL Escrow</span>
               </span>
-              <span className="text-white/20">•</span>
-              <span className="flex items-center gap-1.5 text-neutral-300">
+              <span className="flex items-center gap-1.5 text-neutral-300 px-3 py-1.5 rounded-xl bg-white/[0.03] border border-white/[0.08]">
                 <BadgeCheck className="w-3.5 h-3.5 text-blue-400" />
                 <span>100% Genuine Guarantee</span>
               </span>
