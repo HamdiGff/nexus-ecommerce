@@ -52,6 +52,8 @@ import {
   Sparkles,
   Gamepad2,
   RefreshCw,
+  LogOut,
+  Mail,
 } from "lucide-react";
 import { MOCK_DIGITAL_PRODUCTS, DigitalProduct, DeliveryType } from "@/data/mockProducts";
 import {
@@ -216,8 +218,45 @@ export default function AdminDashboardPage() {
 
   const apiKeys = useAuthStore((state) => state.apiKeys);
   const updateApiKeys = useAuthStore((state) => state.updateApiKeys);
+  const user = useAuthStore((state) => state.user);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const isAdmin = useAuthStore((state) => state.isAdmin);
+  const loginWithEmail = useAuthStore((state) => state.loginWithEmail);
   const loginAdminDemo = useAuthStore((state) => state.loginAdminDemo);
+  const logout = useAuthStore((state) => state.logout);
+
+  const [mounted, setMounted] = useState(false);
+  const [adminEmailInput, setAdminEmailInput] = useState("admin@nexusdigital.io");
+  const [adminPasswordInput, setAdminPasswordInput] = useState("");
+  const [adminAuthError, setAdminAuthError] = useState("");
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
+  const [showAdminPass, setShowAdminPass] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const handleAdminLoginSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAdminAuthError("");
+    setIsAuthenticating(true);
+
+    try {
+      const res = await loginWithEmail(adminEmailInput, adminPasswordInput);
+      if (!res.success) {
+        setAdminAuthError(res.message || "Invalid administrative credentials.");
+      } else {
+        const curAdmin = useAuthStore.getState().isAdmin;
+        if (!curAdmin) {
+          setAdminAuthError("Access denied: This account does not possess Merchant Administrator privileges.");
+        }
+      }
+    } catch {
+      setAdminAuthError("Authentication service error. Please try again.");
+    } finally {
+      setIsAuthenticating(false);
+    }
+  };
 
   const [localApiKeys, setLocalApiKeys] = useState(apiKeys);
   const [savedSuccess, setSavedSuccess] = useState(false);
@@ -867,6 +906,156 @@ export default function AdminDashboardPage() {
     return true;
   });
 
+  // 1. Initial hydration check
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-[#07080c] flex items-center justify-center text-xs text-neutral-400 font-mono">
+        <span className="animate-pulse">Initializing Nexus Security Perimeter...</span>
+      </div>
+    );
+  }
+
+  // 2. RESTRICTION: Redirect & block unauthenticated / non-admin visitors
+  if (!isAuthenticated || !isAdmin) {
+    return (
+      <div className="min-h-screen bg-[#07080c] text-neutral-100 flex items-center justify-center p-4 antialiased relative overflow-hidden">
+        {/* Ambient background security glows */}
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] bg-gradient-to-tr from-blue-600/10 via-purple-600/10 to-amber-500/5 blur-3xl rounded-full pointer-events-none" />
+
+        <div className="w-full max-w-md bg-[#0c0e15] border border-white/[0.12] rounded-3xl p-8 shadow-2xl shadow-black/90 relative z-10 space-y-6">
+          <div className="text-center space-y-3">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white mx-auto shadow-lg shadow-indigo-600/30">
+              <ShieldCheck className="w-7 h-7" />
+            </div>
+            <div>
+              <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-blue-400 block mb-1">
+                Restricted Admin Area
+              </span>
+              <h1 className="text-xl font-black text-white tracking-tight">
+                Nexus Merchant Console
+              </h1>
+              <p className="text-xs text-neutral-400 mt-1">
+                Administrative authentication required to access fulfillment, license vaults, and financial telemetry.
+              </p>
+            </div>
+          </div>
+
+          {isAuthenticated && !isAdmin ? (
+            <div className="space-y-4">
+              <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-xs text-amber-200 space-y-2">
+                <div className="flex items-center gap-2 font-bold text-amber-400">
+                  <AlertCircle className="w-4 h-4 shrink-0" />
+                  <span>Customer Account Detected</span>
+                </div>
+                <p>
+                  You are currently logged in as <strong className="text-white font-mono">{user?.email}</strong>. This account does not possess Merchant Administrator privileges.
+                </p>
+              </div>
+
+              <div className="space-y-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    logout();
+                    setAdminPasswordInput("");
+                    setAdminAuthError("");
+                  }}
+                  className="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:brightness-110 text-white font-bold text-xs rounded-xl shadow-lg transition-all cursor-pointer"
+                >
+                  Sign Out &amp; Authenticate as Admin
+                </button>
+                <Link
+                  href="/"
+                  className="w-full py-3 bg-white/[0.04] hover:bg-white/[0.08] text-neutral-300 font-semibold text-xs rounded-xl flex items-center justify-center transition-colors"
+                >
+                  Return to Storefront
+                </Link>
+              </div>
+            </div>
+          ) : (
+            <form onSubmit={handleAdminLoginSubmit} className="space-y-4 text-xs">
+              {adminAuthError && (
+                <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 shrink-0" />
+                  <span>{adminAuthError}</span>
+                </div>
+              )}
+
+              <div className="space-y-1.5">
+                <label className="block font-semibold text-neutral-300">Admin Email</label>
+                <div className="relative">
+                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-500" />
+                  <input
+                    type="email"
+                    required
+                    value={adminEmailInput}
+                    onChange={(e) => setAdminEmailInput(e.target.value)}
+                    placeholder="admin@nexusdigital.io"
+                    className="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 text-white placeholder-neutral-500 focus:outline-hidden focus:border-blue-500 font-mono"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="block font-semibold text-neutral-300">Admin Password</label>
+                <div className="relative">
+                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-500" />
+                  <input
+                    type={showAdminPass ? "text" : "password"}
+                    required
+                    value={adminPasswordInput}
+                    onChange={(e) => setAdminPasswordInput(e.target.value)}
+                    placeholder="admin123"
+                    className="w-full pl-10 pr-10 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 text-white placeholder-neutral-500 focus:outline-hidden focus:border-blue-500 font-mono"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowAdminPass(!showAdminPass)}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-white"
+                  >
+                    {showAdminPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={isAuthenticating}
+                className="w-full py-3 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:brightness-110 disabled:opacity-50 text-white font-bold text-xs rounded-xl shadow-lg shadow-indigo-600/25 transition-all cursor-pointer flex items-center justify-center gap-2"
+              >
+                {isAuthenticating ? (
+                  <RefreshCw className="w-4 h-4 animate-spin" />
+                ) : (
+                  <ShieldCheck className="w-4 h-4" />
+                )}
+                <span>Authorize &amp; Enter Dashboard</span>
+              </button>
+
+              <div className="pt-2 border-t border-white/[0.08] space-y-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    loginAdminDemo();
+                  }}
+                  className="w-full py-2.5 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 font-bold text-xs rounded-xl transition-colors cursor-pointer flex items-center justify-center gap-1.5"
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Admin Demo 1-Click Login</span>
+                </button>
+
+                <div className="text-center pt-2">
+                  <Link href="/" className="text-neutral-400 hover:text-white text-[11px] font-semibold transition-colors">
+                    &larr; Return to Marketplace Storefront
+                  </Link>
+                </div>
+              </div>
+            </form>
+          )}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#07080c] text-neutral-100 flex flex-col md:flex-row antialiased">
       {/* 1. CMS FIXED LEFT SIDEBAR */}
@@ -1090,13 +1279,14 @@ export default function AdminDashboardPage() {
               <span className="text-[10px] text-neutral-400 font-mono">admin@nexusdigital.io</span>
             </div>
           </div>
-          <Link
-            href="/"
-            className="p-1.5 text-neutral-400 hover:text-rose-400 rounded-lg hover:bg-white/[0.06] transition-colors"
-            title="Log Out / Exit to Storefront"
+          <button
+            type="button"
+            onClick={() => logout()}
+            className="p-1.5 text-neutral-400 hover:text-rose-400 rounded-lg hover:bg-rose-500/10 transition-colors cursor-pointer"
+            title="Sign Out & Lock Admin Console"
           >
-            <ArrowLeft className="w-4 h-4" />
-          </Link>
+            <LogOut className="w-4 h-4" />
+          </button>
         </div>
       </aside>
 
@@ -1120,7 +1310,7 @@ export default function AdminDashboardPage() {
             </span>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
             <button
               onClick={() => setShowProductModal(true)}
               className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow-md shadow-blue-600/30 transition-all cursor-pointer"
@@ -1134,6 +1324,15 @@ export default function AdminDashboardPage() {
             >
               <Key className="w-3.5 h-3.5" />
               <span>Upload Keys</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => logout()}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.04] hover:bg-rose-500/15 border border-white/10 hover:border-rose-500/30 text-neutral-300 hover:text-rose-300 text-xs font-semibold transition-all cursor-pointer"
+              title="Sign Out Admin"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Sign Out Admin</span>
             </button>
           </div>
         </header>

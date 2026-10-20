@@ -114,15 +114,17 @@ export default function OrderLookupPage() {
       } catch { /* ignore */ }
     }
 
-    // 3. Filter by logged-in email
-    if (user?.email) {
+    // 3. Filter by logged-in email or explicitly searched email (privacy restriction)
+    const queryEmail = (user?.email || emailQuery).toLowerCase().trim();
+    if (queryEmail) {
       const filtered = all.filter((o) => {
         const e = (o.customerEmail || o.customer?.email || "").toLowerCase();
-        return !e || e === user.email.toLowerCase();
+        return e === queryEmail;
       });
-      setUserOrders(filtered.length ? filtered : all);
+      setUserOrders(filtered);
     } else {
-      setUserOrders(all);
+      // When logged out and no email queried, clear orders to prevent data leaks
+      setUserOrders([]);
     }
     setIsLoadingOrders(false);
   }, [effectiveEmail, user]);

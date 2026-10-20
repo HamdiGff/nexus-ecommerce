@@ -36,6 +36,8 @@ import CredentialPurgeTimer from "@/components/security/CredentialPurgeTimer";
 import { findOrderRecord, OrderRecord } from "@/data/mockOrders";
 import { generateOrderPdf } from "@/lib/pdfGenerator";
 import AdSenseOrderHandoffPortal from "@/components/orders/AdSenseOrderHandoffPortal";
+import { useAuthStore } from "@/lib/store/authStore";
+import AuthModal from "@/components/auth/AuthModal";
 
 interface OrderVaultClientProps {
   orderId: string;
@@ -48,49 +50,82 @@ export default function OrderVaultClient({ orderId }: OrderVaultClientProps) {
   const [activeOrder, setActiveOrder] = useState<OrderRecord | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Authentication & Security state
+  const user = useAuthStore((s) => s.user);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const isAdmin = useAuthStore((s) => s.isAdmin);
+  const logout = useAuthStore((s) => s.logout);
+
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [verifiedGuestEmail, setVerifiedGuestEmail] = useState<string | null>(null);
+  const [guestEmailInput, setGuestEmailInput] = useState("");
+  const [guestEmailError, setGuestEmailError] = useState("");
+
   useEffect(() => {
-    const record = findOrderRecord(cleanId);
-    if (record) {
-      setActiveOrder(record);
-    } else {
-      // Default fallback for any custom order ID entered
-      const fallback: OrderRecord = {
-        id: cleanId,
-        orderNumber: cleanId,
-        customerName: "Alex Mercer",
-        customerEmail: "alex.mercer@gmail.com",
-        productTitle: "WP Rocket - Caching & Core Web Vitals Accelerator (1 Website — 1 Year)",
-        category: "wordpress-plugin",
-        deliveryType: "SERVICE_SETUP",
-        status: "PROCESSING",
-        total: 15.0,
-        paymentRail: "Credit Card (Stripe)",
-        transactionId: `pi_3Ovy_${cleanId.replace("NEX-", "")}`,
-        createdAt: "October 19, 2026, 06:14 AM",
-        itemDetails: {
-          id: "prod-wp-rocket",
-          title: "WP Rocket Speed Accelerator",
-          tierOrVariant: "1 Website — 1 Year Official Agency Activation",
-          categoryName: "WordPress Plugins",
-          price: 15.0,
-          quantity: 1,
-          billingPeriod: "1 Year",
-        },
-        serviceCredentials: {
-          wpAdminUrl: "https://mercerdigital.com/wp-admin",
-          wpUsername: "nexus_admin_temp",
-          wpPassword: "Temp@WpRocket#2026!",
-          notes: "Please enable Delay JavaScript Execution and Cloudflare CDN add-on.",
-          targetItem: "WP Rocket v3.18.2",
-          technicianStep: 3,
-          activatedLicenseKey: "WPR-AGENCY-AUTH-772910",
-        },
-        purgeHours: 24,
-        isPurged: false,
-      };
-      setActiveOrder(fallback);
-    }
-    setIsLoading(false);
+    let isMounted = true;
+
+    const resolveOrder = async () => {
+      setIsLoading(true);
+
+      // 1. Check local mock & local storage
+      let found = findOrderRecord(cleanId);
+
+      // 2. Query server-side orders store
+      try {
+        const res = await fetch(`/api/orders?orderNumber=${encodeURIComponent(cleanId)}`, {
+          cache: "no-store",
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data?.order) {
+            found = {
+              id: data.order.orderNumber || data.order.id,
+              orderNumber: data.order.orderNumber || data.order.id,
+              customerName: data.order.customerName || data.order.customer?.name || "Customer",
+              customerEmail: (data.order.customerEmail || data.order.customer?.email || "").toLowerCase().trim(),
+              productTitle: data.order.items?.[0]?.title || data.order.productTitle || "Digital Order Item",
+              category: (data.order.items?.[0]?.category || data.order.category || "adsense-websites") as any,
+              deliveryType: (data.order.items?.[0]?.deliveryType || data.order.deliveryType || "MANUAL_HANDOFF") as any,
+              status: data.order.status || "PROCESSING",
+              total: data.order.total || 0,
+              paymentRail: data.order.paymentMethod || data.order.paymentRail || "Credit Card",
+              transactionId: data.order.transactionId || `tx_${cleanId}`,
+              createdAt: data.order.timestamp || data.order.createdAt || "Recent",
+              itemDetails: {
+                id: data.order.items?.[0]?.id || "item-1",
+                title: data.order.items?.[0]?.title || data.order.productTitle || "Digital Order Item",
+                tierOrVariant: data.order.items?.[0]?.variantTitle || "Standard Edition",
+                categoryName: data.order.items?.[0]?.category || "Digital Assets",
+                price: data.order.total || 0,
+                quantity: data.order.items?.[0]?.quantity || 1,
+              },
+              serviceCredentials: data.order.serviceCredentials,
+              accountCredentials: data.order.accountCredentials,
+              gameGiftCode: data.order.gameGiftCode,
+              softwareLicense: data.order.softwareLicense,
+              deliveredAsset: data.order.deliveredAsset,
+              dispensedKey: data.order.dispensedKey,
+              adsenseFulfillment: data.order.adsenseFulfillment,
+              adsenseDetails: data.order.submissions?.adsense,
+              submissions: data.order.submissions,
+            };
+          }
+        }
+      } catch {
+        // silent
+      }
+
+      if (isMounted) {
+        setActiveOrder(found || null);
+        setIsLoading(false);
+      }
+    };
+
+    resolveOrder();
+
+    return () => {
+      isMounted = false;
+    };
   }, [cleanId]);
 
   const handleCopy = (text: string, id: string) => {
@@ -193,13 +228,219 @@ Thank you for choosing NEXUS Digital Marketplace!
     URL.revokeObjectURL(url);
   };
 
-  if (isLoading || !activeOrder) {
+  // Email masking helper for privacy
+  const maskEmail = (email: string) => {
+    if (!email || !email.includes("@")) return "***@***.com";
+    const [local, domain] = email.split("@");
+    if (local.length <= 2) return `${local[0]}*@${domain}`;
+    return `${local[0]}***${local[local.length - 1]}@${domain}`;
+  };
+
+  // 1. Loading state
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-[#090a0f] text-neutral-100 flex items-center justify-center font-mono text-xs">
         <div className="flex items-center gap-2">
           <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
           <span>Decrypting Digital Asset Vault...</span>
         </div>
+      </div>
+    );
+  }
+
+  // 2. Order not found
+  if (!activeOrder) {
+    return (
+      <div className="min-h-screen bg-[#090a0f] text-neutral-100 flex items-center justify-center p-4">
+        <div className="max-w-md w-full bg-[#10121a] border border-white/[0.08] rounded-3xl p-8 text-center space-y-5 shadow-2xl">
+          <div className="w-14 h-14 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-400 flex items-center justify-center mx-auto">
+            <AlertCircle className="w-7 h-7" />
+          </div>
+          <div>
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-rose-400 block mb-1">
+              Vault Asset Not Located
+            </span>
+            <h2 className="text-xl font-bold text-white">Order #{cleanId} Not Found</h2>
+            <p className="text-xs text-neutral-400 mt-2 leading-relaxed">
+              We could not find a confirmed order with this ID. It may not exist or the order number was typed incorrectly.
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-2.5 pt-2">
+            <Link
+              href="/orders"
+              className="flex-1 py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs transition-colors text-center"
+            >
+              Order Lookup Portal
+            </Link>
+            <Link
+              href="/"
+              className="flex-1 py-3 px-4 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-neutral-300 font-semibold text-xs transition-colors text-center"
+            >
+              Back to Storefront
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // 3. Security & Permission Check
+  const orderEmail = (activeOrder.customerEmail || "").toLowerCase().trim();
+  const currentEmail = (user?.email || "").toLowerCase().trim();
+
+  const isOwner = Boolean(
+    (isAuthenticated && currentEmail && orderEmail && currentEmail === orderEmail) ||
+    (verifiedGuestEmail && verifiedGuestEmail.toLowerCase().trim() === orderEmail)
+  );
+
+  const isAuthorized = isAdmin || isOwner;
+
+  // 4. RESTRICTION: Block unauthorized or logged out visitors
+  if (!isAuthorized) {
+    const isMismatch = isAuthenticated && !isAdmin && currentEmail !== orderEmail;
+
+    return (
+      <div className="min-h-screen bg-[#090a0f] text-neutral-100 flex items-center justify-center p-4 antialiased relative overflow-hidden">
+        {/* Background ambient glow */}
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-tr from-blue-600/10 via-amber-500/10 to-transparent blur-3xl rounded-full pointer-events-none" />
+
+        <div className="w-full max-w-md bg-[#10121a] border border-white/[0.12] rounded-3xl p-8 shadow-2xl shadow-black/90 relative z-10 space-y-6">
+          <div className="text-center space-y-3">
+            <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-400 flex items-center justify-center mx-auto shadow-lg shadow-amber-500/10">
+              <Lock className="w-7 h-7" />
+            </div>
+            <div>
+              <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-amber-400 block mb-1">
+                Order Vault Locked
+              </span>
+              <h1 className="text-xl font-black text-white tracking-tight">
+                Authentication Required
+              </h1>
+              <p className="text-xs text-neutral-400 mt-1 leading-relaxed">
+                Order <strong className="font-mono text-white">#{cleanId}</strong> contains protected digital licenses, server credentials, and assets.
+              </p>
+            </div>
+          </div>
+
+          {isMismatch ? (
+            /* Logged in as someone else */
+            <div className="space-y-4">
+              <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-xs text-rose-200 space-y-2">
+                <div className="flex items-center gap-2 font-bold text-rose-400">
+                  <AlertCircle className="w-4 h-4 shrink-0" />
+                  <span>Account Permission Mismatch</span>
+                </div>
+                <p>
+                  You are currently signed in as <strong className="text-white font-mono">{user?.email}</strong>. However, this order belongs to another account (<strong className="text-white font-mono">{maskEmail(orderEmail)}</strong>).
+                </p>
+              </div>
+
+              <div className="space-y-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    logout();
+                    setShowAuthModal(true);
+                  }}
+                  className="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:brightness-110 text-white font-bold text-xs rounded-xl shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2"
+                >
+                  <User className="w-3.5 h-3.5" />
+                  <span>Sign Out &amp; Switch Account</span>
+                </button>
+                <Link
+                  href="/orders"
+                  className="w-full py-3 bg-white/[0.04] hover:bg-white/[0.08] text-neutral-300 font-semibold text-xs rounded-xl flex items-center justify-center transition-colors"
+                >
+                  Go to My Orders
+                </Link>
+              </div>
+            </div>
+          ) : (
+            /* Logged out: Sign in or verify with checkout email */
+            <div className="space-y-4">
+              <div className="p-3.5 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-xs text-blue-200 space-y-1">
+                <span className="font-bold text-blue-300 block">Protected Customer Vault</span>
+                <p className="text-[11px] text-neutral-300">
+                  Sign in to your account or enter the billing email used during checkout to unlock credentials.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setShowAuthModal(true)}
+                className="w-full py-3 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:brightness-110 text-white font-bold text-xs rounded-xl shadow-lg shadow-indigo-600/25 transition-all cursor-pointer flex items-center justify-center gap-2"
+              >
+                <User className="w-4 h-4" />
+                <span>Sign In to Customer Account</span>
+              </button>
+
+              <div className="relative py-2 text-center">
+                <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-white/[0.08]" /></div>
+                <span className="relative bg-[#10121a] px-3 text-[10px] uppercase font-bold text-neutral-500">
+                  Or verify as guest
+                </span>
+              </div>
+
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  setGuestEmailError("");
+                  const cleanEntered = guestEmailInput.trim().toLowerCase();
+                  if (!cleanEntered) {
+                    setGuestEmailError("Please enter your checkout email address.");
+                    return;
+                  }
+                  if (cleanEntered === orderEmail) {
+                    setVerifiedGuestEmail(cleanEntered);
+                  } else {
+                    setGuestEmailError("Email address does not match the billing record for this order.");
+                  }
+                }}
+                className="space-y-2.5 text-xs"
+              >
+                <div>
+                  <label className="block font-semibold text-neutral-300 mb-1">
+                    Enter Checkout Email ({maskEmail(orderEmail)}):
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    value={guestEmailInput}
+                    onChange={(e) => setGuestEmailInput(e.target.value)}
+                    placeholder="e.g. buyer@example.com"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 text-white placeholder-neutral-500 focus:outline-hidden focus:border-blue-500 font-mono"
+                  />
+                </div>
+
+                {guestEmailError && (
+                  <p className="text-[11px] text-rose-400 bg-rose-500/10 p-2.5 rounded-xl border border-rose-500/20">
+                    {guestEmailError}
+                  </p>
+                )}
+
+                <button
+                  type="submit"
+                  className="w-full py-2.5 bg-white/[0.06] hover:bg-white/[0.1] border border-white/10 text-white font-bold text-xs rounded-xl transition-colors cursor-pointer"
+                >
+                  Verify Email &amp; Unlock Vault
+                </button>
+              </form>
+
+              <div className="text-center pt-2">
+                <Link href="/orders" className="text-neutral-400 hover:text-white text-[11px] font-semibold transition-colors">
+                  &larr; Return to Order Search
+                </Link>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Auth modal integration */}
+        <AuthModal
+          isOpen={showAuthModal}
+          onClose={() => setShowAuthModal(false)}
+          defaultMode="login"
+        />
       </div>
     );
   }
@@ -840,6 +1081,13 @@ Thank you for choosing NEXUS Digital Marketplace!
             Open Support Ticket
           </Link>
         </div>
+
+        {/* Global Auth Modal for Account Switching */}
+        <AuthModal
+          isOpen={showAuthModal}
+          onClose={() => setShowAuthModal(false)}
+          defaultMode="login"
+        />
       </div>
     </div>
   );
