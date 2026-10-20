@@ -184,7 +184,7 @@ export const useProductStore = create<ProductStoreState>()(
     }),
     {
       name: "nexus-admin-products-storage",
-      version: 9,
+      version: 10,
       migrate: (persistedState: any) => {
         const existingProducts: DigitalProduct[] = persistedState?.products || [];
         const mockMap = new Map<string, DigitalProduct>(MOCK_DIGITAL_PRODUCTS.map((p) => [p.id, p]));
@@ -204,7 +204,7 @@ export const useProductStore = create<ProductStoreState>()(
         if (defaultRm) {
           if (rmIndex === -1) {
             state.products = [...state.products, defaultRm];
-          } else if (state.products[rmIndex].images.length < defaultRm.images.length) {
+          } else {
             state.products[rmIndex].images = defaultRm.images;
           }
         }
@@ -214,7 +214,7 @@ export const useProductStore = create<ProductStoreState>()(
         if (defaultEl) {
           if (elIndex === -1) {
             state.products = [...state.products, defaultEl];
-          } else if (state.products[elIndex].images.length < defaultEl.images.length) {
+          } else {
             state.products[elIndex].images = defaultEl.images;
           }
         }
@@ -224,7 +224,7 @@ export const useProductStore = create<ProductStoreState>()(
         if (defaultAstra) {
           if (astraIndex === -1) {
             state.products = [...state.products, defaultAstra];
-          } else if (state.products[astraIndex].images.length < defaultAstra.images.length) {
+          } else {
             state.products[astraIndex].images = defaultAstra.images;
           }
         }

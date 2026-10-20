@@ -112,6 +112,12 @@ export default function ProductDetailClient({ product: initialProduct }: Product
                   (product.slug.includes("rank-math") ? "/products/rank-math-pro.svg" : "/products/wp-rocket.svg")
                 }
                 alt={product.title}
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  if (!target.src.includes("rank-math-schema-rich-snippets")) {
+                    target.src = "/products/rank-math-schema-rich-snippets.svg";
+                  }
+                }}
                 className="w-full h-full object-cover object-center"
               />
             </div>
@@ -128,7 +134,17 @@ export default function ProductDetailClient({ product: initialProduct }: Product
                         : "border-white/10 opacity-70 hover:opacity-100"
                     }`}
                   >
-                    <img src={img} alt="" className="w-full h-full object-cover" />
+                    <img
+                      src={img}
+                      alt=""
+                      onError={(e) => {
+                        const target = e.currentTarget;
+                        if (!target.src.includes("rank-math-schema-rich-snippets")) {
+                          target.src = "/products/rank-math-schema-rich-snippets.svg";
+                        }
+                      }}
+                      className="w-full h-full object-cover"
+                    />
                   </button>
                 ))}
               </div>
