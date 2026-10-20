@@ -24,6 +24,7 @@ import { formatPrice } from "@/lib/utils";
 import { useCartStore } from "@/lib/store/cartStore";
 import BundleSaveEngine from "@/components/product/BundleSaveEngine";
 import WPRocketProductExperience from "@/components/product/WPRocketProductExperience";
+import RankMathProductExperience from "@/components/product/RankMathProductExperience";
 import ProductReviewsSection from "@/components/product/ProductReviewsSection";
 import { useProductStore } from "@/lib/store/productStore";
 
@@ -103,19 +104,23 @@ export default function ProductDetailClient({ product: initialProduct }: Product
           <div className="lg:col-span-7 space-y-4">
             <div className="relative aspect-video bg-[#10121a] rounded-3xl overflow-hidden border border-white/[0.1] shadow-2xl">
               <img
-                src={product.images[selectedImage]}
+                src={
+                  (product.images && product.images[selectedImage]) ||
+                  (product.images && product.images[0]) ||
+                  (product.slug.includes("rank-math") ? "/products/rank-math-pro.svg" : "/products/wp-rocket.svg")
+                }
                 alt={product.title}
                 className="w-full h-full object-cover object-center"
               />
             </div>
 
-            {product.images.length > 1 && (
+            {product.images && product.images.length > 1 && (
               <div className="flex gap-3">
                 {product.images.map((img, idx) => (
                   <button
                     key={idx}
                     onClick={() => setSelectedImage(idx)}
-                    className={`relative w-24 h-16 rounded-2xl overflow-hidden border-2 transition-all ${
+                    className={`relative w-24 h-16 rounded-2xl overflow-hidden border-2 transition-all cursor-pointer ${
                       selectedImage === idx
                         ? "border-blue-500 scale-105 shadow-lg shadow-blue-500/20"
                         : "border-white/10 opacity-70 hover:opacity-100"
@@ -559,6 +564,12 @@ export default function ProductDetailClient({ product: initialProduct }: Product
         {product.slug === "wp-rocket" && (
           <div className="mt-12">
             <WPRocketProductExperience />
+          </div>
+        )}
+
+        {(product.slug === "rank-math-pro" || product.slug.startsWith("rank-math")) && (
+          <div className="mt-12">
+            <RankMathProductExperience />
           </div>
         )}
 

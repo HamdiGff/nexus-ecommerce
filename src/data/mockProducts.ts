@@ -315,6 +315,8 @@ export const MOCK_DIGITAL_PRODUCTS: DigitalProduct[] = [
     reviewsCount: 118,
     images: [
       "/products/rank-math-pro.svg",
+      "/products/rank-math-schema-rich-snippets.svg",
+      "/products/rank-math-analytics-rank-tracker.svg",
     ],
     variants: [
       {

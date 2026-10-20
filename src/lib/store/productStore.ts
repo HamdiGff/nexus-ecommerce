@@ -197,11 +197,13 @@ export const useProductStore = create<ProductStoreState>()(
       },
       onRehydrateStorage: () => (state) => {
         if (!state) return;
-        const hasRankMath = state.products.some((p) => p.id === "rank-math-pro" || p.slug === "rank-math-pro");
-        if (!hasRankMath) {
-          const rm = MOCK_DIGITAL_PRODUCTS.find((p) => p.id === "rank-math-pro");
-          if (rm) {
-            state.products = [...state.products, rm];
+        const rmIndex = state.products.findIndex((p) => p.id === "rank-math-pro" || p.slug === "rank-math-pro");
+        const defaultRm = MOCK_DIGITAL_PRODUCTS.find((p) => p.id === "rank-math-pro");
+        if (defaultRm) {
+          if (rmIndex === -1) {
+            state.products = [...state.products, defaultRm];
+          } else if (state.products[rmIndex].images.length < defaultRm.images.length) {
+            state.products[rmIndex].images = defaultRm.images;
           }
         }
       },

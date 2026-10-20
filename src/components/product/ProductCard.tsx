@@ -115,7 +115,10 @@ export default function ProductCard({ product }: ProductCardProps) {
       >
         {!imgError ? (
           <img
-            src={product.images[0]}
+            src={
+              (product.images && product.images[0]) ||
+              (product.slug.includes("rank-math") ? "/products/rank-math-pro.svg" : "/products/wp-rocket.svg")
+            }
             alt={product.title}
             onError={() => setImgError(true)}
             className="w-full h-full object-cover object-center group-hover:scale-106 transition-transform duration-500 ease-out opacity-90 group-hover:opacity-100"
