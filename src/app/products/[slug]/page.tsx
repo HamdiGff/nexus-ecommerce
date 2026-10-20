@@ -47,7 +47,8 @@ function resolveProduct(slug: string) {
       (clean.startsWith("rank-math") && p.slug.startsWith("rank-math")) ||
       (clean.startsWith("elementor") && p.slug.startsWith("elementor")) ||
       (clean.startsWith("astra") && p.slug.startsWith("astra")) ||
-      (clean.includes("adsense") && p.slug.includes("adsense"))
+      (clean.includes("adsense") && p.slug.includes("adsense")) ||
+      (clean.includes("chatgpt") && p.slug.includes("chatgpt"))
   );
 }
 

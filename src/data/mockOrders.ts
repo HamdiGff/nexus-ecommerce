@@ -92,6 +92,7 @@ export interface OrderRecord {
   softwareLicense?: SoftwareLicense;
   deliveredAsset?: TurnkeyWebsiteAsset;
   adsenseFulfillment?: any;
+  chatgptFulfillment?: any;
   adsenseDetails?: any;
   submissions?: any;
 
@@ -105,6 +106,42 @@ export interface OrderRecord {
 }
 
 export const INITIAL_ORDERS: OrderRecord[] = [
+  {
+    id: "ord-938210",
+    orderNumber: "NEX-938210",
+    customerName: "David Miller",
+    customerEmail: "david.miller@gmail.com",
+    productTitle: "ChatGPT Plus & Pro — Personal Account Manual Activation",
+    category: "ai-tools",
+    deliveryType: "MANUAL_HANDOFF",
+    status: "PROCESSING",
+    total: 69.99,
+    paymentRail: "Stripe Card (Visa)",
+    transactionId: "pi_3PjX9842109David",
+    createdAt: "Today at 04:15 PM",
+    itemDetails: {
+      id: "cgpt-plus-6m",
+      title: "ChatGPT Plus — 6 Month Plan (Personal Email)",
+      tierOrVariant: "Plus 6-Month Plan",
+      categoryName: "AI Tools",
+      price: 69.99,
+      quantity: 1,
+      billingPeriod: "6 Months",
+    },
+    submissions: {
+      chatgptEmail: "david.miller@gmail.com",
+      chatgptNotes: "Currently on free tier at chatgpt.com. Please upgrade.",
+    },
+    chatgptFulfillment: {
+      planType: "PLUS",
+      customerChatgptEmail: "david.miller@gmail.com",
+      status: "WAITING_2FA",
+      technicianNotes: "Initiating login. Awaiting 2FA verification code from customer.",
+    },
+    isPurged: false,
+    purgeHours: 24,
+  },
+
   {
     id: "NEX-884920",
     orderNumber: "NEX-884920",

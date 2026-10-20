@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" fill="none">
+  <defs>
+    <linearGradient id="bgF" x1="0" y1="0" x2="800" y2="500" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#070a12"/>
+      <stop offset="100%" stop-color="#050e11"/>
+    </linearGradient>
+    <linearGradient id="glowLineF" x1="0" y1="0" x2="800" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="transparent"/>
+      <stop offset="50%" stop-color="#10a37f"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="800" height="500" fill="url(#bgF)"/>
+  <rect x="0" y="0" width="800" height="1.5" fill="url(#glowLineF)"/>
+
+  <!-- Header -->
+  <text x="50" y="55" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="11" font-weight="800" fill="#10a37f" letter-spacing="3">COMPARISON MATRIX</text>
+  <text x="50" y="95" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="32" font-weight="900" fill="white" letter-spacing="-1">ChatGPT Plus vs. ChatGPT Pro</text>
+  <text x="50" y="122" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="14" fill="#64748b">Both activated on your personal email address with full validity protection.</text>
+
+  <!-- Left Column: ChatGPT Plus -->
+  <g transform="translate(50, 150)">
+    <rect width="335" height="280" rx="20" fill="#091414"/>
+    <rect width="335" height="280" rx="20" fill="none" stroke="#10a37f" stroke-width="1.5"/>
+    <rect width="335" height="3" rx="1.5" fill="#10a37f"/>
+
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <!-- Title -->
+    </div>
+    <text x="24" y="38" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="20" font-weight="900" fill="#10a37f">ChatGPT Plus</text>
+    <text x="24" y="58" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#94a3b8">Personal 2FA Manual Setup · From $14.99/mo</text>
+
+    <!-- Inclusions list -->
+    <g transform="translate(24, 80)">
+      <circle cx="5" cy="5" r="3" fill="#10a37f"/>
+      <text x="18" y="9" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="12" fill="#e2e8f0">Delivery: 15–30 Mins (Live 2FA Handshake)</text>
+    </g>
+    <g transform="translate(24, 110)">
+      <circle cx="5" cy="5" r="3" fill="#10a37f"/>
+      <text x="18" y="9" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="12" fill="#e2e8f0">Models: GPT-4o &amp; GPT-4 standard limits</text>
+    </g>
+    <g transform="translate(24, 140)">
+      <circle cx="5" cy="5" r="3" fill="#10a37f"/>
+      <text x="18" y="9" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="12" fill="#e2e8f0">Creative: Full DALL·E 3 Image Generation</text>
+    </g>
+    <g transform="translate(24, 170)">
+      <circle cx="5" cy="5" r="3" fill="#10a37f"/>
+      <text x="18" y="9" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="12" fill="#e2e8f0">Tools: Python Code Interpreter &amp; Browsing</text>
+    </g>
+    <g transform="translate(24, 200)">
+      <circle cx="5" cy="5" r="3" fill="#10a37f"/>
+      <text x="18" y="9" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="12" fill="#e2e8f0">Agents: Custom GPTs Creation &amp; Store</text>
+    </g>
+    <g transform="translate(24, 230)">
+      <circle cx="5" cy="5" r="3" fill="#10a37f"/>
+      <text x="18" y="9" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#10a37f">✓ Best for individual creators, coders &amp; writers</text>
+    </g>
+  </g>
+
+  <!-- Right Column: ChatGPT Pro -->
+  <g transform="translate(415, 150)">
+    <rect width="335" height="280" rx="20" fill="#110d20"/>
+    <rect width="335" height="280" rx="20" fill="none" stroke="#8b5cf6" stroke-width="1.5"/>
+    <rect width="335" height="3" rx="1.5" fill="#8b5cf6"/>
+
+    <text x="24" y="38" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="20" font-weight="900" fill="#a78bfa">ChatGPT Pro</text>
+    <text x="24" y="58" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#94a3b8">Official Email Invite · $149.99/mo (Orig. $200)</text>
+
+    <!-- Inclusions list -->
+    <g transform="translate(24, 80)">
+      <circle cx="5" cy="5" r="3" fill="#a78bfa"/>
+      <text x="18" y="9" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#c084fc">Delivery: Direct Invite Link (No Password/2FA)</text>
+    </g>
+    <g transform="translate(24, 110)">
+      <circle cx="5" cy="5" r="3" fill="#a78bfa"/>
+      <text x="18" y="9" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#c084fc">Reasoning: OpenAI o1 Pro Mode Included</text>
+    </g>
+    <g transform="translate(24, 140)">
+      <circle cx="5" cy="5" r="3" fill="#a78bfa"/>
+      <text x="18" y="9" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="12" fill="#e2e8f0">Limits: Unlimited GPT-4o &amp; High-Compute Access</text>
+    </g>
+    <g transform="translate(24, 170)">
+      <circle cx="5" cy="5" r="3" fill="#a78bfa"/>
+      <text x="18" y="9" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="12" fill="#e2e8f0">Memory: Maximum Context Length for Long Docs</text>
+    </g>
+    <g transform="translate(24, 200)">
+      <circle cx="5" cy="5" r="3" fill="#a78bfa"/>
+      <text x="18" y="9" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="12" fill="#e2e8f0">Priority: Dedicated High-Speed Compute Cluster</text>
+    </g>
+    <g transform="translate(24, 230)">
+      <circle cx="5" cy="5" r="3" fill="#a78bfa"/>
+      <text x="18" y="9" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#c084fc">✓ Best for researchers, enterprises &amp; heavy AI users</text>
+    </g>
+  </g>
+
+  <!-- Bottom Strip -->
+  <rect x="0" y="460" width="800" height="40" fill="#050810"/>
+  <text x="50" y="484" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="11" fill="#475569">Delivered to your Personal Email in 15–30 Mins • Zero Password Leaks • 100% Guaranteed</text>
+  <text x="660" y="484" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="11" font-weight="800" fill="#10a37f">NEXUS VAULT</text>
+</svg>

@@ -103,6 +103,7 @@ interface OrderAdminRecord {
   deliveredAsset?: TurnkeyWebsiteAsset;
   // AdSense Multi-stage Fulfillment & Order Chat
   adsenseFulfillment?: any;
+  chatgptFulfillment?: any;
   adsenseDetails?: any;
   submissions?: any;
 }
@@ -526,6 +527,16 @@ export default function AdminDashboardPage() {
     warrantyTerms: "30-Day Auto Replacement Warranty included",
   });
 
+  // 2b. ChatGPT Plus & Pro Personal Email Activation Modal
+  const [chatGptTargetOrder, setChatGptTargetOrder] = useState<OrderAdminRecord | null>(null);
+  const [chatGptForm, setChatGptForm] = useState({
+    email: "",
+    planType: "PLUS" as "PLUS" | "PRO",
+    inviteLink: "",
+    notes: "",
+    status: "COMPLETED" as "PROCESSING" | "COMPLETED",
+  });
+
   // 3. WordPress Setup Confirmation Modal
   const [wpActivationOrder, setWpActivationOrder] = useState<OrderAdminRecord | null>(null);
   const [wpActivationKey, setWpActivationKey] = useState("WPR-AGENCY-AUTH-772910");
@@ -692,6 +703,45 @@ export default function AdminDashboardPage() {
     );
 
     setAiDispatchOrder(null);
+  };
+
+  // Fulfill ChatGPT Plus / Pro Personal Email Order
+  const handleDeliverChatGpt = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!chatGptTargetOrder) return;
+
+    setOrders((prev) =>
+      prev.map((o) => {
+        if (o.id === chatGptTargetOrder.id) {
+          const updated: OrderAdminRecord = {
+            ...o,
+            status: chatGptForm.status,
+            chatgptFulfillment: {
+              planType: chatGptForm.planType,
+              customerChatgptEmail: chatGptForm.email,
+              inviteLink: chatGptForm.inviteLink,
+              technicianNotes: chatGptForm.notes,
+              status: chatGptForm.status,
+              activatedAt: new Date().toLocaleTimeString(),
+            },
+            accountCredentials: {
+              toolName: o.productTitle,
+              accountEmail: chatGptForm.email,
+              planType: chatGptForm.planType === "PRO" ? "Private Dedicated Account" : "Shared Slot",
+              profileSlot: chatGptForm.planType === "PRO" ? "OpenAI Pro Workspace" : "Personal 2FA Upgrade",
+              expiresAt: "Active with Full-Term Validity Guarantee",
+              warrantyTerms: "100% Full-Period Replacement Warranty",
+              isDelivered: true,
+            },
+          };
+          syncOrderToLocalStorage(updated);
+          return updated;
+        }
+        return o;
+      })
+    );
+
+    setChatGptTargetOrder(null);
   };
 
   // Dispatch / Swap Game Digital Gift Code
@@ -1458,15 +1508,17 @@ export default function AdminDashboardPage() {
             <div className="bg-white rounded-3xl border border-neutral-200 overflow-hidden shadow-xs divide-y divide-neutral-100">
               {filteredOrders.map((order) => {
                 const isPassVisible = revealedPasswords[order.id] || false;
+                const isChatGpt = (order.productTitle || "").toLowerCase().includes("chatgpt") || Boolean(order.submissions?.chatgptEmail) || Boolean(order.submissions?.chatgpt);
                 const isWp = order.deliveryType === "SERVICE_SETUP" || order.category?.includes("wordpress");
-                const isAi = order.category === "ai-tools" || Boolean(order.accountCredentials);
+                const isAi = !isChatGpt && (order.category === "ai-tools" || Boolean(order.accountCredentials));
                 const isGame = order.category === "game-codes" || Boolean(order.gameGiftCode);
                 const isSoftware = order.category === "software-license" || Boolean(order.softwareLicense);
-                const isWebsite =
+                const isWebsite = !isChatGpt && (
                   order.deliveryType === "MANUAL_HANDOFF" ||
                   order.category === "adsense-websites" ||
                   Boolean(order.adsenseFulfillment) ||
-                  Boolean(order.deliveredAsset);
+                  Boolean(order.deliveredAsset)
+                );
 
                 return (
                   <div key={order.id} className="p-6 hover:bg-neutral-50/50 transition-colors space-y-4">
@@ -1479,6 +1531,11 @@ export default function AdminDashboardPage() {
                           <span className="text-xs text-neutral-400">• {order.createdAt}</span>
 
                           {/* Delivery Type Badge */}
+                          {isChatGpt && (
+                            <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 flex items-center gap-1">
+                              <Sparkles className="w-3 h-3 text-emerald-600" /> ChatGPT Personal Email (30m SLA)
+                            </span>
+                          )}
                           {isWp && (
                             <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800 flex items-center gap-1">
                               <Wrench className="w-3 h-3" /> WP Setup ({order.category === "wordpress-theme" ? "Theme" : "Plugin"})
@@ -1774,6 +1831,62 @@ export default function AdminDashboardPage() {
                             {order.softwareLicense?.edition || "Retail Online Activation"}
                           </span>
                         </div>
+                      </div>
+                    )}
+
+                    {/* TYPE: CHATGPT PLUS & PRO PERSONAL EMAIL MANUAL FULFILLMENT */}
+                    {isChatGpt && (
+                      <div className="p-4 rounded-2xl bg-emerald-950/20 border border-emerald-500/30 text-xs space-y-3">
+                        <div className="flex items-center justify-between font-bold text-white pb-2 border-b border-emerald-500/20 flex-wrap gap-2">
+                          <span className="flex items-center gap-1.5 text-emerald-400">
+                            <Sparkles className="w-3.5 h-3.5" />
+                            ChatGPT Plus &amp; Pro Personal Email Delivery Desk (15–30m SLA)
+                          </span>
+                          <button
+                            onClick={() => {
+                              setChatGptTargetOrder(order);
+                              setChatGptForm({
+                                email: order.submissions?.chatgptEmail || order.submissions?.chatgpt?.email || order.customerEmail,
+                                planType: (order.productTitle || "").toLowerCase().includes("pro") ? "PRO" : "PLUS",
+                                inviteLink: order.chatgptFulfillment?.inviteLink || "",
+                                notes: order.chatgptFulfillment?.technicianNotes || "Personal email activation completed successfully.",
+                                status: order.status === "COMPLETED" ? "COMPLETED" : "COMPLETED",
+                              });
+                            }}
+                            className="px-3.5 py-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl font-bold text-[11px] transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
+                          >
+                            <Sparkles className="w-3.5 h-3.5 text-emerald-200" />
+                            <span>Fulfill ChatGPT Order</span>
+                          </button>
+                        </div>
+
+                        {/* Summary Info */}
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 font-mono text-neutral-300">
+                          <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+                            <span className="text-neutral-400 text-[10px] block font-sans">Target Customer Email:</span>
+                            <span className="font-bold text-white select-all">
+                              {order.submissions?.chatgptEmail || order.submissions?.chatgpt?.email || order.customerEmail}
+                            </span>
+                          </div>
+                          <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+                            <span className="text-neutral-400 text-[10px] block font-sans">Fulfillment Type:</span>
+                            <span className="font-bold text-emerald-400">
+                              {(order.productTitle || "").toLowerCase().includes("pro") ? "OpenAI Email Invite Link (Pro)" : "Manual 2FA Login Upgrade (Plus)"}
+                            </span>
+                          </div>
+                          <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+                            <span className="text-neutral-400 text-[10px] block font-sans">Delivery Status:</span>
+                            <span className="font-bold text-white">
+                              {order.status === "COMPLETED" ? "Activated & Active ✓" : "In Progress (15–30m SLA)"}
+                            </span>
+                          </div>
+                        </div>
+
+                        {order.submissions?.chatgptNotes && (
+                          <div className="p-2 rounded-lg bg-black/40 border border-white/[0.05] text-[11px] text-neutral-400">
+                            <strong>Buyer Notes:</strong> {order.submissions.chatgptNotes}
+                          </div>
+                        )}
                       </div>
                     )}
 
@@ -3677,6 +3790,137 @@ export default function AdminDashboardPage() {
                     className="px-5 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold hover:brightness-110 shadow-lg shadow-indigo-600/20"
                   >
                     Publish Coupon
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* MODAL: CHATGPT PLUS & PRO PERSONAL EMAIL FULFILLMENT */}
+        {chatGptTargetOrder && (
+          <div className="fixed inset-0 z-50 bg-neutral-950/70 backdrop-blur-xs flex items-center justify-center p-4">
+            <div className="w-full max-w-lg bg-[#0f111a] rounded-3xl p-6 sm:p-8 border border-emerald-500/30 shadow-2xl space-y-5 text-white animate-in fade-in zoom-in-95 duration-200">
+              <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+                <div>
+                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                    <Sparkles className="w-5 h-5 text-emerald-400" />
+                    ChatGPT Order Delivery Console
+                  </h3>
+                  <p className="text-xs text-neutral-400 mt-1">
+                    Order {chatGptTargetOrder.orderNumber} • {chatGptTargetOrder.customerName}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setChatGptTargetOrder(null)}
+                  className="text-neutral-400 hover:text-white font-bold p-1"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <form onSubmit={handleDeliverChatGpt} className="space-y-4 text-xs">
+                <div>
+                  <label className="block font-semibold text-neutral-300 mb-1">
+                    Customer Target ChatGPT Email Address
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    value={chatGptForm.email}
+                    onChange={(e) => setChatGptForm({ ...chatGptForm, email: e.target.value })}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-white/10 bg-white/[0.04] font-mono text-white focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
+                  />
+                  <p className="text-[10.5px] text-neutral-500 mt-1">
+                    Delivery must be completed on this personal email.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block font-semibold text-neutral-300 mb-1">
+                      Plan Type
+                    </label>
+                    <select
+                      value={chatGptForm.planType}
+                      onChange={(e) => setChatGptForm({ ...chatGptForm, planType: e.target.value as any })}
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-white/10 bg-[#161926] text-white font-semibold"
+                    >
+                      <option value="PLUS">ChatGPT Plus (Manual 2FA)</option>
+                      <option value="PRO">ChatGPT Pro (Email Invite)</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold text-neutral-300 mb-1">
+                      Order Status After Save
+                    </label>
+                    <select
+                      value={chatGptForm.status}
+                      onChange={(e) => setChatGptForm({ ...chatGptForm, status: e.target.value as any })}
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-white/10 bg-[#161926] text-white font-semibold"
+                    >
+                      <option value="COMPLETED">COMPLETED (Activated)</option>
+                      <option value="PROCESSING">PROCESSING (Awaiting 2FA)</option>
+                    </select>
+                  </div>
+                </div>
+
+                {chatGptForm.planType === "PRO" ? (
+                  <div>
+                    <label className="block font-semibold text-purple-300 mb-1">
+                      OpenAI Pro Workspace Invitation Link (Sent to Customer)
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g. https://chat.openai.com/invite/auth_org_..."
+                      value={chatGptForm.inviteLink}
+                      onChange={(e) => setChatGptForm({ ...chatGptForm, inviteLink: e.target.value })}
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-purple-500/30 bg-white/[0.04] font-mono text-white focus:ring-2 focus:ring-purple-500 focus:outline-hidden"
+                    />
+                    <p className="text-[10.5px] text-neutral-400 mt-1">
+                      Pro plans are delivered by sending this invite link to the customer's email or Order Vault.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="p-3.5 rounded-xl bg-emerald-950/40 border border-emerald-500/20 space-y-2">
+                    <span className="font-bold text-emerald-400 block text-xs">
+                      2FA Login Upgrade Checklist (ChatGPT Plus):
+                    </span>
+                    <ol className="list-decimal list-inside space-y-1 text-[11px] text-neutral-300">
+                      <li>Initiate login to customer's email at chatgpt.com.</li>
+                      <li>Use the Live Chat or Ticket desk below to ask customer for their 6-digit 2FA code.</li>
+                      <li>Enter code, verify subscription upgraded to Plus, and submit confirmation below.</li>
+                    </ol>
+                  </div>
+                )}
+
+                <div>
+                  <label className="block font-semibold text-neutral-300 mb-1">
+                    Technician Delivery Notes / Confirmation
+                  </label>
+                  <input
+                    type="text"
+                    value={chatGptForm.notes}
+                    onChange={(e) => setChatGptForm({ ...chatGptForm, notes: e.target.value })}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-white/10 bg-white/[0.04] text-white"
+                  />
+                </div>
+
+                <div className="flex gap-3 pt-3 justify-end border-t border-white/[0.08]">
+                  <button
+                    type="button"
+                    onClick={() => setChatGptTargetOrder(null)}
+                    className="px-4 py-2.5 rounded-xl border border-white/10 font-semibold text-neutral-300 hover:text-white hover:bg-white/[0.05]"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold shadow-md shadow-emerald-600/30 flex items-center gap-1.5"
+                  >
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>Save &amp; Complete Delivery</span>
                   </button>
                 </div>
               </form>

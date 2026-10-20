@@ -17,6 +17,7 @@ export function generateStaticParams() {
     { id: "NEX-948208" },
     { id: "NEX-948210" },
     { id: "NEX-948209" },
+    { id: "NEX-938210" },
   ];
 }
 

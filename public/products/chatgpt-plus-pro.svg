@@ -1,0 +1,164 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="800" y2="500" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#070b14"/>
+      <stop offset="50%" stop-color="#0b1322"/>
+      <stop offset="100%" stop-color="#061210"/>
+    </linearGradient>
+    <linearGradient id="gptGreen" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#10a37f"/>
+      <stop offset="100%" stop-color="#006644"/>
+    </linearGradient>
+    <linearGradient id="proPurple" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#6d28d9"/>
+    </linearGradient>
+    <linearGradient id="cardGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#131b2e"/>
+      <stop offset="100%" stop-color="#0d1422"/>
+    </linearGradient>
+    <linearGradient id="glowLine" x1="0" y1="0" x2="800" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="transparent"/>
+      <stop offset="30%" stop-color="#10a37f"/>
+      <stop offset="70%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </linearGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="16" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="500" fill="url(#bg)"/>
+
+  <!-- Top accent glow line -->
+  <rect x="0" y="0" width="800" height="2" fill="url(#glowLine)"/>
+
+  <!-- Grid lines (subtle) -->
+  <g opacity="0.05" stroke="#10a37f" stroke-width="0.5">
+    <line x1="0" y1="100" x2="800" y2="100"/>
+    <line x1="0" y1="200" x2="800" y2="200"/>
+    <line x1="0" y1="300" x2="800" y2="300"/>
+    <line x1="0" y1="400" x2="800" y2="400"/>
+    <line x1="200" y1="0" x2="200" y2="500"/>
+    <line x1="400" y1="0" x2="400" y2="500"/>
+    <line x1="600" y1="0" x2="600" y2="500"/>
+  </g>
+
+  <!-- Ambient Glow Blobs -->
+  <circle cx="160" cy="240" r="140" fill="#10a37f" opacity="0.06" filter="url(#glow)"/>
+  <circle cx="640" cy="200" r="160" fill="#8b5cf6" opacity="0.05" filter="url(#glow)"/>
+
+  <!-- Left: Hero Brand Box -->
+  <g transform="translate(50, 60)">
+    <!-- OpenAI Swirl Logo -->
+    <g filter="url(#glow)">
+      <circle cx="48" cy="48" r="42" fill="url(#gptGreen)" opacity="0.2"/>
+      <circle cx="48" cy="48" r="36" fill="none" stroke="#10a37f" stroke-width="1.5" opacity="0.6"/>
+      <path d="M48 18 C64 18, 78 32, 78 48 C78 64, 64 78, 48 78 C32 78, 18 64, 18 48" stroke="#10a37f" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <path d="M34 26 C45 20, 58 20, 66 28 C74 36, 76 48, 70 58" stroke="#10a37f" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.8"/>
+      <circle cx="48" cy="48" r="5" fill="#10a37f"/>
+    </g>
+
+    <!-- Title & Brand -->
+    <text x="110" y="38" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="28" font-weight="900" fill="white" letter-spacing="-1">ChatGPT</text>
+    <text x="240" y="38" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="28" font-weight="900" fill="#10a37f" letter-spacing="-1">PLUS</text>
+    <text x="320" y="38" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="24" font-weight="700" fill="#6b7280">&amp;</text>
+    <text x="345" y="38" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="28" font-weight="900" fill="#a78bfa" letter-spacing="-1">PRO</text>
+
+    <!-- Subtitle -->
+    <text x="110" y="62" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#94a3b8" letter-spacing="1.5">OFFICIAL PERSONAL EMAIL ACTIVATION</text>
+
+    <!-- Badges Row -->
+    <g transform="translate(110, 76)">
+      <rect x="0" y="0" width="140" height="22" rx="11" fill="#10a37f" opacity="0.15"/>
+      <rect x="0" y="0" width="140" height="22" rx="11" fill="none" stroke="#10a37f" stroke-width="1" opacity="0.4"/>
+      <text x="12" y="15" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="9.5" font-weight="800" fill="#10a37f" letter-spacing="1">⚡ 15–30 MIN DELIVERY</text>
+
+      <rect x="150" y="0" width="135" height="22" rx="11" fill="#8b5cf6" opacity="0.15"/>
+      <rect x="150" y="0" width="135" height="22" rx="11" fill="none" stroke="#8b5cf6" stroke-width="1" opacity="0.4"/>
+      <text x="162" y="15" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="9.5" font-weight="800" fill="#c084fc" letter-spacing="1">🛡 100% VALIDITY</text>
+    </g>
+
+    <!-- Left Features Checklist -->
+    <g transform="translate(0, 140)">
+      <rect x="0" y="0" width="380" height="200" rx="18" fill="url(#cardGrad)"/>
+      <rect x="0" y="0" width="380" height="200" rx="18" fill="none" stroke="#1e293b" stroke-width="1"/>
+
+      <text x="22" y="28" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="11" font-weight="800" fill="#64748b" letter-spacing="2">KEY ADVANTAGES</text>
+
+      <g transform="translate(22, 45)">
+        <circle cx="6" cy="6" r="3" fill="#10a37f"/>
+        <text x="18" y="10" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#e2e8f0">Personal Email Only — Never share passwords</text>
+      </g>
+      <g transform="translate(22, 75)">
+        <circle cx="6" cy="6" r="3" fill="#10a37f"/>
+        <text x="18" y="10" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#e2e8f0">ChatGPT Plus: Seamless 2FA Login Upgrade</text>
+      </g>
+      <g transform="translate(22, 105)">
+        <circle cx="6" cy="6" r="3" fill="#8b5cf6"/>
+        <text x="18" y="10" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#e2e8f0">ChatGPT Pro: Direct Official OpenAI Email Invite</text>
+      </g>
+      <g transform="translate(22, 135)">
+        <circle cx="6" cy="6" r="3" fill="#10a37f"/>
+        <text x="18" y="10" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#e2e8f0">GPT-4o, DALL·E 3, Code Interpreter &amp; Custom GPTs</text>
+      </g>
+      <g transform="translate(22, 165)">
+        <circle cx="6" cy="6" r="3" fill="#38bdf8"/>
+        <text x="18" y="10" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#e2e8f0">Live Order Chat &amp; Ticket 2FA Assistance Support</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- Right: Plan Selector Preview Cards -->
+  <g transform="translate(470, 60)">
+    <!-- Card 1: Plus 1 Month -->
+    <rect x="0" y="0" width="280" height="88" rx="16" fill="url(#cardGrad)"/>
+    <rect x="0" y="0" width="280" height="88" rx="16" fill="none" stroke="#1e293b" stroke-width="1"/>
+    <rect x="0" y="0" width="280" height="2" rx="1" fill="#10a37f" opacity="0.6"/>
+    <text x="18" y="26" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#94a3b8">Plus 1 Month</text>
+    <text x="18" y="56" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="26" font-weight="900" fill="white">$14<tspan font-size="15" fill="#64748b">.99</tspan></text>
+    <text x="18" y="74" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="10.5" fill="#64748b">Personal email 2FA manual upgrade</text>
+    <rect x="195" y="14" width="70" height="20" rx="10" fill="#10a37f" opacity="0.15"/>
+    <text x="207" y="27" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="9" font-weight="800" fill="#10a37f">FLEXIBLE</text>
+
+    <!-- Card 2: Plus 6 Month (Popular) -->
+    <rect x="0" y="100" width="280" height="96" rx="16" fill="#0c1815"/>
+    <rect x="0" y="100" width="280" height="96" rx="16" fill="none" stroke="#10a37f" stroke-width="1.5"/>
+    <rect x="0" y="100" width="280" height="2" rx="1" fill="#10a37f"/>
+    <text x="18" y="126" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#10a37f">Plus 6 Months</text>
+    <text x="18" y="158" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="26" font-weight="900" fill="white">$69<tspan font-size="15" fill="#64748b">.99</tspan></text>
+    <text x="110" y="158" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="12" fill="#475569" text-decoration="line-through">$120</text>
+    <text x="18" y="178" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="10.5" fill="#94a3b8">180 days · Save 42% · Validity guaranteed</text>
+    <rect x="180" y="112" width="86" height="20" rx="10" fill="#10a37f"/>
+    <text x="190" y="126" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="8.5" font-weight="900" fill="white">MOST POPULAR</text>
+
+    <!-- Card 3: ChatGPT Pro 1 Month (Invite) -->
+    <rect x="0" y="208" width="280" height="106" rx="16" fill="#140f24"/>
+    <rect x="0" y="208" width="280" height="106" rx="16" fill="none" stroke="#8b5cf6" stroke-width="1.5"/>
+    <rect x="0" y="208" width="280" height="2" rx="1" fill="#a78bfa"/>
+    <text x="18" y="234" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#c084fc">ChatGPT Pro 1 Month</text>
+    <text x="18" y="266" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="26" font-weight="900" fill="white">$149<tspan font-size="15" fill="#64748b">.99</tspan></text>
+    <text x="125" y="266" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="12" fill="#475569" text-decoration="line-through">$200</text>
+    <text x="18" y="286" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="10.5" fill="#a78bfa">Official Email Invite · No 2FA or Password</text>
+    <text x="18" y="300" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="10" fill="#64748b">Unlimited GPT-4o &amp; OpenAI o1 Pro Mode</text>
+    <rect x="172" y="220" width="94" height="20" rx="10" fill="#8b5cf6"/>
+    <text x="181" y="234" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="8.5" font-weight="900" fill="white">OFFICIAL INVITE</text>
+
+    <!-- Card 4: Plus 1 Year -->
+    <rect x="0" y="324" width="280" height="76" rx="14" fill="url(#cardGrad)"/>
+    <rect x="0" y="324" width="280" height="76" rx="14" fill="none" stroke="#1e293b" stroke-width="1"/>
+    <text x="18" y="348" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="11.5" font-weight="700" fill="#94a3b8">Plus 1 Year (Save 50%)</text>
+    <text x="18" y="376" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="22" font-weight="900" fill="white">$119<tspan font-size="13" fill="#64748b">.99</tspan></text>
+    <text x="110" y="376" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="11" fill="#475569" text-decoration="line-through">$240</text>
+    <rect x="195" y="336" width="70" height="18" rx="9" fill="#38bdf8" opacity="0.15"/>
+    <text x="204" y="349" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="8.5" font-weight="800" fill="#38bdf8">BEST VALUE</text>
+  </g>
+
+  <!-- Bottom Strip -->
+  <rect x="0" y="460" width="800" height="40" fill="#050810"/>
+  <line x1="0" y1="460" x2="800" y2="460" stroke="#10a37f" stroke-width="0.5" opacity="0.2"/>
+  <text x="50" y="484" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="11" fill="#475569">OpenAI Official Platform  •  Delivered in 15–30 Mins to Your Personal Email  •  Full Warranty Guarantee</text>
+  <text x="640" y="484" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="11" font-weight="800" fill="#10a37f">NEXUS DIGITAL</text>
+</svg>

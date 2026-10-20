@@ -121,6 +121,12 @@ export default function CheckoutPage() {
     notes: "",
   });
 
+  // ChatGPT Personal Account Activation State
+  const [chatgptDetails, setChatgptDetails] = useState({
+    email: "",
+    notes: "",
+  });
+
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("card");
   const [selectedCrypto, setSelectedCrypto] = useState<CryptoCoin>("ETH");
   const [cryptoTxHash, setCryptoTxHash] = useState("");
@@ -181,6 +187,8 @@ export default function CheckoutPage() {
   const serviceSetupItems = items.filter((i) => i.deliveryType === "SERVICE_SETUP");
   const instantCodeItems = items.filter((i) => i.deliveryType === "INSTANT_CODE");
   const manualHandoffItems = items.filter((i) => i.deliveryType === "MANUAL_HANDOFF");
+  const adsenseItems = items.filter((i) => i.slug.includes("adsense"));
+  const chatgptItems = items.filter((i) => i.slug.includes("chatgpt"));
 
   const handlePlaceOrder = (e: React.FormEvent) => {
     e.preventDefault();
@@ -198,10 +206,21 @@ export default function CheckoutPage() {
     }
 
     // Validate AdSense Turnkey Asset Transfer requirements
-    if (manualHandoffItems.length > 0) {
+    if (adsenseItems.length > 0) {
       if (!adsenseDetails.registrarUsername.trim()) {
         setValidationError(
           "Please provide your Domain Registrar username or account email (e.g. Namecheap username, Hostinger or GoDaddy email) for the free domain authorization push."
+        );
+        return;
+      }
+    }
+
+    // Validate ChatGPT Personal Email requirements
+    if (chatgptItems.length > 0) {
+      const emailToUse = (chatgptDetails.email || customer.email || "").trim();
+      if (!emailToUse || !emailToUse.includes("@")) {
+        setValidationError(
+          "Please provide a valid personal ChatGPT / OpenAI account email address for activation."
         );
         return;
       }
@@ -247,6 +266,11 @@ export default function CheckoutPage() {
         submissions: {
           ...itemCredentials,
           adsense: adsenseDetails,
+          chatgpt: {
+            ...chatgptDetails,
+            email: (chatgptDetails.email || customer.email).trim(),
+          },
+          chatgptEmail: (chatgptDetails.email || customer.email).trim(),
           preferredRegistrar: `${adsenseDetails.registrar}: ${adsenseDetails.registrarUsername}`,
         },
         generatedLicenseKeys,
@@ -384,8 +408,27 @@ export default function CheckoutPage() {
             </div>
           )}
 
-          {/* TURNKEY ASSET HANDOFF STATUS */}
-          {orderComplete.items.some((i: CartItem) => i.deliveryType === "MANUAL_HANDOFF") && (
+          {/* CHATGPT PERSONAL EMAIL ACTIVATION STATUS */}
+          {orderComplete.items.some((i: CartItem) => i.slug.includes("chatgpt")) && (
+            <div className="mt-6 p-4 sm:p-6 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 space-y-3 text-left">
+              <div className="flex items-center gap-2 text-emerald-300 font-bold text-xs sm:text-sm">
+                <Sparkles className="w-4 h-4 text-emerald-400 shrink-0" />
+                <span>ChatGPT Plus &amp; Pro Personal Email Activation Assigned</span>
+              </div>
+              <p className="text-xs text-neutral-300 leading-relaxed">
+                Our technician has received your order for target email <strong className="text-white">{orderComplete.submissions?.chatgptEmail || orderComplete.customer.email}</strong>. Activation SLA is <strong className="text-emerald-400">15 to 30 minutes</strong>.
+              </p>
+              <div className="p-3 bg-black/40 rounded-xl border border-emerald-500/20 text-xs text-neutral-300 space-y-1 font-sans">
+                <p className="font-semibold text-emerald-300">• Pro Plan:</p>
+                <p className="text-[11px] text-neutral-400 pl-3">Check your inbox for an official OpenAI Team/Pro organization invite link. Click Accept to activate immediately.</p>
+                <p className="font-semibold text-emerald-300 pt-1">• Plus Plan:</p>
+                <p className="text-[11px] text-neutral-400 pl-3">When our technician initiates login, they will coordinate the one-time 2FA verification code with you in the Order Vault Live Chat or Ticket below.</p>
+              </div>
+            </div>
+          )}
+
+          {/* TURNKEY ASSET HANDOFF STATUS (ADSENSE ONLY) */}
+          {orderComplete.items.some((i: CartItem) => i.slug.includes("adsense")) && (
             <div className="mt-6 p-4 sm:p-6 rounded-2xl bg-purple-950/40 border border-purple-500/30 space-y-3 text-left">
               <div className="flex items-center gap-2 text-purple-300 font-bold text-xs sm:text-sm">
                 <Globe className="w-4 h-4 text-purple-400 shrink-0" />
@@ -636,8 +679,78 @@ export default function CheckoutPage() {
               </div>
             )}
 
-            {/* Step 2b: GOOGLE ADSENSE & TURNKEY ASSET HANDOVER DETAILS */}
-            {manualHandoffItems.length > 0 && (
+            {/* Step 2b: CHATGPT PLUS & PRO PERSONAL EMAIL ACTIVATION DESTINATION */}
+            {chatgptItems.length > 0 && (
+              <div className="bg-[#10121a] p-6 sm:p-8 rounded-3xl border-2 border-emerald-500/40 shadow-xl space-y-5">
+                <div className="flex items-start justify-between flex-wrap gap-2">
+                  <div>
+                    <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                      <Sparkles className="w-5 h-5 text-emerald-400" />
+                      ChatGPT Personal Email &amp; Activation Destination
+                    </h2>
+                    <p className="text-xs text-neutral-400 mt-1">
+                      Provide your personal email address. We deliver ChatGPT Plus or Pro within 15–30 minutes.
+                    </p>
+                  </div>
+                  <span className="text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-3 py-1 rounded-full uppercase font-mono">
+                    ⚡ 15–30 Min Handover
+                  </span>
+                </div>
+
+                {/* Important Instructions Box */}
+                <div className="p-4 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 text-xs text-neutral-300 space-y-2">
+                  <div className="flex items-center gap-2 text-emerald-400 font-bold">
+                    <ShieldCheck className="w-4 h-4 shrink-0" />
+                    <span>How Activation Works For Your Order:</span>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 text-[11.5px] leading-relaxed">
+                    <div className="p-3 rounded-xl bg-black/40 border border-white/[0.06]">
+                      <strong className="text-purple-300 block mb-1">ChatGPT Pro Plan:</strong>
+                      You will receive an official OpenAI Team/Pro organization invite link in your inbox. Simply click 'Accept Invite' to activate. Zero password or 2FA needed!
+                    </div>
+                    <div className="p-3 rounded-xl bg-black/40 border border-white/[0.06]">
+                      <strong className="text-emerald-300 block mb-1">ChatGPT Plus Plan:</strong>
+                      Submit only your email here now. When our technician begins activation within 15–30 mins, they will request the 2FA code via the Order Live Chat or Ticket desk below.
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-4 pt-1">
+                  <div>
+                    <label className="block text-xs font-semibold text-neutral-300 mb-1">
+                      Your Personal ChatGPT / OpenAI Account Email *
+                    </label>
+                    <input
+                      type="email"
+                      required
+                      placeholder="e.g. yourname@gmail.com"
+                      value={chatgptDetails.email || customer.email}
+                      onChange={(e) => setChatgptDetails({ ...chatgptDetails, email: e.target.value })}
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-white/10 bg-white/[0.04] text-xs text-white placeholder-neutral-500 focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
+                    />
+                    <p className="text-[11px] text-neutral-500 mt-1">
+                      Make sure this is the email registered on chatgpt.com / openai.com (or your personal primary email).
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-neutral-300 mb-1">
+                      Account Notes or Existing Workspace Setup (Optional)
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Currently on free tier, or prefer notification on WhatsApp"
+                      value={chatgptDetails.notes}
+                      onChange={(e) => setChatgptDetails({ ...chatgptDetails, notes: e.target.value })}
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-white/10 bg-white/[0.04] text-xs text-white placeholder-neutral-500 focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Step 2c: GOOGLE ADSENSE & TURNKEY ASSET HANDOVER DETAILS */}
+            {adsenseItems.length > 0 && (
               <div className="bg-white p-6 sm:p-8 rounded-3xl border-2 border-emerald-500/40 shadow-xs space-y-5">
                 <div className="flex items-start justify-between">
                   <div>

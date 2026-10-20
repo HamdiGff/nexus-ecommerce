@@ -445,16 +445,18 @@ Thank you for choosing NEXUS Digital Marketplace!
     );
   }
 
+  const isChatGpt = (activeOrder.productTitle || "").toLowerCase().includes("chatgpt") || Boolean((activeOrder as any).submissions?.chatgptEmail) || Boolean((activeOrder as any).chatgptFulfillment);
   const isWp = activeOrder.category === "wordpress-plugin" || activeOrder.category === "wordpress-theme" || activeOrder.deliveryType === "SERVICE_SETUP";
-  const isAiAccount = activeOrder.category === "ai-tools" || Boolean(activeOrder.accountCredentials);
+  const isAiAccount = !isChatGpt && (activeOrder.category === "ai-tools" || Boolean(activeOrder.accountCredentials));
   const isGameCode = activeOrder.category === "game-codes" || Boolean(activeOrder.gameGiftCode);
   const isSoftwareKey = activeOrder.category === "software-license" || Boolean(activeOrder.softwareLicense);
-  const isAdSense =
+  const isAdSense = !isChatGpt && (
     activeOrder.category === "adsense-websites" ||
     Boolean(activeOrder.deliveredAsset) ||
     activeOrder.deliveryType === "MANUAL_HANDOFF" ||
     (activeOrder.productTitle || "").toLowerCase().includes("adsense") ||
-    Boolean((activeOrder as any).adsenseFulfillment);
+    Boolean((activeOrder as any).adsenseFulfillment)
+  );
 
   return (
     <div className="min-h-screen bg-[#090a0f] text-neutral-100 py-10 px-4 sm:px-6 lg:px-8">
@@ -1045,6 +1047,88 @@ Thank you for choosing NEXUS Digital Marketplace!
                   </>
                 )}
               </ol>
+            </div>
+          </div>
+        )}
+
+        
+        {/* VAULT CASE: CHATGPT PLUS & PRO PERSONAL EMAIL MANUAL ACTIVATION */}
+        {isChatGpt && (
+          <div className="bg-[#10121a] rounded-3xl p-6 sm:p-8 border-2 border-emerald-500/40 shadow-2xl space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-white/[0.08] gap-3">
+              <div className="flex items-center gap-3">
+                <div className="p-3 bg-emerald-500/20 text-emerald-400 rounded-2xl border border-emerald-500/30">
+                  <Sparkles className="w-5 h-5" />
+                </div>
+                <div>
+                  <h2 className="font-extrabold text-base sm:text-lg text-white">
+                    ChatGPT Plus &amp; Pro Personal Email Activation
+                  </h2>
+                  <p className="text-xs text-neutral-400">
+                    Product: {activeOrder.productTitle}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-[11px] font-bold px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-mono">
+                  ⚡ 15–30 Mins Delivery SLA
+                </span>
+              </div>
+            </div>
+
+            {/* Target Email & Activation Info */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/[0.06] space-y-1">
+                <span className="text-[10px] text-neutral-400 uppercase tracking-wider font-mono block">
+                  Target ChatGPT Account Email:
+                </span>
+                <span className="font-mono text-sm sm:text-base font-bold text-white select-all">
+                  {(activeOrder as any).submissions?.chatgptEmail || (activeOrder as any).submissions?.chatgpt?.email || activeOrder.customerEmail}
+                </span>
+                <span className="text-[10.5px] text-neutral-500 block pt-0.5">
+                  Activation will be delivered directly to this account.
+                </span>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/[0.06] space-y-1">
+                <span className="text-[10px] text-neutral-400 uppercase tracking-wider font-mono block">
+                  Delivery Method &amp; Next Action:
+                </span>
+                <span className="text-xs font-bold text-emerald-400 block">
+                  {(activeOrder.productTitle || "").toLowerCase().includes("pro")
+                    ? "Official OpenAI Team / Pro Email Invitation Link"
+                    : "Manual 2FA Login Upgrade by Technician"}
+                </span>
+                <span className="text-[10.5px] text-neutral-400 block pt-0.5">
+                  {(activeOrder.productTitle || "").toLowerCase().includes("pro")
+                    ? "Check your email inbox for the invitation link. Click Accept Invite to activate."
+                    : "When our technician begins login, please provide the one-time 2FA code via Support Ticket below."}
+                </span>
+              </div>
+            </div>
+
+            {/* 2FA Coordination Guidance */}
+            {!(activeOrder.productTitle || "").toLowerCase().includes("pro") && (
+              <div className="p-4 rounded-2xl bg-emerald-950/30 border border-emerald-500/20 text-xs text-neutral-300 space-y-2">
+                <div className="flex items-center gap-2 text-emerald-400 font-bold">
+                  <ShieldCheck className="w-4 h-4 shrink-0" />
+                  <span>2FA Verification Notice for ChatGPT Plus:</span>
+                </div>
+                <p className="text-[11.5px] text-neutral-400 leading-relaxed">
+                  To complete your Plus subscription upgrade, our certified technician will attempt to log in using your submitted email. When OpenAI sends you a 6-digit login verification code, please provide it immediately via the support desk or ticket below so we can complete activation in under 15–30 minutes!
+                </p>
+              </div>
+            )}
+
+            {/* Validity Guarantee Footer */}
+            <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.04] flex items-center justify-between text-xs text-neutral-400 flex-wrap gap-2">
+              <span className="flex items-center gap-1.5 text-neutral-300">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                <span>100% Full-Term Validity Warranty Protected</span>
+              </span>
+              <span className="font-mono text-emerald-400 font-bold">
+                Status: {activeOrder.status === "COMPLETED" ? "Activated ✓" : "In Queue (15–30 Mins)"}
+              </span>
             </div>
           </div>
         )}
