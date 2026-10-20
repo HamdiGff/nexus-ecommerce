@@ -29,6 +29,11 @@ export function generateStaticParams() {
       slugs.push({ slug: "astra-pro" });
       slugs.push({ slug: "astra-pro-theme-agency" });
     }
+    if (product.slug === "google-adsense-approved-websites") {
+      slugs.push({ slug: "adsense-approved-websites" });
+      slugs.push({ slug: "google-adsense" });
+      slugs.push({ slug: "adsense-websites" });
+    }
   });
   return slugs;
 }
@@ -40,7 +45,8 @@ function resolveProduct(slug: string) {
       p.slug.toLowerCase() === clean ||
       (clean.startsWith("rank-math") && p.slug.startsWith("rank-math")) ||
       (clean.startsWith("elementor") && p.slug.startsWith("elementor")) ||
-      (clean.startsWith("astra") && p.slug.startsWith("astra"))
+      (clean.startsWith("astra") && p.slug.startsWith("astra")) ||
+      (clean.includes("adsense") && p.slug.includes("adsense"))
   );
 }
 

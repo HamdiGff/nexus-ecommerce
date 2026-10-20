@@ -178,13 +178,14 @@ export const useProductStore = create<ProductStoreState>()(
             p.slug.toLowerCase() === clean ||
             (clean.startsWith("rank-math") && p.slug.startsWith("rank-math")) ||
             (clean.startsWith("elementor") && p.slug.startsWith("elementor")) ||
-            (clean.startsWith("astra") && p.slug.startsWith("astra"))
+            (clean.startsWith("astra") && p.slug.startsWith("astra")) ||
+            (clean.includes("adsense") && p.slug.includes("adsense"))
         );
       },
     }),
     {
       name: "nexus-admin-products-storage",
-      version: 12,
+      version: 13,
       migrate: (persistedState: any) => {
         const TEMP_IDS = new Set([
           "internet-download-manager-lifetime",

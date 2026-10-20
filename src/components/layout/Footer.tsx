@@ -101,7 +101,7 @@ export default function Footer() {
             </div>
 
             <p className="text-xs text-neutral-400 leading-relaxed max-w-sm">
-              The premier digital software and assets marketplace. Official WordPress agency licenses, instant activations, and verified developer tools.
+              The premier digital software and assets marketplace. Official WordPress agency licenses, turnkey Google AdSense approved websites, and verified developer tools.
             </p>
 
             {/* Newsletter Subscription Box */}
@@ -163,21 +163,21 @@ export default function Footer() {
 
           {/* Links Column 2: Software Bundles & Vault */}
           <div className="md:col-span-2 space-y-3">
-            <h5 className="text-white font-bold text-xs uppercase tracking-wider">Curated Bundles</h5>
+            <h5 className="text-white font-bold text-xs uppercase tracking-wider">AdSense &amp; Bundles</h5>
             <ul className="space-y-2.5 text-xs text-neutral-400">
+              <li>
+                <Link href="/products/google-adsense-approved-websites" className="hover:text-emerald-400 transition-colors font-medium">
+                  Google AdSense Sites
+                </Link>
+              </li>
+              <li>
+                <Link href="/products/google-adsense-approved-websites" className="hover:text-white transition-colors">
+                  PIN &amp; GAM Verified
+                </Link>
+              </li>
               <li>
                 <Link href="/products/wp-rocket" className="hover:text-white transition-colors">
                   Power Duo (Speed + SEO)
-                </Link>
-              </li>
-              <li>
-                <Link href="/products/elementor-pro" className="hover:text-white transition-colors">
-                  Holy Trinity Stack
-                </Link>
-              </li>
-              <li>
-                <Link href="/products/astra-pro-theme" className="hover:text-white transition-colors">
-                  Elite Quad Stack (Save 25%)
                 </Link>
               </li>
               <li>

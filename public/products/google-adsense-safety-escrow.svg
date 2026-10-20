@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="100%" height="100%">
+  <defs>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34A853"/>
+      <stop offset="100%" stop-color="#0F5132"/>
+    </linearGradient>
+    <linearGradient id="escrowBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a121d"/>
+      <stop offset="100%" stop-color="#060a10"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="800" height="500" rx="20" fill="url(#escrowBg)"/>
+  <rect x="2" y="2" width="796" height="496" rx="18" fill="none" stroke="#34A853" stroke-opacity="0.25" stroke-width="2"/>
+
+  <!-- Top Title Banner -->
+  <g transform="translate(50, 40)">
+    <rect x="0" y="0" width="700" height="70" rx="16" fill="#111d1a" stroke="#34A853" stroke-opacity="0.3"/>
+    <circle cx="40" cy="35" r="22" fill="#34A853" fill-opacity="0.2"/>
+    <text x="31" y="42" fill="#34A853" font-family="system-ui, sans-serif" font-weight="900" font-size="20">🛡</text>
+    <text x="75" y="32" fill="#ffffff" font-family="system-ui, sans-serif" font-weight="800" font-size="16">100% Google AdSense Compliance &amp; Safe Handover Protocol</text>
+    <text x="75" y="52" fill="#81C995" font-family="system-ui, sans-serif" font-weight="600" font-size="12">Zero Policy Strikes • No Bot Ad Loading • Zero Invalid Clicks • 14-Day Warranty</text>
+  </g>
+
+  <!-- 4 Core Safety Columns -->
+  <!-- Box 1: No Ad Loading / Clean Traffic -->
+  <g transform="translate(50, 130)">
+    <rect x="0" y="0" width="165" height="230" rx="14" fill="#0e1724" stroke="#ffffff" stroke-opacity="0.08"/>
+    <circle cx="30" cy="32" r="16" fill="#4285F4" fill-opacity="0.15"/>
+    <text x="22" y="38" fill="#4285F4" font-weight="900" font-size="15">✕</text>
+    <text x="0" y="75" dx="15" fill="#ffffff" font-family="system-ui, sans-serif" font-weight="700" font-size="13">NO Ad Loading</text>
+    <text x="0" y="94" dx="15" fill="#9AA0A6" font-family="system-ui, sans-serif" font-size="10.5">Never run blackhat scripts,</text>
+    <text x="0" y="108" dx="15" fill="#9AA0A6" font-family="system-ui, sans-serif" font-size="10.5">bot networks, or fake clicks.</text>
+    <line x1="15" y1="125" x2="150" y2="125" stroke="#ffffff" stroke-opacity="0.06"/>
+    <text x="0" y="145" dx="15" fill="#34A853" font-family="system-ui, sans-serif" font-weight="700" font-size="11">✓ Pure Organic</text>
+    <text x="0" y="162" dx="15" fill="#9AA0A6" font-family="system-ui, sans-serif" font-size="10">Google Search &amp; Discover</text>
+    <text x="0" y="176" dx="15" fill="#9AA0A6" font-family="system-ui, sans-serif" font-size="10">traffic only.</text>
+    <rect x="15" y="195" width="135" height="22" rx="6" fill="#4285F4" fill-opacity="0.15"/>
+    <text x="25" y="210" fill="#8AB4F8" font-family="system-ui, sans-serif" font-weight="700" font-size="9.5">ZERO AD LIMITS</text>
+  </g>
+
+  <!-- Box 2: Master Gmail Included -->
+  <g transform="translate(230, 130)">
+    <rect x="0" y="0" width="165" height="230" rx="14" fill="#0e1724" stroke="#ffffff" stroke-opacity="0.08"/>
+    <circle cx="30" cy="32" r="16" fill="#EA4335" fill-opacity="0.15"/>
+    <text x="22" y="38" fill="#EA4335" font-weight="900" font-size="15">M</text>
+    <text x="0" y="75" dx="15" fill="#ffffff" font-family="system-ui, sans-serif" font-weight="700" font-size="13">Master Gmail</text>
+    <text x="0" y="94" dx="15" fill="#9AA0A6" font-family="system-ui, sans-serif" font-size="10.5">Primary original account</text>
+    <text x="0" y="108" dx="15" fill="#9AA0A6" font-family="system-ui, sans-serif" font-size="10.5">used for approval.</text>
+    <line x1="15" y1="125" x2="150" y2="125" stroke="#ffffff" stroke-opacity="0.06"/>
+    <text x="0" y="145" dx="15" fill="#34A853" font-family="system-ui, sans-serif" font-weight="700" font-size="11">✓ Full Ownership</text>
+    <text x="0" y="162" dx="15" fill="#9AA0A6" font-family="system-ui, sans-serif" font-size="10">Update recovery phone,</text>
+    <text x="0" y="176" dx="15" fill="#9AA0A6" font-family="system-ui, sans-serif" font-size="10">2FA &amp; recovery email.</text>
+    <rect x="15" y="195" width="135" height="22" rx="6" fill="#EA4335" fill-opacity="0.15"/>
+    <text x="25" y="210" fill="#F28B82" font-family="system-ui, sans-serif" font-weight="700" font-size="9.5">ZERO SHARED ACCESS</text>
+  </g>
+
+  <!-- Box 3: Free Domain Push & WP Backup -->
+  <g transform="translate(410, 130)">
+    <rect x="0" y="0" width="165" height="230" rx="14" fill="#0e1724" stroke="#ffffff" stroke-opacity="0.08"/>
+    <circle cx="30" cy="32" r="16" fill="#FBBC05" fill-opacity="0.15"/>
+    <text x="22" y="38" fill="#FBBC05" font-weight="900" font-size="15">🌐</text>
+    <text x="0" y="75" dx="15" fill="#ffffff" font-family="system-ui, sans-serif" font-weight="700" font-size="13">Free Domain Push</text>
+    <text x="0" y="94" dx="15" fill="#9AA0A6" font-family="system-ui, sans-serif" font-size="10.5">Fast push to Namecheap,</text>
+    <text x="0" y="108" dx="15" fill="#9AA0A6" font-family="system-ui, sans-serif" font-size="10.5">GoDaddy, Porkbun, etc.</text>
+    <line x1="15" y1="125" x2="150" y2="125" stroke="#ffffff" stroke-opacity="0.06"/>
+    <text x="0" y="145" dx="15" fill="#34A853" font-family="system-ui, sans-serif" font-weight="700" font-size="11">✓ Full WP Archive</text>
+    <text x="0" y="162" dx="15" fill="#9AA0A6" font-family="system-ui, sans-serif" font-size="10">Files + SQL Database.</text>
+    <text x="0" y="176" dx="15" fill="#9AA0A6" font-family="system-ui, sans-serif" font-size="10">Ready for any host.</text>
+    <rect x="15" y="195" width="135" height="22" rx="6" fill="#FBBC05" fill-opacity="0.15"/>
+    <text x="25" y="210" fill="#FDD663" font-family="system-ui, sans-serif" font-weight="700" font-size="9.5">NO TRANSFER SURCHARGE</text>
+  </g>
+
+  <!-- Box 4: 14-Day Warranty & Escrow -->
+  <g transform="translate(590, 130)">
+    <rect x="0" y="0" width="160" height="230" rx="14" fill="#0e1724" stroke="#34A853" stroke-opacity="0.3"/>
+    <circle cx="30" cy="32" r="16" fill="#34A853" fill-opacity="0.2"/>
+    <text x="22" y="38" fill="#34A853" font-weight="900" font-size="15">🛡</text>
+    <text x="0" y="75" dx="15" fill="#ffffff" font-family="system-ui, sans-serif" font-weight="700" font-size="13">14-Day Escrow</text>
+    <text x="0" y="94" dx="15" fill="#9AA0A6" font-family="system-ui, sans-serif" font-size="10.5">Comprehensive buyer</text>
+    <text x="0" y="108" dx="15" fill="#9AA0A6" font-family="system-ui, sans-serif" font-size="10.5">protection guarantee.</text>
+    <line x1="15" y1="125" x2="145" y2="125" stroke="#ffffff" stroke-opacity="0.06"/>
+    <text x="0" y="145" dx="15" fill="#34A853" font-family="system-ui, sans-serif" font-weight="700" font-size="11">✓ Replacement Seal</text>
+    <text x="0" y="162" dx="15" fill="#9AA0A6" font-family="system-ui, sans-serif" font-size="10">Covers pre-existing</text>
+    <text x="0" y="176" dx="15" fill="#9AA0A6" font-family="system-ui, sans-serif" font-size="10">hidden policy defects.</text>
+    <rect x="15" y="195" width="130" height="22" rx="6" fill="#34A853" fill-opacity="0.2"/>
+    <text x="22" y="210" fill="#81C995" font-family="system-ui, sans-serif" font-weight="700" font-size="9.5">ZERO-RISK ESCROW</text>
+  </g>
+
+  <!-- Bottom Live Balance Bar -->
+  <g transform="translate(50, 385)">
+    <rect x="0" y="0" width="700" height="75" rx="14" fill="#13192a" stroke="#4285F4" stroke-opacity="0.3"/>
+    <text x="24" y="32" fill="#ffffff" font-family="system-ui, sans-serif" font-weight="800" font-size="14">Live Balance Policy:</text>
+    <text x="175" y="32" fill="#8AB4F8" font-family="system-ui, sans-serif" font-weight="600" font-size="13">Accrued Organic Revenue Stays in Account</text>
+    <text x="24" y="54" fill="#9AA0A6" font-family="system-ui, sans-serif" font-size="11">Depending on real search traffic, accounts may contain an existing balance ($15 to $150+). This balance is 100% yours to withdraw upon bank linking.</text>
+  </g>
+</svg>

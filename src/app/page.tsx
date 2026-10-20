@@ -157,6 +157,18 @@ export default function HomePage() {
       slug: "astra-pro-theme",
       image: "/products/astra-pro-theme.svg",
     },
+    {
+      title: "Google AdSense - Approved Websites & Accounts",
+      subtitle: "Country-targeted (USA/UK/IN/GCC), PIN & GAM 360 verified with Master Gmail",
+      price: "$189.00",
+      originalPrice: "$249.00",
+      type: "MANUAL_HANDOFF" as const,
+      badge: "Turnkey Monetized Asset",
+      icon: Globe,
+      accent: "from-emerald-500 to-teal-600",
+      slug: "google-adsense-approved-websites",
+      image: "/products/google-adsense-hero.svg",
+    },
   ];
 
   const activeHeroItem = heroShowcaseItems[heroActiveIndex];
@@ -355,6 +367,19 @@ export default function HomePage() {
                           <p className="text-[11px] text-neutral-400">&lt;50KB Zero-jQuery Core • 280+ Premium Starter Sites</p>
                         </div>
                       )}
+
+                      {heroActiveIndex === 4 && (
+                        <div className="space-y-1">
+                          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-emerald-600/20 border border-emerald-500/30 text-emerald-300 font-extrabold text-sm">
+                            <Globe className="w-4 h-4 text-emerald-400" />
+                            <span>Google AdSense</span>
+                            <span className="bg-emerald-500 text-neutral-950 text-[10px] px-1.5 py-0.2 rounded font-black">
+                              APPROVED
+                            </span>
+                          </div>
+                          <p className="text-[11px] text-neutral-400">PIN Verified • 0 TOS Strikes • GAM 360 Ready • Free Domain Push</p>
+                        </div>
+                      )}
                     </div>
 
                     {/* Bottom Feature Ticker */}
@@ -513,7 +538,7 @@ export default function HomePage() {
                 <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400" />
                 <input
                   type="text"
-                  placeholder="Search products by keyword (e.g. WP Rocket, Rank Math, Elementor, Astra)..."
+                  placeholder="Search products by keyword (e.g. Google AdSense, WP Rocket, Rank Math, Elementor, Astra)..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-10 pr-10 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 text-xs text-white placeholder-neutral-500 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"

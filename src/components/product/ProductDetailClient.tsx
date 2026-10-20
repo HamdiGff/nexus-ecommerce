@@ -28,6 +28,7 @@ import WPRocketProductExperience from "@/components/product/WPRocketProductExper
 import RankMathProductExperience from "@/components/product/RankMathProductExperience";
 import ElementorProductExperience from "@/components/product/ElementorProductExperience";
 import AstraProductExperience from "@/components/product/AstraProductExperience";
+import GoogleAdSenseProductExperience from "@/components/product/GoogleAdSenseProductExperience";
 import ProductReviewsSection from "@/components/product/ProductReviewsSection";
 import { useProductStore } from "@/lib/store/productStore";
 
@@ -626,6 +627,12 @@ export default function ProductDetailClient({ product: initialProduct }: Product
         {(product.slug === "astra-pro-theme" || product.slug.startsWith("astra")) && (
           <div className="mt-12">
             <AstraProductExperience />
+          </div>
+        )}
+
+        {(product.slug === "google-adsense-approved-websites" || product.slug.includes("adsense")) && (
+          <div className="mt-12">
+            <GoogleAdSenseProductExperience />
           </div>
         )}
 

@@ -1,0 +1,181 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0d14"/>
+      <stop offset="50%" stop-color="#0d1322"/>
+      <stop offset="100%" stop-color="#07090f"/>
+    </linearGradient>
+    <linearGradient id="adsenseYellow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FABB05"/>
+      <stop offset="100%" stop-color="#EA4335"/>
+    </linearGradient>
+    <linearGradient id="adsenseBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4285F4"/>
+      <stop offset="100%" stop-color="#34A853"/>
+    </linearGradient>
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#151b2b" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#0d111c" stop-opacity="0.98"/>
+    </linearGradient>
+    <linearGradient id="accentGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4285F4" stop-opacity="0.25"/>
+      <stop offset="50%" stop-color="#34A853" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#FABB05" stop-opacity="0.25"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="30" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="700" fill="url(#bgGrad)"/>
+  <circle cx="200" cy="150" r="180" fill="#4285F4" opacity="0.12" filter="url(#glow)"/>
+  <circle cx="1000" cy="550" r="220" fill="#34A853" opacity="0.1" filter="url(#glow)"/>
+  <circle cx="600" cy="350" r="260" fill="#FABB05" opacity="0.08" filter="url(#glow)"/>
+
+  <!-- Decorative Grid Overlay -->
+  <g opacity="0.08" stroke="#ffffff" stroke-width="1">
+    <line x1="100" y1="0" x2="100" y2="700" />
+    <line x1="300" y1="0" x2="300" y2="700" />
+    <line x1="500" y1="0" x2="500" y2="700" />
+    <line x1="700" y1="0" x2="700" y2="700" />
+    <line x1="900" y1="0" x2="900" y2="700" />
+    <line x1="1100" y1="0" x2="1100" y2="700" />
+    <line x1="0" y1="150" x2="1200" y2="150" />
+    <line x1="0" y1="350" x2="1200" y2="350" />
+    <line x1="0" y1="550" x2="1200" y2="550" />
+  </g>
+
+  <!-- Main Publisher Dashboard Window -->
+  <rect x="120" y="70" width="960" height="560" rx="24" fill="url(#cardGrad)" stroke="#ffffff" stroke-opacity="0.12" stroke-width="1.5"/>
+
+  <!-- Window Header Bar -->
+  <rect x="120" y="70" width="960" height="60" rx="24" fill="#182033" fill-opacity="0.6"/>
+  <!-- Window dots -->
+  <circle cx="155" cy="100" r="6" fill="#EA4335" />
+  <circle cx="175" cy="100" r="6" fill="#FBBC05" />
+  <circle cx="195" cy="100" r="6" fill="#34A853" />
+
+  <!-- Google AdSense Logo & Name -->
+  <g transform="translate(230, 83)">
+    <!-- AdSense Symbol (Angled Pill) -->
+    <rect x="0" y="6" width="34" height="22" rx="11" fill="#4285F4" transform="rotate(-15 17 17)"/>
+    <circle cx="10" cy="17" r="7" fill="#FABB05"/>
+    <text x="46" y="24" fill="#ffffff" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="19" letter-spacing="-0.5">Google AdSense</text>
+    <rect x="200" y="7" width="130" height="22" rx="6" fill="#34A853" fill-opacity="0.2" stroke="#34A853" stroke-width="1"/>
+    <text x="210" y="22" fill="#34A853" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="11" letter-spacing="0.5">✓ 100% READY &amp; APPROVED</text>
+  </g>
+
+  <!-- Header Right Badges -->
+  <g transform="translate(820, 88)">
+    <rect x="0" y="0" width="120" height="26" rx="8" fill="#4285F4" fill-opacity="0.15" stroke="#4285F4" stroke-opacity="0.4" stroke-width="1"/>
+    <text x="14" y="17" fill="#8AB4F8" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="11">GAM 360 READY</text>
+    <rect x="135" y="0" width="105" height="26" rx="8" fill="#34A853" fill-opacity="0.15" stroke="#34A853" stroke-opacity="0.4" stroke-width="1"/>
+    <text x="148" y="17" fill="#81C995" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="11">PIN VERIFIED</text>
+  </g>
+
+  <!-- Left Sidebar Mini -->
+  <g transform="translate(150, 160)">
+    <rect x="0" y="0" width="180" height="430" rx="16" fill="#0f1422" stroke="#ffffff" stroke-opacity="0.06"/>
+    <!-- Menu Items -->
+    <rect x="12" y="20" width="156" height="36" rx="8" fill="#4285F4" fill-opacity="0.15" stroke="#4285F4" stroke-opacity="0.3"/>
+    <text x="38" y="43" fill="#8AB4F8" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="13">Home &amp; Overview</text>
+    
+    <text x="38" y="90" fill="#9AA0A6" font-family="system-ui, -apple-system, sans-serif" font-weight="500" font-size="13">Sites (Ready: 1)</text>
+    <text x="38" y="135" fill="#9AA0A6" font-family="system-ui, -apple-system, sans-serif" font-weight="500" font-size="13">Reports &amp; RPM</text>
+    <text x="38" y="180" fill="#9AA0A6" font-family="system-ui, -apple-system, sans-serif" font-weight="500" font-size="13">Policy Center (0)</text>
+    <text x="38" y="225" fill="#9AA0A6" font-family="system-ui, -apple-system, sans-serif" font-weight="500" font-size="13">Payments &amp; PIN</text>
+    <text x="38" y="270" fill="#9AA0A6" font-family="system-ui, -apple-system, sans-serif" font-weight="500" font-size="13">Account Settings</text>
+
+    <!-- Escrow Protection Stamp -->
+    <g transform="translate(14, 320)">
+      <rect x="0" y="0" width="152" height="90" rx="12" fill="#13221b" stroke="#34A853" stroke-opacity="0.4"/>
+      <circle cx="26" cy="30" r="10" fill="#34A853"/>
+      <text x="22" y="34" fill="#0d1322" font-weight="900" font-size="12">✓</text>
+      <text x="44" y="34" fill="#A8DAB5" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="11">0 TOS Violations</text>
+      <text x="14" y="60" fill="#E8EAED" font-family="system-ui, -apple-system, sans-serif" font-weight="600" font-size="10">No Ad-Limit Ever</text>
+      <text x="14" y="75" fill="#9AA0A6" font-family="system-ui, -apple-system, sans-serif" font-size="9">14-Day Escrow Warranty</text>
+    </g>
+  </g>
+
+  <!-- Right Content Area -->
+  <g transform="translate(355, 160)">
+    <!-- Top 3 Stat Cards -->
+    <!-- Card 1: Today's / Month's Earnings -->
+    <rect x="0" y="0" width="220" height="110" rx="14" fill="#111728" stroke="#ffffff" stroke-opacity="0.08"/>
+    <text x="18" y="28" fill="#9AA0A6" font-family="system-ui, -apple-system, sans-serif" font-weight="600" font-size="12">Verified Balance</text>
+    <text x="18" y="68" fill="#ffffff" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="28">$1,482.50</text>
+    <text x="18" y="94" fill="#34A853" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="11">▲ Payout Eligible (Zero Hold)</text>
+
+    <!-- Card 2: Page RPM & Impressions -->
+    <rect x="235" y="0" width="220" height="110" rx="14" fill="#111728" stroke="#ffffff" stroke-opacity="0.08"/>
+    <text x="253" y="28" fill="#9AA0A6" font-family="system-ui, -apple-system, sans-serif" font-weight="600" font-size="12">Average Page RPM</text>
+    <text x="253" y="68" fill="#4285F4" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="28">$18.40</text>
+    <text x="253" y="94" fill="#8AB4F8" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="11">Tier-1 High-CPC Tech Niche</text>
+
+    <!-- Card 3: Google Ad Manager Status -->
+    <rect x="470" y="0" width="235" height="110" rx="14" fill="#111728" stroke="#ffffff" stroke-opacity="0.08"/>
+    <text x="488" y="28" fill="#9AA0A6" font-family="system-ui, -apple-system, sans-serif" font-weight="600" font-size="12">Google Ad Manager (GAM)</text>
+    <text x="488" y="68" fill="#FBBC05" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="24">MCM Enabled</text>
+    <text x="488" y="94" fill="#FDD663" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="11">Direct Header Bidding Ready</text>
+
+    <!-- Active Site Details Card -->
+    <g transform="translate(0, 130)">
+      <rect x="0" y="0" width="705" height="160" rx="16" fill="#101626" stroke="#ffffff" stroke-opacity="0.08"/>
+      <text x="22" y="32" fill="#ffffff" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="15">Approved Website Properties</text>
+      <rect x="580" y="16" width="105" height="24" rx="12" fill="#34A853" fill-opacity="0.2"/>
+      <text x="596" y="32" fill="#81C995" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="10.5">● STATUS: READY</text>
+
+      <!-- Table Header -->
+      <line x1="20" y1="50" x2="685" y2="50" stroke="#ffffff" stroke-opacity="0.06"/>
+      <text x="25" y="70" fill="#9AA0A6" font-family="system-ui, -apple-system, sans-serif" font-weight="600" font-size="11">DOMAIN / NICHE</text>
+      <text x="240" y="70" fill="#9AA0A6" font-family="system-ui, -apple-system, sans-serif" font-weight="600" font-size="11">TARGET GEO</text>
+      <text x="380" y="70" fill="#9AA0A6" font-family="system-ui, -apple-system, sans-serif" font-weight="600" font-size="11">PIN STATUS</text>
+      <text x="520" y="70" fill="#9AA0A6" font-family="system-ui, -apple-system, sans-serif" font-weight="600" font-size="11">DELIVERY</text>
+
+      <!-- Row 1 -->
+      <text x="25" y="105" fill="#ffffff" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="13">techpulse-media.com</text>
+      <text x="25" y="123" fill="#8AB4F8" font-family="system-ui, -apple-system, sans-serif" font-size="11">Tech &amp; AI Cloud Review Blog</text>
+
+      <text x="240" y="105" fill="#E8EAED" font-family="system-ui, -apple-system, sans-serif" font-weight="600" font-size="12">USA / UK / CA / Global</text>
+      <text x="240" y="123" fill="#9AA0A6" font-family="system-ui, -apple-system, sans-serif" font-size="10">Multi-Country Compatible</text>
+
+      <rect x="380" y="93" width="95" height="22" rx="6" fill="#34A853" fill-opacity="0.15"/>
+      <text x="390" y="108" fill="#34A853" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="10.5">✓ PIN Verified</text>
+
+      <text x="520" y="105" fill="#FBBC05" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="12">Free Domain Push</text>
+      <text x="520" y="123" fill="#9AA0A6" font-family="system-ui, -apple-system, sans-serif" font-size="10">+ Full WP DB &amp; Gmail</text>
+    </g>
+
+    <!-- Bottom Feature Bar -->
+    <g transform="translate(0, 310)">
+      <rect x="0" y="0" width="705" height="110" rx="16" fill="url(#accentGlow)" stroke="#4285F4" stroke-opacity="0.2"/>
+      
+      <!-- 4 Pillars -->
+      <g transform="translate(20, 20)">
+        <text x="0" y="20" fill="#ffffff" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="13">Zero Ad Limits</text>
+        <text x="0" y="40" fill="#9AA0A6" font-family="system-ui, -apple-system, sans-serif" font-size="10.5">100% Organic Impressions</text>
+        <text x="0" y="56" fill="#9AA0A6" font-family="system-ui, -apple-system, sans-serif" font-size="10.5">Never Subjected to Bot Loading</text>
+      </g>
+
+      <g transform="translate(190, 20)">
+        <text x="0" y="20" fill="#ffffff" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="13">Primary Master Gmail</text>
+        <text x="0" y="40" fill="#9AA0A6" font-family="system-ui, -apple-system, sans-serif" font-size="10.5">Clean Original Account Creation</text>
+        <text x="0" y="56" fill="#9AA0A6" font-family="system-ui, -apple-system, sans-serif" font-size="10.5">2FA &amp; Recovery Transfer</text>
+      </g>
+
+      <g transform="translate(370, 20)">
+        <text x="0" y="20" fill="#ffffff" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="13">5+ Times Paid Tiers</text>
+        <text x="0" y="40" fill="#9AA0A6" font-family="system-ui, -apple-system, sans-serif" font-size="10.5">Proven Historical Wire Payouts</text>
+        <text x="0" y="56" fill="#9AA0A6" font-family="system-ui, -apple-system, sans-serif" font-size="10.5">Highest Resilience Score</text>
+      </g>
+
+      <g transform="translate(540, 20)">
+        <text x="0" y="20" fill="#ffffff" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="13">Free Domain Push</text>
+        <text x="0" y="40" fill="#9AA0A6" font-family="system-ui, -apple-system, sans-serif" font-size="10.5">Namecheap / GoDaddy / Porkbun</text>
+        <text x="0" y="56" fill="#9AA0A6" font-family="system-ui, -apple-system, sans-serif" font-size="10.5">Zero Transfer Fee Escrow</text>
+      </g>
+    </g>
+  </g>
+</svg>
