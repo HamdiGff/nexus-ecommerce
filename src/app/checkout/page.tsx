@@ -112,6 +112,15 @@ export default function CheckoutPage() {
   >({});
   const [showPassword, setShowPassword] = useState<Record<string, boolean>>({});
 
+  // AdSense Turnkey Asset Transfer State
+  const [adsenseDetails, setAdsenseDetails] = useState({
+    registrar: "Namecheap",
+    registrarUsername: "",
+    contactPhone: "",
+    backupEmail: "",
+    notes: "",
+  });
+
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("card");
   const [selectedCrypto, setSelectedCrypto] = useState<CryptoCoin>("ETH");
   const [cryptoTxHash, setCryptoTxHash] = useState("");
@@ -188,6 +197,16 @@ export default function CheckoutPage() {
       }
     }
 
+    // Validate AdSense Turnkey Asset Transfer requirements
+    if (manualHandoffItems.length > 0) {
+      if (!adsenseDetails.registrarUsername.trim()) {
+        setValidationError(
+          "Please provide your Domain Registrar username or account email (e.g. Namecheap username, Hostinger or GoDaddy email) for the free domain authorization push."
+        );
+        return;
+      }
+    }
+
     if (!customer.email || !customer.email.includes("@")) {
       setValidationError("Please provide a valid email address to receive your order receipt and digital license.");
       return;
@@ -225,7 +244,11 @@ export default function CheckoutPage() {
             ? "PayPal Checkout"
             : "Credit Card (Stripe)",
         customer,
-        submissions: itemCredentials,
+        submissions: {
+          ...itemCredentials,
+          adsense: adsenseDetails,
+          preferredRegistrar: `${adsenseDetails.registrar}: ${adsenseDetails.registrarUsername}`,
+        },
         generatedLicenseKeys,
         timestamp: new Date().toLocaleDateString("en-US", {
           month: "short",
@@ -613,6 +636,112 @@ export default function CheckoutPage() {
               </div>
             )}
 
+            {/* Step 2b: GOOGLE ADSENSE & TURNKEY ASSET HANDOVER DETAILS */}
+            {manualHandoffItems.length > 0 && (
+              <div className="bg-white p-6 sm:p-8 rounded-3xl border-2 border-emerald-500/40 shadow-xs space-y-5">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h2 className="text-lg font-bold text-neutral-950 flex items-center gap-2">
+                      <Globe className="w-5 h-5 text-emerald-600" />
+                      AdSense &amp; Domain Transfer Destination
+                    </h2>
+                    <p className="text-xs text-neutral-500 mt-1">
+                      Required for free registrar domain push and Master Gmail 2FA ownership handshake.
+                    </p>
+                  </div>
+                  <span className="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full uppercase">
+                    Free Domain Push
+                  </span>
+                </div>
+
+                {/* Safety Guarantee Callout */}
+                <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-900 flex items-start gap-2.5">
+                  <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                  <p className="leading-relaxed">
+                    <strong>Zero Transfer Fees:</strong> Domain is pushed directly inside your registrar (Namecheap, Hostinger, GoDaddy, Porkbun, Dynadot) at zero cost. Primary Master Gmail credentials and WordPress backup files will be dispatched in your private Order Vault.
+                  </p>
+                </div>
+
+                <div className="space-y-4 pt-1">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-semibold text-neutral-700 mb-1">
+                        Your Domain Registrar *
+                      </label>
+                      <select
+                        value={adsenseDetails.registrar}
+                        onChange={(e) => setAdsenseDetails({ ...adsenseDetails, registrar: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-300 text-xs bg-white font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
+                      >
+                        <option value="Namecheap">Namecheap (Recommended - Instant Push)</option>
+                        <option value="Hostinger">Hostinger</option>
+                        <option value="GoDaddy">GoDaddy</option>
+                        <option value="Porkbun">Porkbun</option>
+                        <option value="Dynadot">Dynadot</option>
+                        <option value="Cloudflare">Cloudflare</option>
+                        <option value="Other">Other (Will provide EPP Auth Code)</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-neutral-700 mb-1">
+                        Registrar Account Username or Email *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="e.g. your_namecheap_username or account email"
+                        value={adsenseDetails.registrarUsername}
+                        onChange={(e) => setAdsenseDetails({ ...adsenseDetails, registrarUsername: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-300 text-xs bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-semibold text-neutral-700 mb-1">
+                        Your Personal Email for Master Gmail Transfer
+                      </label>
+                      <input
+                        type="email"
+                        placeholder="e.g. buyer.personal@gmail.com"
+                        value={adsenseDetails.backupEmail}
+                        onChange={(e) => setAdsenseDetails({ ...adsenseDetails, backupEmail: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-300 text-xs bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-neutral-700 mb-1">
+                        WhatsApp / Telegram Phone (For Live 2FA Handshake)
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="e.g. +1 555 123 4567 (WhatsApp or Telegram)"
+                        value={adsenseDetails.contactPhone}
+                        onChange={(e) => setAdsenseDetails({ ...adsenseDetails, contactPhone: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-300 text-xs bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-neutral-700 mb-1">
+                      Domain Keyword or Niche Preferences (Optional)
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Prefer cloud tech, AI SaaS, or finance blogging niche"
+                      value={adsenseDetails.notes}
+                      onChange={(e) => setAdsenseDetails({ ...adsenseDetails, notes: e.target.value })}
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-300 text-xs bg-white"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Instant Delivery Notice (If instant items in cart) */}
             {instantCodeItems.length > 0 && (
               <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-900 flex items-center gap-3">
@@ -630,7 +759,7 @@ export default function CheckoutPage() {
             <div className="bg-white p-6 sm:p-8 rounded-3xl border border-neutral-200 shadow-xs">
               <h2 className="text-lg font-bold text-neutral-950 mb-4 flex items-center gap-2">
                 <span className="w-6 h-6 rounded-full bg-neutral-950 text-white text-xs flex items-center justify-center font-mono">
-                  {serviceSetupItems.length > 0 ? "3" : "2"}
+                  {1 + (serviceSetupItems.length > 0 ? 1 : 0) + (manualHandoffItems.length > 0 ? 1 : 0)}
                 </span>
                 Payment Method
               </h2>

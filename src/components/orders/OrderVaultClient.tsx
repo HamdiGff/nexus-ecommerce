@@ -35,6 +35,7 @@ import { formatPrice } from "@/lib/utils";
 import CredentialPurgeTimer from "@/components/security/CredentialPurgeTimer";
 import { findOrderRecord, OrderRecord } from "@/data/mockOrders";
 import { generateOrderPdf } from "@/lib/pdfGenerator";
+import AdSenseOrderHandoffPortal from "@/components/orders/AdSenseOrderHandoffPortal";
 
 interface OrderVaultClientProps {
   orderId: string;
@@ -207,7 +208,12 @@ Thank you for choosing NEXUS Digital Marketplace!
   const isAiAccount = activeOrder.category === "ai-tools" || Boolean(activeOrder.accountCredentials);
   const isGameCode = activeOrder.category === "game-codes" || Boolean(activeOrder.gameGiftCode);
   const isSoftwareKey = activeOrder.category === "software-license" || Boolean(activeOrder.softwareLicense);
-  const isAdSense = activeOrder.category === "adsense-websites" || Boolean(activeOrder.deliveredAsset);
+  const isAdSense =
+    activeOrder.category === "adsense-websites" ||
+    Boolean(activeOrder.deliveredAsset) ||
+    activeOrder.deliveryType === "MANUAL_HANDOFF" ||
+    (activeOrder.productTitle || "").toLowerCase().includes("adsense") ||
+    Boolean((activeOrder as any).adsenseFulfillment);
 
   return (
     <div className="min-h-screen bg-[#090a0f] text-neutral-100 py-10 px-4 sm:px-6 lg:px-8">
@@ -801,90 +807,16 @@ Thank you for choosing NEXUS Digital Marketplace!
           </div>
         )}
 
-        {/* VAULT CASE 5: GOOGLE ADSENSE WEBSITE ASSET HANDOFF */}
-        {isAdSense && activeOrder.deliveredAsset && (
-          <div className="bg-[#10121a] rounded-3xl p-6 sm:p-8 border border-white/[0.08] shadow-2xl space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-white/[0.08] gap-3">
-              <div className="flex items-center gap-3">
-                <div className="p-3 bg-purple-500/10 text-purple-400 border border-purple-500/20 rounded-2xl">
-                  <Globe className="w-5 h-5" />
-                </div>
-                <div>
-                  <h2 className="font-bold text-base text-white">
-                    Turnkey Website & AdSense Handoff Vault
-                  </h2>
-                  <p className="text-xs text-neutral-400">
-                    Domain: <strong className="text-white font-mono">{activeOrder.deliveredAsset.domainName}</strong>
-                  </p>
-                </div>
-              </div>
-              <span className="text-xs bg-purple-500/10 text-purple-300 font-bold px-3 py-1 rounded-full border border-purple-500/20">
-                Full Ownership Transfer
-              </span>
-            </div>
-
-            <div className="space-y-4">
-              {/* Domain EPP Code */}
-              <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.08] space-y-1">
-                <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider block">
-                  Domain Authorization (EPP) Transfer Code:
-                </span>
-                <div className="flex items-center justify-between">
-                  <span className="font-mono text-sm font-extrabold text-white select-all">
-                    {activeOrder.deliveredAsset.domainEppCode || "EPP-CODE-PENDING-ADMIN-DISPATCH"}
-                  </span>
-                  <button
-                    onClick={() => handleCopy(activeOrder.deliveredAsset!.domainEppCode || "", "epp")}
-                    className="text-xs font-semibold text-purple-400 hover:text-purple-300"
-                  >
-                    {copiedKey === "epp" ? "Copied!" : "Copy Code"}
-                  </button>
-                </div>
-              </div>
-
-              {/* Dedicated Google / AdSense Account */}
-              <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.08] space-y-2">
-                <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider block">
-                  Dedicated Google / AdSense Account Credentials:
-                </span>
-                <div className="space-y-2 text-xs font-mono">
-                  <div className="flex justify-between items-center">
-                    <span>
-                      Email: <strong className="text-white select-all">{activeOrder.deliveredAsset.gmailLogin}</strong>
-                    </span>
-                    <button
-                      onClick={() => handleCopy(activeOrder.deliveredAsset!.gmailLogin || "", "gmail-user")}
-                      className="text-purple-400 hover:text-purple-300 font-sans font-semibold text-xs"
-                    >
-                      {copiedKey === "gmail-user" ? "Copied!" : "Copy"}
-                    </button>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span>
-                      Password:{" "}
-                      <strong className="text-white select-all">
-                        {showPassword ? activeOrder.deliveredAsset.gmailPassword : "••••••••••••••••"}
-                      </strong>
-                    </span>
-                    <div className="flex items-center gap-3">
-                      <button
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="text-neutral-400 hover:text-white font-sans text-xs"
-                      >
-                        {showPassword ? "Hide" : "Show"}
-                      </button>
-                      <button
-                        onClick={() => handleCopy(activeOrder.deliveredAsset!.gmailPassword || "", "gmail-pass")}
-                        className="text-purple-400 hover:text-purple-300 font-sans font-semibold text-xs"
-                      >
-                        {copiedKey === "gmail-pass" ? "Copied!" : "Copy"}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+        {/* VAULT CASE 5: GOOGLE ADSENSE WEBSITE ASSET HANDOFF & 4-STAGE ESCROW PIPELINE */}
+        {isAdSense && (
+          <AdSenseOrderHandoffPortal
+            orderId={activeOrder.id}
+            orderNumber={activeOrder.orderNumber}
+            customerName={activeOrder.customerName}
+            customerEmail={activeOrder.customerEmail}
+            initialFulfillment={(activeOrder as any).adsenseFulfillment}
+            orderSubmissions={(activeOrder as any).submissions}
+          />
         )}
 
         {/* 24/7 SUPPORT & GUARANTEE FOOTER */}

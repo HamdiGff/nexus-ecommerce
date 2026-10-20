@@ -69,6 +69,7 @@ import { useCouponStore } from "@/lib/store/couponStore";
 import CredentialPurgeTimer from "@/components/security/CredentialPurgeTimer";
 import AdminProductManager from "@/components/admin/AdminProductManager";
 import AdminCategoryManager from "@/components/admin/AdminCategoryManager";
+import AdminAdSenseDeliveryModal from "@/components/admin/AdminAdSenseDeliveryModal";
 
 interface OrderAdminRecord {
   id: string;
@@ -98,6 +99,10 @@ interface OrderAdminRecord {
   purgeHours?: number;
   // Manual Asset delivered (for AdSense websites)
   deliveredAsset?: TurnkeyWebsiteAsset;
+  // AdSense Multi-stage Fulfillment & Order Chat
+  adsenseFulfillment?: any;
+  adsenseDetails?: any;
+  submissions?: any;
 }
 
 interface SupportTicketRecord {
@@ -242,52 +247,109 @@ export default function AdminDashboardPage() {
     }));
   });
 
-  // Sync client-side checkouts from localStorage
+  // Sync client-side checkouts from localStorage and server API
   useEffect(() => {
     if (typeof window === "undefined") return;
-    try {
-      const stored = localStorage.getItem("nexus-recent-orders");
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        setOrders((prev) => {
-          const existingNums = new Set(prev.map((o) => o.orderNumber.toUpperCase()));
-          const newOnes: OrderAdminRecord[] = [];
-          for (const o of parsed) {
-            const num = (o.orderId || o.orderNumber || "").toUpperCase();
-            if (num && !existingNums.has(num)) {
-              newOnes.push({
-                id: o.orderId || o.id,
-                orderNumber: num,
-                customerName: o.customer?.name || "Customer",
-                customerEmail: o.customer?.email || "customer@example.com",
-                productTitle: o.items?.[0]?.title || "Digital Order Item",
-                deliveryType: (o.items?.[0]?.deliveryType as DeliveryType) || "SERVICE_SETUP",
-                category: o.items?.[0]?.category || "wordpress-plugin",
-                total: o.total || 15.0,
-                paymentRail: o.paymentMethod || "Credit Card (Stripe)",
-                status: "PROCESSING",
-                createdAt: o.timestamp || "Just now",
-                serviceCredentials: o.submissions?.[o.items?.[0]?.id]
-                  ? {
-                      wpAdminUrl: o.submissions[o.items[0].id].wpAdminUrl,
-                      wpUsername: o.submissions[o.items[0].id].wpUsername,
-                      wpPassword: o.submissions[o.items[0].id].wpPassword,
-                      notes: o.submissions[o.items[0].id].notes,
-                      technicianStep: 2,
-                    }
-                  : undefined,
-                dispensedKey: o.generatedLicenseKeys?.[o.items?.[0]?.id],
-                isPurged: false,
-                purgeHours: 24,
-              });
-            }
+
+    const syncAllOrders = async () => {
+      try {
+        // 1. Fetch from server API store
+        const res = await fetch("/api/orders", { cache: "no-store" });
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data.orders)) {
+            setOrders((prev) => {
+              const map = new Map(prev.map((o) => [o.orderNumber.toUpperCase(), o]));
+              for (const o of data.orders) {
+                const num = (o.orderNumber || o.orderId || o.id || "").toUpperCase();
+                if (!num) continue;
+                const existing = map.get(num);
+                const updatedRecord: OrderAdminRecord = {
+                  id: o.id || num,
+                  orderNumber: num,
+                  customerName: o.customerName || o.customer?.name || "Customer",
+                  customerEmail: o.customerEmail || o.customer?.email || "customer@example.com",
+                  productTitle: o.items?.[0]?.title || o.productTitle || "Digital Order Item",
+                  deliveryType: (o.items?.[0]?.deliveryType as DeliveryType) || o.deliveryType || "MANUAL_HANDOFF",
+                  category: o.items?.[0]?.category || o.category || "adsense-websites",
+                  total: o.total || o.subtotal || 189.0,
+                  paymentRail: o.paymentMethod || o.paymentRail || "Credit Card",
+                  status: o.status || "PROCESSING",
+                  createdAt: o.timestamp || o.createdAt || "Just now",
+                  adsenseFulfillment: o.adsenseFulfillment || existing?.adsenseFulfillment,
+                  adsenseDetails: o.submissions?.adsense || existing?.adsenseDetails,
+                  submissions: o.submissions || existing?.submissions,
+                  serviceCredentials: existing?.serviceCredentials,
+                  accountCredentials: existing?.accountCredentials,
+                  gameGiftCode: existing?.gameGiftCode,
+                  softwareLicense: existing?.softwareLicense,
+                  dispensedKey: o.generatedLicenseKeys?.[o.items?.[0]?.id] || existing?.dispensedKey,
+                  deliveredAsset: existing?.deliveredAsset,
+                  isPurged: false,
+                  purgeHours: 24,
+                };
+                map.set(num, updatedRecord);
+              }
+              return Array.from(map.values());
+            });
           }
-          return [...newOnes, ...prev];
-        });
+        }
+      } catch {
+        // ignore
       }
-    } catch {
-      // ignore
-    }
+
+      // 2. Fetch from localStorage backup
+      try {
+        const stored = localStorage.getItem("nexus-recent-orders");
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          setOrders((prev) => {
+            const existingNums = new Set(prev.map((o) => o.orderNumber.toUpperCase()));
+            const newOnes: OrderAdminRecord[] = [];
+            for (const o of parsed) {
+              const num = (o.orderId || o.orderNumber || "").toUpperCase();
+              if (num && !existingNums.has(num)) {
+                newOnes.push({
+                  id: o.orderId || o.id,
+                  orderNumber: num,
+                  customerName: o.customer?.name || "Customer",
+                  customerEmail: o.customer?.email || "customer@example.com",
+                  productTitle: o.items?.[0]?.title || "Digital Order Item",
+                  deliveryType: (o.items?.[0]?.deliveryType as DeliveryType) || "SERVICE_SETUP",
+                  category: o.items?.[0]?.category || "wordpress-plugin",
+                  total: o.total || 15.0,
+                  paymentRail: o.paymentMethod || "Credit Card (Stripe)",
+                  status: "PROCESSING",
+                  createdAt: o.timestamp || "Just now",
+                  adsenseFulfillment: o.adsenseFulfillment,
+                  adsenseDetails: o.submissions?.adsense,
+                  submissions: o.submissions,
+                  serviceCredentials: o.submissions?.[o.items?.[0]?.id]
+                    ? {
+                        wpAdminUrl: o.submissions[o.items[0].id].wpAdminUrl,
+                        wpUsername: o.submissions[o.items[0].id].wpUsername,
+                        wpPassword: o.submissions[o.items[0].id].wpPassword,
+                        notes: o.submissions[o.items[0].id].notes,
+                        technicianStep: 2,
+                      }
+                    : undefined,
+                  dispensedKey: o.generatedLicenseKeys?.[o.items?.[0]?.id],
+                  isPurged: false,
+                  purgeHours: 24,
+                });
+              }
+            }
+            return [...newOnes, ...prev];
+          });
+        }
+      } catch {
+        // ignore
+      }
+    };
+
+    syncAllOrders();
+    const interval = setInterval(syncAllOrders, 4000);
+    return () => clearInterval(interval);
   }, []);
 
   const [tickets, setTickets] = useState<SupportTicketRecord[]>(INITIAL_TICKETS);
@@ -404,6 +466,7 @@ export default function AdminDashboardPage() {
 
   // 1. Manual Website Asset Handoff Modal
   const [handoffTargetOrder, setHandoffTargetOrder] = useState<OrderAdminRecord | null>(null);
+  const [adSenseHandoffOrder, setAdSenseHandoffOrder] = useState<OrderAdminRecord | null>(null);
   const [assetForm, setAssetForm] = useState({
     eppCode: "",
     gmailLogin: "",
@@ -1200,7 +1263,11 @@ export default function AdminDashboardPage() {
                 const isAi = order.category === "ai-tools" || Boolean(order.accountCredentials);
                 const isGame = order.category === "game-codes" || Boolean(order.gameGiftCode);
                 const isSoftware = order.category === "software-license" || Boolean(order.softwareLicense);
-                const isWebsite = order.deliveryType === "MANUAL_HANDOFF" && (order.category === "adsense-websites" || Boolean(order.deliveredAsset));
+                const isWebsite =
+                  order.deliveryType === "MANUAL_HANDOFF" ||
+                  order.category === "adsense-websites" ||
+                  Boolean(order.adsenseFulfillment) ||
+                  Boolean(order.deliveredAsset);
 
                 return (
                   <div key={order.id} className="p-6 hover:bg-neutral-50/50 transition-colors space-y-4">
@@ -1511,47 +1578,79 @@ export default function AdminDashboardPage() {
                       </div>
                     )}
 
-                    {/* TYPE 5: TURNKEY WEBSITE & ADSENSE HANDOFF */}
+                    {/* TYPE 5: TURNKEY WEBSITE & ADSENSE MULTI-STAGE HANDOFF */}
                     {isWebsite && (
-                      <div className="p-4 rounded-2xl bg-amber-950/20 border border-amber-500/30 text-xs space-y-2">
-                        <div className="flex items-center justify-between font-bold text-amber-300 pb-2 border-b border-amber-500/20">
+                      <div className="p-4 rounded-2xl bg-amber-950/20 border border-amber-500/30 text-xs space-y-3">
+                        <div className="flex items-center justify-between font-bold text-amber-300 pb-2 border-b border-amber-500/20 flex-wrap gap-2">
                           <span className="flex items-center gap-1.5">
                             <Globe className="w-3.5 h-3.5 text-amber-400" />
-                            Turnkey Website & AdSense Account Transfer
+                            Turnkey AdSense Website Asset Delivery Desk
                           </span>
-                          {order.status === "PROCESSING" && (
+
+                          <div className="flex items-center gap-2">
+                            <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                              Stage {order.adsenseFulfillment?.stage || 1} of 4:{" "}
+                              {order.adsenseFulfillment?.stage === 2
+                                ? "Master Gmail Transfer"
+                                : order.adsenseFulfillment?.stage === 3
+                                ? "WordPress & SQL Backup"
+                                : order.adsenseFulfillment?.stage === 4
+                                ? "Warranty Active"
+                                : "Candidate Domains & Push"}
+                            </span>
+
                             <button
-                              onClick={() => {
-                                setHandoffTargetOrder(order);
-                                setAssetForm({
-                                  eppCode: order.deliveredAsset?.domainEppCode || "EPP-TECH-8492019-NAMECHEAP",
-                                  gmailLogin: order.deliveredAsset?.gmailLogin || "techpulse.blog.owner@gmail.com",
-                                  gmailPassword: order.deliveredAsset?.gmailPassword || "AdSense$Transfer2026!secure",
-                                  notes: order.deliveredAsset?.notes || "",
-                                });
-                              }}
-                              className="px-3.5 py-1 bg-amber-600 hover:bg-amber-500 text-white rounded-lg font-bold text-[11px] transition-colors shadow-xs cursor-pointer"
+                              onClick={() => setAdSenseHandoffOrder(order)}
+                              className="px-3.5 py-1.5 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-white rounded-xl font-bold text-[11px] transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
                             >
-                              Dispatch Credentials to Buyer
+                              <Sparkles className="w-3.5 h-3.5 text-amber-200" />
+                              <span>Open Delivery Console & Live Chat</span>
+                              {(order.adsenseFulfillment?.chatMessages || []).length > 0 && (
+                                <span className="w-4 h-4 rounded-full bg-black/40 text-[9px] flex items-center justify-center font-mono">
+                                  {order.adsenseFulfillment.chatMessages.length}
+                                </span>
+                              )}
                             </button>
-                          )}
+                          </div>
                         </div>
 
-                        {order.deliveredAsset?.isDelivered ? (
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 font-mono text-neutral-300">
-                            <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06]">
-                              <span className="text-neutral-400 text-[10px] block font-sans">Domain EPP Code:</span>
-                              <span className="font-bold text-white select-all">{order.deliveredAsset.domainEppCode}</span>
-                            </div>
-                            <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06]">
-                              <span className="text-neutral-400 text-[10px] block font-sans">Google Login:</span>
-                              <span className="font-bold text-white select-all">{order.deliveredAsset.gmailLogin}</span>
-                            </div>
+                        {/* Summary of Buyer Checkout Inputs */}
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 font-mono text-neutral-300">
+                          <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+                            <span className="text-neutral-400 text-[10px] block font-sans">Target Registrar:</span>
+                            <span className="font-bold text-white select-all">
+                              {order.adsenseDetails?.registrar || order.submissions?.adsense?.registrar || "Namecheap"}
+                              {" • "}
+                              <span className="text-amber-400 font-mono">
+                                {order.adsenseDetails?.registrarUsername || order.submissions?.adsense?.registrarUsername || order.customerEmail}
+                              </span>
+                            </span>
                           </div>
-                        ) : (
-                          <p className="text-amber-300 text-xs">
-                            Awaiting transfer input: Click &quot;Dispatch Credentials to Buyer&quot; to input the domain auth code and Google logins.
-                          </p>
+
+                          <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+                            <span className="text-neutral-400 text-[10px] block font-sans">Designated / Candidate Domain:</span>
+                            <span className="font-bold text-emerald-400 select-all font-mono">
+                              {order.adsenseFulfillment?.selectedDomain ||
+                                order.deliveredAsset?.domainName ||
+                                (order.adsenseFulfillment?.candidateDomains?.length
+                                  ? `${order.adsenseFulfillment.candidateDomains.length} candidates offered`
+                                  : "Awaiting domain dispatch")}
+                            </span>
+                          </div>
+
+                          <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+                            <span className="text-neutral-400 text-[10px] block font-sans">Live Chat Status:</span>
+                            <span className="font-bold text-blue-400 select-all font-sans flex items-center gap-1.5">
+                              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                              {(order.adsenseFulfillment?.chatMessages || []).length} messages exchanged
+                            </span>
+                          </div>
+                        </div>
+
+                        {order.adsenseFulfillment?.domainPushNotes && (
+                          <div className="p-2.5 rounded-xl bg-amber-950/30 border border-amber-500/20 text-neutral-300 text-[11px]">
+                            <strong className="text-amber-400">Push Status:</strong> {order.adsenseFulfillment.domainPushStatus || "PUSH_INITIATED"} — &quot;{order.adsenseFulfillment.domainPushNotes}&quot;
+                          </div>
                         )}
                       </div>
                     )}
@@ -3384,6 +3483,19 @@ export default function AdminDashboardPage() {
               </form>
             </div>
           </div>
+        )}
+
+        {/* MODAL: ADVANCED ADSENSE ASSET HANDOFF & LIVE CHAT DESK */}
+        {adSenseHandoffOrder && (
+          <AdminAdSenseDeliveryModal
+            order={adSenseHandoffOrder}
+            onClose={() => setAdSenseHandoffOrder(null)}
+            onOrderUpdated={(updated) => {
+              setOrders((prev) =>
+                prev.map((o) => (o.orderNumber === updated.orderNumber ? { ...o, ...updated } : o))
+              );
+            }}
+          />
         )}
         </div>
       </main>
