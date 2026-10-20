@@ -17,11 +17,13 @@ interface ReviewStoreState {
 
 const SEED_ORDERS: Record<string, { email: string; products: string[]; customerName: string }> = {
   "NEX-772910": { email: "alex.mercer@gmail.com", products: ["wp-rocket"], customerName: "Alex Mercer" },
-  "NEX-948210": { email: "alex.taylor@example.com", products: ["wp-rocket", "rank-math", "rank-math-pro"], customerName: "Alex Taylor" },
+  "NEX-948210": { email: "alex.taylor@example.com", products: ["wp-rocket", "rank-math", "rank-math-pro", "elementor-pro"], customerName: "Alex Taylor" },
   "NEX-948209": { email: "david.lindqvist@example.com", products: ["wp-rocket", "idm-lifetime"], customerName: "David Lindqvist" },
   "NEX-948208": { email: "techpulse.blog.owner@gmail.com", products: ["adsense-tech-blog", "wp-rocket"], customerName: "TechPulse Owner" },
   "NEX-947890": { email: "sophia.hernandez@example.com", products: ["rank-math-pro", "rank-math"], customerName: "Sophia Hernandez" },
   "NEX-947420": { email: "dmitri.volkov@example.com", products: ["rank-math-pro", "rank-math"], customerName: "Dmitri Volkov" },
+  "NEX-948110": { email: "claire.dupont@example.com", products: ["elementor-pro"], customerName: "Claire Dupont" },
+  "NEX-947602": { email: "kenji.sato@example.com", products: ["elementor-pro"], customerName: "Kenji Sato" },
 };
 
 export const useReviewStore = create<ReviewStoreState>()(
@@ -85,6 +87,7 @@ export const useReviewStore = create<ReviewStoreState>()(
         return get().reviews.filter(
           (r) =>
             r.productId.toLowerCase() === clean ||
+            (clean.startsWith("elementor") && r.productId.startsWith("elementor")) ||
             (clean.startsWith("rank-math") && r.productId.startsWith("rank-math")) ||
             (clean.startsWith("wp-rocket") && r.productId.startsWith("wp-rocket"))
         );
@@ -153,7 +156,7 @@ export const useReviewStore = create<ReviewStoreState>()(
     }),
     {
       name: "nexus-product-reviews-store",
-      version: 3,
+      version: 4,
       migrate: (persistedState: any) => {
         const existing: ProductReview[] = persistedState?.reviews || [];
         const existingIds = new Set(existing.map((r) => r.id));

@@ -1,0 +1,157 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 750" preserveAspectRatio="xMidYMid slice" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradients -->
+    <linearGradient id="elBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#08070d" />
+      <stop offset="50%" stop-color="#140a17" />
+      <stop offset="100%" stop-color="#07050a" />
+    </linearGradient>
+
+    <radialGradient id="elGlow" cx="50%" cy="35%" r="60%">
+      <stop offset="0%" stop-color="#d30043" stop-opacity="0.32" />
+      <stop offset="50%" stop-color="#800028" stop-opacity="0.12" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Elementor Brand Gradients -->
+    <linearGradient id="elPink" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff3366" />
+      <stop offset="50%" stop-color="#d30043" />
+      <stop offset="100%" stop-color="#92003b" />
+    </linearGradient>
+
+    <linearGradient id="goldProPill" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#fbbf24" />
+    </linearGradient>
+
+    <!-- Grid Pattern -->
+    <pattern id="elGrid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#d30043" stroke-width="1" stroke-opacity="0.07" />
+    </pattern>
+
+    <filter id="elDropGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="18" flood-color="#d30043" flood-opacity="0.55" />
+    </filter>
+  </defs>
+
+  <!-- Deep Background -->
+  <rect width="1200" height="750" fill="url(#elBg)" />
+  <rect width="1200" height="750" fill="url(#elGrid)" />
+  <rect width="1200" height="750" fill="url(#elGlow)" />
+
+  <!-- WordPress Watermark Silhouette in Background Right -->
+  <g opacity="0.03" transform="translate(870, 190) scale(1.6)">
+    <circle cx="100" cy="100" r="90" fill="none" stroke="#ffffff" stroke-width="12" />
+    <path d="M 45 45 L 85 155 L 105 95 L 125 155 L 165 45" fill="none" stroke="#ffffff" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+
+  <!-- Top Glass Badges -->
+  <g transform="translate(60, 48)">
+    <rect width="250" height="38" rx="19" fill="#ffffff" fill-opacity="0.06" stroke="#ffffff" stroke-opacity="0.12" stroke-width="1" />
+    <circle cx="24" cy="19" r="5" fill="#10b981" />
+    <text x="38" y="24" fill="#e2e8f0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="700" letter-spacing="1.5">OFFICIAL AGENCY KEY</text>
+  </g>
+
+  <g transform="translate(920, 48)">
+    <rect width="220" height="38" rx="19" fill="#2a0815" fill-opacity="0.8" stroke="#d30043" stroke-opacity="0.35" stroke-width="1" />
+    <text x="110" y="24" fill="#fda4af" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="1">16M+ ACTIVE SITES</text>
+  </g>
+
+  <!-- CENTER STAGE: Iconic Elementor Brand Logo & PRO Wordmark -->
+  <g transform="translate(160, 160)" filter="url(#elDropGlow)">
+    <!-- Elementor Icon Container -->
+    <rect x="0" y="0" width="180" height="180" rx="42" fill="#1a0711" stroke="#d30043" stroke-width="2.5" stroke-opacity="0.6" />
+    
+    <!-- Elementor Iconic 3-Bar Logo -->
+    <g transform="translate(42, 42)">
+      <!-- Left tall vertical column -->
+      <rect x="10" y="10" width="18" height="76" rx="9" fill="url(#elPink)" />
+      <!-- Top right horizontal bar -->
+      <rect x="38" y="10" width="48" height="18" rx="9" fill="url(#elPink)" />
+      <!-- Middle right horizontal bar -->
+      <rect x="38" y="39" width="48" height="18" rx="9" fill="url(#elPink)" />
+      <!-- Bottom right horizontal bar -->
+      <rect x="38" y="68" width="48" height="18" rx="9" fill="url(#elPink)" />
+    </g>
+
+    <!-- Wordmark & Badges Group -->
+    <g transform="translate(220, 50)">
+      <text x="0" y="65" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="70" font-weight="900" letter-spacing="-1.5">
+        <tspan fill="#ffffff">elementor</tspan>
+      </text>
+
+      <!-- PRO Pill Badge -->
+      <g transform="translate(390, 14)">
+        <rect width="112" height="48" rx="14" fill="url(#goldProPill)" />
+        <text x="56" y="33" fill="#000000" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="24" font-weight="900" text-anchor="middle" letter-spacing="2">PRO</text>
+      </g>
+
+      <text x="2" y="105" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="19" font-weight="600" letter-spacing="0.5">
+        The Industry-Standard WordPress Visual Page &amp; Theme Builder
+      </text>
+    </g>
+  </g>
+
+  <!-- Bottom Visual Dashboard Preview Plate -->
+  <g transform="translate(160, 420)">
+    <!-- Base Plate -->
+    <rect width="880" height="230" rx="24" fill="#0c0712" fill-opacity="0.9" stroke="#2c101d" stroke-width="1.5" />
+    
+    <!-- Top Bar inside editor mockup -->
+    <g transform="translate(24, 20)">
+      <circle cx="10" cy="10" r="5" fill="#ef4444" />
+      <circle cx="28" cy="10" r="5" fill="#f59e0b" />
+      <circle cx="46" cy="10" r="5" fill="#10b981" />
+      <rect x="74" y="0" width="220" height="20" rx="10" fill="#1e0b17" stroke="#3d1425" stroke-width="1" />
+      <text x="184" y="14" fill="#fda4af" font-family="monospace" font-size="10" text-anchor="middle">Elementor Pro Live Editor v3.28</text>
+    </g>
+
+    <!-- 4 Pro Capability Cards Grid -->
+    <g transform="translate(24, 60)">
+      <!-- Card 1: Theme Builder -->
+      <g transform="translate(0, 0)">
+        <rect width="196" height="140" rx="16" fill="#190814" stroke="#d30043" stroke-width="1.2" stroke-opacity="0.4" />
+        <circle cx="28" cy="30" r="14" fill="#d30043" fill-opacity="0.18" />
+        <text x="28" y="34" fill="#ff4d79" font-family="sans-serif" font-size="13" font-weight="800" text-anchor="middle">🎨</text>
+        <text x="20" y="70" fill="#ffffff" font-family="sans-serif" font-size="13.5" font-weight="800">Theme Builder</text>
+        <text x="20" y="90" fill="#cbd5e1" font-family="sans-serif" font-size="11">Headers, Footers, 404, Single &amp; Archive Templates</text>
+        <rect x="20" y="108" width="84" height="18" rx="9" fill="#10b981" fill-opacity="0.15" />
+        <text x="62" y="121" fill="#34d399" font-family="sans-serif" font-size="9" font-weight="800" text-anchor="middle">Full Custom</text>
+      </g>
+
+      <!-- Card 2: WooCommerce Builder -->
+      <g transform="translate(212, 0)">
+        <rect width="196" height="140" rx="16" fill="#190814" stroke="#d30043" stroke-width="1.2" stroke-opacity="0.4" />
+        <circle cx="28" cy="30" r="14" fill="#a855f7" fill-opacity="0.18" />
+        <text x="28" y="34" fill="#c084fc" font-family="sans-serif" font-size="13" font-weight="800" text-anchor="middle">🛍️</text>
+        <text x="20" y="70" fill="#ffffff" font-family="sans-serif" font-size="13.5" font-weight="800">WooCommerce Pro</text>
+        <text x="20" y="90" fill="#cbd5e1" font-family="sans-serif" font-size="11">Custom Product Pages, Carts, &amp; 1-Click Checkouts</text>
+        <rect x="20" y="108" width="94" height="18" rx="9" fill="#8b5cf6" fill-opacity="0.15" />
+        <text x="67" y="121" fill="#c084fc" font-family="sans-serif" font-size="9" font-weight="800" text-anchor="middle">Shop Builder</text>
+      </g>
+
+      <!-- Card 3: Form & Popup Builder -->
+      <g transform="translate(424, 0)">
+        <rect width="196" height="140" rx="16" fill="#190814" stroke="#d30043" stroke-width="1.2" stroke-opacity="0.4" />
+        <circle cx="28" cy="30" r="14" fill="#3b82f6" fill-opacity="0.18" />
+        <text x="28" y="34" fill="#60a5fa" font-family="sans-serif" font-size="13" font-weight="800" text-anchor="middle">⚡</text>
+        <text x="20" y="70" fill="#ffffff" font-family="sans-serif" font-size="13.5" font-weight="800">Forms &amp; Popups</text>
+        <text x="20" y="90" fill="#cbd5e1" font-family="sans-serif" font-size="11">Multi-step forms, Webhooks, Exit-Intent Modals</text>
+        <rect x="20" y="108" width="90" height="18" rx="9" fill="#3b82f6" fill-opacity="0.15" />
+        <text x="65" y="121" fill="#60a5fa" font-family="sans-serif" font-size="9" font-weight="800" text-anchor="middle">Lead Engine</text>
+      </g>
+
+      <!-- Card 4: Loop Builder & ACF -->
+      <g transform="translate(636, 0)">
+        <rect width="196" height="140" rx="16" fill="#190814" stroke="#d30043" stroke-width="1.2" stroke-opacity="0.4" />
+        <circle cx="28" cy="30" r="14" fill="#f59e0b" fill-opacity="0.18" />
+        <text x="28" y="34" fill="#fbbf24" font-family="sans-serif" font-size="13" font-weight="800" text-anchor="middle">🔁</text>
+        <text x="20" y="70" fill="#ffffff" font-family="sans-serif" font-size="13.5" font-weight="800">Loop Builder &amp; ACF</text>
+        <text x="20" y="90" fill="#cbd5e1" font-family="sans-serif" font-size="11">Custom post loops, Dynamic Tags, &amp; Query Filters</text>
+        <rect x="20" y="108" width="86" height="18" rx="9" fill="#f59e0b" fill-opacity="0.15" />
+        <text x="63" y="121" fill="#fbbf24" font-family="sans-serif" font-size="9" font-weight="800" text-anchor="middle">Dynamic Grid</text>
+      </g>
+    </g>
+  </g>
+</svg>

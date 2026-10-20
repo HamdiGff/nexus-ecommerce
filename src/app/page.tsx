@@ -22,6 +22,7 @@ import {
   ArrowUpRight,
   TrendingUp,
   Flame,
+  Layers,
 } from "lucide-react";
 import { CATEGORIES, DeliveryType, MOCK_PRODUCT_BUNDLES } from "@/data/mockProducts";
 import ProductCard from "@/components/product/ProductCard";
@@ -86,6 +87,18 @@ export default function HomePage() {
       accent: "from-blue-500 to-indigo-600",
       slug: "rank-math-pro",
       image: "/products/rank-math-pro.svg",
+    },
+    {
+      title: "Elementor Pro - Theme Builder & Visual Studio",
+      subtitle: "Official agency activation with auto-updates, 100+ widgets & Theme Builder",
+      price: "$15.00",
+      originalPrice: "$59.00",
+      type: "SERVICE_SETUP" as const,
+      badge: "WordPress Visual Builder Leader",
+      icon: Layers,
+      accent: "from-pink-500 to-rose-600",
+      slug: "elementor-pro",
+      image: "/products/elementor-pro.svg",
     },
     {
       title: "IDM 1-PC Lifetime Retail Key",

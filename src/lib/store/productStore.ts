@@ -176,13 +176,14 @@ export const useProductStore = create<ProductStoreState>()(
         return get().products.find(
           (p) =>
             p.slug.toLowerCase() === clean ||
-            (clean.startsWith("rank-math") && p.slug.startsWith("rank-math"))
+            (clean.startsWith("rank-math") && p.slug.startsWith("rank-math")) ||
+            (clean.startsWith("elementor") && p.slug.startsWith("elementor"))
         );
       },
     }),
     {
       name: "nexus-admin-products-storage",
-      version: 7,
+      version: 8,
       migrate: (persistedState: any) => {
         const existingProducts: DigitalProduct[] = persistedState?.products || [];
         const mockMap = new Map<string, DigitalProduct>(MOCK_DIGITAL_PRODUCTS.map((p) => [p.id, p]));
@@ -204,6 +205,16 @@ export const useProductStore = create<ProductStoreState>()(
             state.products = [...state.products, defaultRm];
           } else if (state.products[rmIndex].images.length < defaultRm.images.length) {
             state.products[rmIndex].images = defaultRm.images;
+          }
+        }
+
+        const elIndex = state.products.findIndex((p) => p.id === "elementor-pro" || p.slug === "elementor-pro");
+        const defaultEl = MOCK_DIGITAL_PRODUCTS.find((p) => p.id === "elementor-pro");
+        if (defaultEl) {
+          if (elIndex === -1) {
+            state.products = [...state.products, defaultEl];
+          } else if (state.products[elIndex].images.length < defaultEl.images.length) {
+            state.products[elIndex].images = defaultEl.images;
           }
         }
       },

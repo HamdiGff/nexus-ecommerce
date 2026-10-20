@@ -21,6 +21,10 @@ export function generateStaticParams() {
       slugs.push({ slug: "rank-math-pro-just-pro" });
       slugs.push({ slug: "rank-math-pro-seo" });
     }
+    if (product.slug === "elementor-pro") {
+      slugs.push({ slug: "elementor" });
+      slugs.push({ slug: "elementor-pro-page-builder" });
+    }
   });
   return slugs;
 }
@@ -30,7 +34,8 @@ function resolveProduct(slug: string) {
   return MOCK_DIGITAL_PRODUCTS.find(
     (p) =>
       p.slug.toLowerCase() === clean ||
-      (clean.startsWith("rank-math") && p.slug.startsWith("rank-math"))
+      (clean.startsWith("rank-math") && p.slug.startsWith("rank-math")) ||
+      (clean.startsWith("elementor") && p.slug.startsWith("elementor"))
   );
 }
 
