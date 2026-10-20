@@ -22,6 +22,7 @@ import {
 import { DigitalProduct } from "@/data/mockProducts";
 import { formatPrice } from "@/lib/utils";
 import { useCartStore } from "@/lib/store/cartStore";
+import { useQuickAddStore } from "@/lib/store/quickAddStore";
 import BundleSaveEngine from "@/components/product/BundleSaveEngine";
 import WPRocketProductExperience from "@/components/product/WPRocketProductExperience";
 import RankMathProductExperience from "@/components/product/RankMathProductExperience";
@@ -50,8 +51,21 @@ export default function ProductDetailClient({ product: initialProduct }: Product
   const [added, setAdded] = useState(false);
 
   const addItem = useCartStore((state) => state.addItem);
+  const triggerQuickAddEffect = useQuickAddStore((state) => state.triggerQuickAddEffect);
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (e?: React.MouseEvent) => {
+    const targetEl = e?.currentTarget as HTMLElement | undefined;
+    triggerQuickAddEffect(
+      {
+        id: product.id,
+        title: product.title,
+        image: product.images[selectedImage] || product.images[0],
+        price: selectedVariant.price,
+        variantTitle: selectedVariant.title,
+      },
+      targetEl
+    );
+
     addItem(
       {
         id: `${product.id}-${selectedVariant.sku}`,
@@ -400,15 +414,18 @@ export default function ProductDetailClient({ product: initialProduct }: Product
               <div className="pt-2 space-y-3">
                 <button
                   onClick={handleAddToCart}
-                  className={`w-full py-4 px-6 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-xl ${
+                  className={`relative w-full py-4 px-6 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-xl overflow-hidden cursor-pointer ${
                     added
-                      ? "bg-emerald-600 text-white"
+                      ? "bg-emerald-600 text-white shadow-emerald-500/30 scale-[1.01]"
                       : "bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white hover:brightness-110 shadow-indigo-600/25"
                   }`}
                 >
+                  {added && (
+                    <span className="absolute -inset-2 rounded-2xl border-2 border-emerald-300 animate-ping pointer-events-none" />
+                  )}
                   {added ? (
                     <>
-                      <Check className="w-5 h-5" />
+                      <Check className="w-5 h-5 stroke-[2.5] animate-in zoom-in-75 duration-200" />
                       <span>Added to Bag!</span>
                     </>
                   ) : (

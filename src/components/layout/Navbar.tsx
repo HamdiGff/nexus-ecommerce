@@ -23,6 +23,7 @@ import {
   Gamepad2,
 } from "lucide-react";
 import { useCartStore } from "@/lib/store/cartStore";
+import { useQuickAddStore } from "@/lib/store/quickAddStore";
 import { useAuthStore } from "@/lib/store/authStore";
 import { useCategoryStore } from "@/lib/store/categoryStore";
 import AuthModal from "@/components/auth/AuthModal";
@@ -42,6 +43,7 @@ export default function Navbar() {
 
   const totalItems = useCartStore((state) => state.getTotalItems());
   const toggleCart = useCartStore((state) => state.toggleCart);
+  const cartBadgeBumping = useQuickAddStore((state) => state.cartBadgeBumping);
 
   const user = useAuthStore((state) => state.user);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -238,14 +240,27 @@ export default function Navbar() {
 
               {/* Cart Trigger Button */}
               <button
+                id="navbar-cart-btn"
                 onClick={toggleCart}
-                className="relative flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] border border-white/10 text-white text-xs font-semibold transition-all active:scale-95 cursor-pointer"
+                className={`relative flex items-center gap-2 px-3.5 py-2 rounded-xl border text-white text-xs font-semibold transition-all duration-300 active:scale-95 cursor-pointer ${
+                  cartBadgeBumping
+                    ? "scale-110 bg-blue-600/30 border-blue-400 shadow-[0_0_25px_rgba(59,130,246,0.6)] ring-2 ring-blue-400/50"
+                    : "bg-white/[0.06] hover:bg-white/[0.1] border-white/10"
+                }`}
                 aria-label="View shopping cart"
               >
-                <ShoppingBag className="w-4 h-4 text-blue-400" />
+                <ShoppingBag
+                  className={`w-4 h-4 transition-transform duration-300 ${
+                    cartBadgeBumping ? "scale-125 text-blue-300 -rotate-12" : "text-blue-400"
+                  }`}
+                />
                 <span className="hidden sm:inline">Bag</span>
                 {mounted && totalItems > 0 && (
-                  <span className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-[10px] font-extrabold w-5 h-5 rounded-full flex items-center justify-center animate-bounce shadow-sm">
+                  <span
+                    className={`bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-[10px] font-extrabold w-5 h-5 rounded-full flex items-center justify-center shadow-sm transition-transform duration-300 ${
+                      cartBadgeBumping ? "scale-125 bg-emerald-500 shadow-emerald-400/50" : ""
+                    }`}
+                  >
                     {totalItems}
                   </span>
                 )}

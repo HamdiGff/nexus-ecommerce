@@ -6,6 +6,7 @@ import { useState } from "react";
 import { DigitalProduct } from "@/data/mockProducts";
 import { formatPrice } from "@/lib/utils";
 import { useCartStore } from "@/lib/store/cartStore";
+import { useQuickAddStore } from "@/lib/store/quickAddStore";
 
 interface ProductCardProps {
   product: DigitalProduct;
@@ -15,6 +16,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   const [added, setAdded] = useState(false);
   const [imgError, setImgError] = useState(false);
   const addItem = useCartStore((state) => state.addItem);
+  const triggerQuickAddEffect = useQuickAddStore((state) => state.triggerQuickAddEffect);
 
   // Determine lowest variant price for accurate "From $X" or base price
   const lowestVariant = product.variants && product.variants.length > 0
@@ -29,19 +31,36 @@ export default function ProductCard({ product }: ProductCardProps) {
     e.stopPropagation();
 
     const selectedVariant = lowestVariant || product.variants[0];
+    const targetEl = e.currentTarget as HTMLElement;
 
-    addItem({
-      id: `${product.id}-${selectedVariant?.sku || "default"}`,
-      productId: product.id,
-      variantId: selectedVariant?.id,
-      title: product.title,
-      slug: product.slug,
-      image: product.images[0],
-      price: selectedVariant?.price || product.price,
-      variantTitle: selectedVariant?.title,
-      stock: selectedVariant?.stockQuantity || 99,
-      deliveryType: product.deliveryType,
-    });
+    // Trigger unique flying particle, haptic chime and toast
+    triggerQuickAddEffect(
+      {
+        id: product.id,
+        title: product.title,
+        image: product.images[0],
+        price: selectedVariant?.price || product.price,
+        variantTitle: selectedVariant?.title,
+      },
+      targetEl
+    );
+
+    addItem(
+      {
+        id: `${product.id}-${selectedVariant?.sku || "default"}`,
+        productId: product.id,
+        variantId: selectedVariant?.id,
+        title: product.title,
+        slug: product.slug,
+        image: product.images[0],
+        price: selectedVariant?.price || product.price,
+        variantTitle: selectedVariant?.title,
+        stock: selectedVariant?.stockQuantity || 99,
+        deliveryType: product.deliveryType,
+      },
+      1,
+      false // Smooth quick-add without interrupting with the drawer
+    );
 
     setAdded(true);
     setTimeout(() => setAdded(false), 1600);
@@ -227,19 +246,35 @@ export default function ProductCard({ product }: ProductCardProps) {
             </span>
           </div>
 
-          <div className="flex items-center gap-1.5">
-            {/* Quick Add To Bag Button */}
+          <div className="flex items-center gap-1.5 relative">
+            {/* Quick Add To Bag Button with Unique Floating + Ripple Feedback */}
             <button
               onClick={handleAddToCart}
-              className={`p-2 rounded-lg font-bold transition-all duration-200 active:scale-95 flex items-center justify-center shadow-sm ${
+              className={`relative p-2 rounded-lg font-bold transition-all duration-300 active:scale-90 flex items-center justify-center shadow-sm ${
                 added
-                  ? "bg-emerald-500 text-neutral-950 shadow-emerald-500/30 scale-105"
+                  ? "bg-emerald-500 text-neutral-950 shadow-emerald-500/40 scale-105"
                   : "bg-white text-neutral-950 hover:bg-neutral-200"
               }`}
               title="Quick Add to Bag"
               aria-label="Add to cart"
             >
-              {added ? <Check className="w-3.5 h-3.5 stroke-[3]" /> : <ShoppingBag className="w-3.5 h-3.5" />}
+              {/* Expanding Ripple Ring on Click */}
+              {added && (
+                <span className="absolute -inset-2 rounded-xl border-2 border-emerald-400 animate-ping pointer-events-none" />
+              )}
+
+              {/* Floating +1 Pill Badge */}
+              {added && (
+                <span className="absolute -top-7 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-emerald-500 text-neutral-950 font-black text-[10px] tracking-tight shadow-lg shadow-emerald-500/50 animate-bounce pointer-events-none whitespace-nowrap">
+                  +1 Added
+                </span>
+              )}
+
+              {added ? (
+                <Check className="w-3.5 h-3.5 stroke-[3] animate-in zoom-in-75 duration-200 text-neutral-950" />
+              ) : (
+                <ShoppingBag className="w-3.5 h-3.5" />
+              )}
             </button>
 
             {/* View Product Details Link */}
