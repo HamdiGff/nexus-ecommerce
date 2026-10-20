@@ -35,11 +35,6 @@ export function generateStaticParams() {
       slugs.push({ slug: "google-adsense" });
       slugs.push({ slug: "adsense-websites" });
     }
-    if (product.slug === "chatgpt-plus") {
-      slugs.push({ slug: "chatgpt" });
-      slugs.push({ slug: "chatgpt-4" });
-      slugs.push({ slug: "openai-chatgpt-plus" });
-    }
   });
   return slugs;
 }
@@ -52,8 +47,7 @@ function resolveProduct(slug: string) {
       (clean.startsWith("rank-math") && p.slug.startsWith("rank-math")) ||
       (clean.startsWith("elementor") && p.slug.startsWith("elementor")) ||
       (clean.startsWith("astra") && p.slug.startsWith("astra")) ||
-      (clean.includes("adsense") && p.slug.includes("adsense")) ||
-      (clean.includes("chatgpt") && p.slug.includes("chatgpt"))
+      (clean.includes("adsense") && p.slug.includes("adsense"))
   );
 }
 
