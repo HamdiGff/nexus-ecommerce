@@ -184,9 +184,19 @@ export const useProductStore = create<ProductStoreState>()(
     }),
     {
       name: "nexus-admin-products-storage",
-      version: 11,
+      version: 12,
       migrate: (persistedState: any) => {
-        const existingProducts: DigitalProduct[] = persistedState?.products || [];
+        const TEMP_IDS = new Set([
+          "internet-download-manager-lifetime",
+          "windows-11-pro-retail-key",
+          "steam-50-usd-gift-card",
+          "xbox-game-pass-ultimate-3-months",
+          "chatgpt-plus-shared-slot",
+          "adsense-approved-tech-blog-domain",
+        ]);
+        const existingProducts: DigitalProduct[] = (persistedState?.products || []).filter(
+          (p: DigitalProduct) => !TEMP_IDS.has(p.id)
+        );
         const mockMap = new Map<string, DigitalProduct>(MOCK_DIGITAL_PRODUCTS.map((p) => [p.id, p]));
         existingProducts.forEach((p) => {
           if (!mockMap.has(p.id)) {
@@ -199,12 +209,23 @@ export const useProductStore = create<ProductStoreState>()(
       },
       onRehydrateStorage: () => (state) => {
         if (!state) return;
+        const TEMP_IDS = new Set([
+          "internet-download-manager-lifetime",
+          "windows-11-pro-retail-key",
+          "steam-50-usd-gift-card",
+          "xbox-game-pass-ultimate-3-months",
+          "chatgpt-plus-shared-slot",
+          "adsense-approved-tech-blog-domain",
+        ]);
+        // Purge any lingering temporary demo products from client storage
+        state.products = state.products.filter((p) => !TEMP_IDS.has(p.id));
+
         const currentIds = new Set(state.products.map((p) => p.id));
         const missing = MOCK_DIGITAL_PRODUCTS.filter((p) => !currentIds.has(p.id));
         if (missing.length > 0) {
           state.products = [...state.products, ...missing];
         }
-        // Always sync images
+        // Always sync images & core attributes
         MOCK_DIGITAL_PRODUCTS.forEach((dp) => {
           const idx = state.products.findIndex((p) => p.id === dp.id);
           if (idx !== -1 && dp.images.length > 0) {

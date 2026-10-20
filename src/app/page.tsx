@@ -157,30 +157,6 @@ export default function HomePage() {
       slug: "astra-pro-theme",
       image: "/products/astra-pro-theme.svg",
     },
-    {
-      title: "IDM 1-PC Lifetime Retail Key",
-      subtitle: "Instant auto-delivery retail serial with lifetime updates",
-      price: "$18.50",
-      originalPrice: "$24.95",
-      type: "INSTANT_CODE" as const,
-      badge: "Instant Auto-Key",
-      icon: Zap,
-      accent: "from-emerald-500 to-teal-600",
-      slug: "internet-download-manager-lifetime",
-      image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1000&q=80",
-    },
-    {
-      title: "Google AdSense Tech Blog + .COM",
-      subtitle: "Turnkey approved monetization website + domain auth transfer",
-      price: "$349.00",
-      originalPrice: "$450.00",
-      type: "MANUAL_HANDOFF" as const,
-      badge: "Turnkey Asset",
-      icon: Globe,
-      accent: "from-purple-500 to-pink-600",
-      slug: "adsense-approved-tech-blog-domain",
-      image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1000&q=80",
-    },
   ];
 
   const activeHeroItem = heroShowcaseItems[heroActiveIndex];
@@ -293,22 +269,19 @@ export default function HomePage() {
                   </div>
 
                   {/* Selector Tabs */}
-                  <div className="flex p-1 bg-white/[0.03] rounded-xl border border-white/[0.06]">
+                  <div className="flex p-1 bg-white/[0.03] rounded-xl border border-white/[0.06] gap-1">
                     {heroShowcaseItems.map((item, idx) => (
                       <button
                         key={idx}
                         onClick={() => setHeroActiveIndex(idx)}
-                        className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                        className={`flex-1 py-1.5 px-1 text-[11px] sm:text-xs font-bold rounded-lg transition-all truncate cursor-pointer ${
                           heroActiveIndex === idx
                             ? "bg-white/[0.12] text-white shadow-sm border border-white/10"
                             : "text-neutral-400 hover:text-neutral-200"
                         }`}
+                        title={item.title}
                       >
-                        {item.type === "SERVICE_SETUP"
-                          ? "Rank Math"
-                          : item.type === "INSTANT_CODE"
-                          ? "IDM Key"
-                          : "AdSense Blog"}
+                        {item.title.split(" - ")[0]}
                       </button>
                     ))}
                   </div>
@@ -325,7 +298,7 @@ export default function HomePage() {
                       </span>
 
                       <span className="text-[10px] font-mono text-emerald-400 bg-black/60 px-2 py-0.5 rounded border border-emerald-500/30">
-                        100% Verified
+                        100% Genuine
                       </span>
                     </div>
 
@@ -333,33 +306,53 @@ export default function HomePage() {
                     <div className="my-auto text-center z-10">
                       {heroActiveIndex === 0 && (
                         <div className="space-y-1">
-                          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-blue-600/20 border border-blue-500/30 text-blue-300 font-extrabold text-sm">
-                            <span>RankMath</span>
-                            <span className="bg-amber-400 text-neutral-950 text-[10px] px-1.5 py-0.2 rounded font-black">
-                              PRO
+                          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-orange-600/20 border border-orange-500/30 text-orange-300 font-extrabold text-sm">
+                            <Flame className="w-4 h-4 text-orange-400" />
+                            <span>WP Rocket</span>
+                            <span className="bg-orange-500 text-white text-[10px] px-1.5 py-0.2 rounded font-black">
+                              SPEED
                             </span>
                           </div>
-                          <p className="text-[11px] text-neutral-400">Content AI 2.0 • 840+ Credits • Schema</p>
+                          <p className="text-[11px] text-neutral-400">Remove Unused CSS • Preload Cache • 99+ Core Web Vitals</p>
                         </div>
                       )}
 
                       {heroActiveIndex === 1 && (
                         <div className="space-y-1">
-                          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-emerald-600/20 border border-emerald-500/30 text-emerald-300 font-mono font-bold text-xs">
-                            <Zap className="w-3.5 h-3.5 fill-emerald-400" />
-                            <span>IDM-••••-••••-NXUS</span>
+                          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-blue-600/20 border border-blue-500/30 text-blue-300 font-extrabold text-sm">
+                            <TrendingUp className="w-4 h-4 text-blue-400" />
+                            <span>RankMath</span>
+                            <span className="bg-amber-400 text-neutral-950 text-[10px] px-1.5 py-0.2 rounded font-black">
+                              PRO
+                            </span>
                           </div>
-                          <p className="text-[11px] text-neutral-400">Official Tonec 20-Digit Retail Key • 5x Speeds</p>
+                          <p className="text-[11px] text-neutral-400">Content AI 2.0 • 840+ Schema Types • Auto Updates</p>
                         </div>
                       )}
 
                       {heroActiveIndex === 2 && (
                         <div className="space-y-1">
-                          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-purple-600/20 border border-purple-500/30 text-purple-300 font-mono font-bold text-xs">
-                            <Globe className="w-3.5 h-3.5" />
-                            <span>Approved AdSense Tech Blog</span>
+                          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-pink-600/20 border border-pink-500/30 text-pink-300 font-extrabold text-sm">
+                            <Layers className="w-4 h-4 text-pink-400" />
+                            <span>Elementor</span>
+                            <span className="bg-pink-500 text-white text-[10px] px-1.5 py-0.2 rounded font-black">
+                              BUILDER
+                            </span>
                           </div>
-                          <p className="text-[11px] text-neutral-400">Clean 0 Policy Strikes • Aged .COM Domain Push</p>
+                          <p className="text-[11px] text-neutral-400">Theme Builder • Loop Grid • 100+ Pro Widgets &amp; Kits</p>
+                        </div>
+                      )}
+
+                      {heroActiveIndex === 3 && (
+                        <div className="space-y-1">
+                          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-purple-600/20 border border-purple-500/30 text-purple-300 font-extrabold text-sm">
+                            <Palette className="w-4 h-4 text-purple-400" />
+                            <span>Astra Pro</span>
+                            <span className="bg-purple-500 text-white text-[10px] px-1.5 py-0.2 rounded font-black">
+                              THEME
+                            </span>
+                          </div>
+                          <p className="text-[11px] text-neutral-400">&lt;50KB Zero-jQuery Core • 280+ Premium Starter Sites</p>
                         </div>
                       )}
                     </div>
@@ -411,7 +404,7 @@ export default function HomePage() {
                     <div className="p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.04]">
                       <span className="text-neutral-500 text-[9.5px] block font-mono">Fulfillment SLA</span>
                       <span className="text-emerald-400 font-bold text-[11px] mt-0.5 block">
-                        {activeHeroItem.type === "INSTANT_CODE" ? "Immediate Screen Reveal" : "Guaranteed within 45 min"}
+                        {(activeHeroItem.type as string) === "INSTANT_CODE" ? "Immediate Screen Reveal" : "Guaranteed within 45 min"}
                       </span>
                     </div>
                     <div className="p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.04]">
@@ -520,7 +513,7 @@ export default function HomePage() {
                 <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400" />
                 <input
                   type="text"
-                  placeholder="Search products by keyword (e.g. Rank Math, WP Rocket, IDM, Steam, Elementor, Astra)..."
+                  placeholder="Search products by keyword (e.g. WP Rocket, Rank Math, Elementor, Astra)..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-10 pr-10 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 text-xs text-white placeholder-neutral-500 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
@@ -623,11 +616,12 @@ export default function HomePage() {
                     </span>
                   </button>
 
-                  {/* Individual Categories */}
+                  {/* Individual Categories (Only active categories with inventory) */}
                   {categories.map((cat) => {
                     const count = products.filter(
                       (p) => p.category === cat.slug || p.category === cat.id
                     ).length;
+                    if (count === 0) return null;
                     const Icon = getCategoryIcon(cat.slug || cat.id);
                     const isSelected = selectedCategory === cat.slug || selectedCategory === cat.id;
 
