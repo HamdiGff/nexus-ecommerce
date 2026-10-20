@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" fill="none">
+  <defs>
+    <linearGradient id="bg3" x1="0" y1="0" x2="800" y2="500" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#07100e"/>
+      <stop offset="100%" stop-color="#080f18"/>
+    </linearGradient>
+    <radialGradient id="glow3" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#10a37f" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </radialGradient>
+    <linearGradient id="topLine3" x1="0" y1="0" x2="800" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="transparent"/>
+      <stop offset="50%" stop-color="#10a37f"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="800" height="500" fill="url(#bg3)"/>
+  <rect width="800" height="500" fill="url(#glow3)"/>
+  <rect width="800" height="1.5" fill="url(#topLine3)"/>
+
+  <!-- Title -->
+  <text x="60" y="56" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#10a37f" letter-spacing="3">CHATGPT PLUS · DELIVERY &amp; GUARANTEE</text>
+  <text x="60" y="102" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="36" font-weight="900" fill="white" letter-spacing="-1.5">How It Works</text>
+  <text x="60" y="130" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="15" fill="#6b7280">Simple 3-step delivery. Full validity guaranteed or replaced.</text>
+
+  <!-- Process Steps -->
+  <!-- Step 1 -->
+  <g transform="translate(60, 165)">
+    <rect width="200" height="200" rx="16" fill="#0c1a14"/>
+    <rect width="200" height="200" rx="16" fill="none" stroke="#1a3028" stroke-width="1.5"/>
+    <rect width="200" height="3" rx="1.5" fill="#10a37f"/>
+    <text x="20" y="38" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#10a37f" letter-spacing="1">STEP 01</text>
+    <text x="20" y="72" font-size="28" font-family="sans-serif">🛒</text>
+    <text x="20" y="110" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="14" font-weight="800" fill="white">Choose Your Plan</text>
+    <text x="20" y="132" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="10.5" fill="#6b7280">Select 1 Month, 6 Month,</text>
+    <text x="20" y="148" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="10.5" fill="#6b7280">or 1 Year subscription.</text>
+    <text x="20" y="164" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="10.5" fill="#6b7280">Complete secure checkout</text>
+    <text x="20" y="180" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="10.5" fill="#6b7280">via Card, PayPal, or Crypto.</text>
+  </g>
+
+  <!-- Arrow 1 -->
+  <text x="276" y="277" font-family="sans-serif" font-size="28" fill="#10a37f" opacity="0.5">→</text>
+
+  <!-- Step 2 -->
+  <g transform="translate(310, 165)">
+    <rect width="200" height="200" rx="16" fill="#0c1a14"/>
+    <rect width="200" height="200" rx="16" fill="none" stroke="#1a3028" stroke-width="1.5"/>
+    <rect width="200" height="3" rx="1.5" fill="#10a37f"/>
+    <text x="20" y="38" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#10a37f" letter-spacing="1">STEP 02</text>
+    <text x="20" y="72" font-size="28" font-family="sans-serif">⚡</text>
+    <text x="20" y="110" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="14" font-weight="800" fill="white">Instant Delivery</text>
+    <text x="20" y="132" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="10.5" fill="#6b7280">ChatGPT Plus login credentials</text>
+    <text x="20" y="148" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="10.5" fill="#6b7280">delivered to your email and</text>
+    <text x="20" y="164" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="10.5" fill="#6b7280">stored in your Order Vault</text>
+    <text x="20" y="180" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="10.5" fill="#6b7280">within minutes of payment.</text>
+  </g>
+
+  <!-- Arrow 2 -->
+  <text x="526" y="277" font-family="sans-serif" font-size="28" fill="#10a37f" opacity="0.5">→</text>
+
+  <!-- Step 3 -->
+  <g transform="translate(560, 165)">
+    <rect width="180" height="200" rx="16" fill="#0c1a14"/>
+    <rect width="180" height="200" rx="16" fill="none" stroke="#10a37f" stroke-width="1.5" opacity="0.5"/>
+    <rect width="180" height="3" rx="1.5" fill="#10a37f"/>
+    <text x="18" y="38" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#10a37f" letter-spacing="1">STEP 03</text>
+    <text x="18" y="72" font-size="28" font-family="sans-serif">🛡️</text>
+    <text x="18" y="110" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="14" font-weight="800" fill="white">Validity Protected</text>
+    <text x="18" y="132" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="10.5" fill="#6b7280">Full guarantee: if access</text>
+    <text x="18" y="148" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="10.5" fill="#6b7280">drops before plan ends,</text>
+    <text x="18" y="164" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="10.5" fill="#6b7280">we replace it — free,</text>
+    <text x="18" y="180" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="10.5" fill="#10a37f" font-weight="600">no questions asked.</text>
+  </g>
+
+  <!-- Bottom Banner -->
+  <rect x="60" y="388" width="680" height="68" rx="16" fill="#0a1e16"/>
+  <rect x="60" y="388" width="680" height="68" rx="16" fill="none" stroke="#10a37f" stroke-width="1" opacity="0.3"/>
+  
+  <text x="90" y="414" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="14" font-weight="800" fill="white">✅ 100% Validity Guarantee</text>
+  <text x="90" y="438" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="11" fill="#9ca3af">Your subscription is valid for the full plan period. Access interruption? Immediate free replacement guaranteed.</text>
+
+  <text x="572" y="414" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="11" fill="#6b7280">Plans available:</text>
+  <text x="572" y="434" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#10a37f">1M · 6M · 1Y</text>
+
+  <!-- Bottom Strip -->
+  <rect x="0" y="475" width="800" height="25" fill="#060c10"/>
+  <text x="60" y="492" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="10" fill="#374151">NEXUS Digital Store · Official ChatGPT Plus Access · Secure &amp; Guaranteed</text>
+</svg>

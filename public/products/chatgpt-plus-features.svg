@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" fill="none">
+  <defs>
+    <linearGradient id="bg2" x1="0" y1="0" x2="800" y2="500" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#080e18"/>
+      <stop offset="100%" stop-color="#061210"/>
+    </linearGradient>
+    <linearGradient id="headerGrad" x1="0" y1="0" x2="800" y2="150" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0a1f18"/>
+      <stop offset="100%" stop-color="#0a1218"/>
+    </linearGradient>
+    <radialGradient id="glow2" cx="50%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#10a37f" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="transparent" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="accentLine" x1="0" y1="0" x2="800" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="transparent"/>
+      <stop offset="50%" stop-color="#10a37f"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </linearGradient>
+  </defs>
+  
+  <rect width="800" height="500" fill="url(#bg2)"/>
+  <rect width="800" height="500" fill="url(#glow2)"/>
+
+  <!-- Top accent -->
+  <rect x="0" y="0" width="800" height="1.5" fill="url(#accentLine)"/>
+
+  <!-- Header Section -->
+  <rect x="0" y="0" width="800" height="160" fill="url(#headerGrad)" opacity="0.7"/>
+
+  <!-- Large OpenAI swirl logo watermark -->
+  <g opacity="0.04" transform="translate(580, 40)">
+    <circle cx="100" cy="100" r="90" stroke="#10a37f" stroke-width="3" fill="none"/>
+    <circle cx="100" cy="100" r="65" stroke="#10a37f" stroke-width="2.5" fill="none"/>
+    <circle cx="100" cy="100" r="40" stroke="#10a37f" stroke-width="2" fill="none"/>
+    <circle cx="100" cy="100" r="15" fill="#10a37f"/>
+  </g>
+
+  <!-- Title Section -->
+  <text x="60" y="60" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="11" font-weight="600" fill="#10a37f" letter-spacing="3">OPENAI · CHATGPT PLUS</text>
+  <text x="60" y="110" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="42" font-weight="900" fill="white" letter-spacing="-2">GPT-4o Access</text>
+  <text x="60" y="140" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="16" fill="#6b7280">The world's most capable AI model · Always-On Access</text>
+  
+  <!-- Divider -->
+  <rect x="60" y="170" width="680" height="1" fill="#10a37f" opacity="0.12"/>
+
+  <!-- Feature Grid: 4 columns -->
+  <!-- Feature 1 -->
+  <g transform="translate(60, 195)">
+    <rect width="148" height="108" rx="12" fill="#0d1a14"/>
+    <rect width="148" height="108" rx="12" fill="none" stroke="#1a3028" stroke-width="1"/>
+    <rect width="148" height="2" rx="1" fill="#10a37f" opacity="0.6"/>
+    <text x="14" y="34" font-size="22" font-family="sans-serif">🤖</text>
+    <text x="14" y="62" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="white">GPT-4o Model</text>
+    <text x="14" y="78" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="10" fill="#6b7280">Most advanced</text>
+    <text x="14" y="92" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="10" fill="#6b7280">reasoning AI</text>
+  </g>
+
+  <!-- Feature 2 -->
+  <g transform="translate(224, 195)">
+    <rect width="148" height="108" rx="12" fill="#0d1a14"/>
+    <rect width="148" height="108" rx="12" fill="none" stroke="#1a3028" stroke-width="1"/>
+    <rect width="148" height="2" rx="1" fill="#10a37f" opacity="0.6"/>
+    <text x="14" y="34" font-size="22" font-family="sans-serif">🎨</text>
+    <text x="14" y="62" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="white">DALL·E 3 Images</text>
+    <text x="14" y="78" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="10" fill="#6b7280">Photorealistic AI</text>
+    <text x="14" y="92" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="10" fill="#6b7280">image generation</text>
+  </g>
+
+  <!-- Feature 3 -->
+  <g transform="translate(388, 195)">
+    <rect width="148" height="108" rx="12" fill="#0d1a14"/>
+    <rect width="148" height="108" rx="12" fill="none" stroke="#1a3028" stroke-width="1"/>
+    <rect width="148" height="2" rx="1" fill="#10a37f" opacity="0.6"/>
+    <text x="14" y="34" font-size="22" font-family="sans-serif">💻</text>
+    <text x="14" y="62" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="white">Code Interpreter</text>
+    <text x="14" y="78" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="10" fill="#6b7280">Run code, debug,</text>
+    <text x="14" y="92" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="10" fill="#6b7280">analyze datasets</text>
+  </g>
+
+  <!-- Feature 4 -->
+  <g transform="translate(552, 195)">
+    <rect width="188" height="108" rx="12" fill="#0d1a14"/>
+    <rect width="188" height="108" rx="12" fill="none" stroke="#1a3028" stroke-width="1"/>
+    <rect width="188" height="2" rx="1" fill="#10a37f" opacity="0.6"/>
+    <text x="14" y="34" font-size="22" font-family="sans-serif">🌐</text>
+    <text x="14" y="62" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="white">Web Browsing + Plugins</text>
+    <text x="14" y="78" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="10" fill="#6b7280">Real-time search &amp;</text>
+    <text x="14" y="92" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="10" fill="#6b7280">3rd party integrations</text>
+  </g>
+
+  <!-- Guarantee / Plan Row -->
+  <g transform="translate(60, 326)">
+    <!-- Plan validity visual -->
+    <rect width="440" height="110" rx="14" fill="#0a1e16"/>
+    <rect width="440" height="110" rx="14" fill="none" stroke="#10a37f" stroke-width="1" opacity="0.3"/>
+    
+    <text x="20" y="30" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#10a37f" letter-spacing="2">SUBSCRIPTION VALIDITY PLANS</text>
+    
+    <!-- Timeline bar -->
+    <rect x="20" y="48" width="400" height="6" rx="3" fill="#1a2e22"/>
+    <rect x="20" y="48" width="133" height="6" rx="3" fill="#10a37f" opacity="0.5"/>
+    <rect x="153" y="48" width="133" height="6" rx="3" fill="#10a37f" opacity="0.75"/>
+    <rect x="286" y="48" width="134" height="6" rx="3" fill="#10a37f"/>
+    
+    <!-- Timeline labels -->
+    <circle cx="153" cy="51" r="5" fill="#10a37f" opacity="0.6"/>
+    <circle cx="286" cy="51" r="5" fill="#10a37f" opacity="0.8"/>
+    <circle cx="420" cy="51" r="6" fill="#10a37f"/>
+    
+    <text x="20" y="74" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="10" fill="#6b7280">1 Month</text>
+    <text x="134" y="74" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="10" fill="#9ca3af">→ 6 Months</text>
+    <text x="280" y="74" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="10" fill="#d1d5db">→ 1 Year (Best Value)</text>
+    
+    <text x="20" y="98" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="11" fill="#4b5563">All plans: Full GPT-4o access · DALL·E 3 · Plugins · Custom GPTs</text>
+  </g>
+
+  <!-- Right: Guarantee Shield -->
+  <g transform="translate(524, 326)">
+    <rect width="216" height="110" rx="14" fill="#0a1218"/>
+    <rect width="216" height="110" rx="14" fill="none" stroke="#1e3050" stroke-width="1"/>
+    <text x="20" y="32" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="22" fill="#10a37f">🛡</text>
+    <text x="50" y="30" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="white">Validity</text>
+    <text x="50" y="48" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#10a37f">Guaranteed</text>
+    <text x="20" y="72" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="10" fill="#6b7280">Access expires? We replace</text>
+    <text x="20" y="87" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="10" fill="#6b7280">your subscription — no</text>
+    <text x="20" y="102" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="10" fill="#6b7280">questions asked.</text>
+  </g>
+
+  <!-- Bottom Strip -->
+  <rect x="0" y="458" width="800" height="42" fill="#060c10"/>
+  <line x1="0" y1="458" x2="800" y2="458" stroke="#10a37f" stroke-width="0.5" opacity="0.15"/>
+  <text x="60" y="484" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="11" fill="#374151">ChatGPT Plus · GPT-4o · DALL·E 3 · Code Interpreter · Web Browsing · Custom GPTs</text>
+  <text x="640" y="484" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#10a37f">NEXUS Digital</text>
+</svg>

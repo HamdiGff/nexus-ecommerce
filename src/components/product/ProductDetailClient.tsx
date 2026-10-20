@@ -974,6 +974,87 @@ export default function ProductDetailClient({ product: initialProduct }: Product
           </div>
         )}
 
+        {/* ChatGPT Plus — Validity Guarantee & Plan Breakdown */}
+        {product.slug.includes("chatgpt") && (
+          <div className="mt-8 sm:mt-12 space-y-6">
+            {/* Guarantee Banner */}
+            <div className="relative rounded-2xl sm:rounded-3xl p-5 sm:p-8 overflow-hidden border border-emerald-500/20 bg-gradient-to-br from-[#071a12] via-[#0a1c16] to-[#08121a]">
+              <div className="absolute top-0 right-0 w-72 h-72 bg-emerald-500/6 blur-[100px] pointer-events-none -z-10" />
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5">
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2.5">
+                    <ShieldCheck className="w-6 h-6 text-emerald-400 shrink-0" />
+                    <h3 className="font-extrabold text-lg sm:text-xl text-white">100% Validity Guarantee</h3>
+                  </div>
+                  <p className="text-xs sm:text-sm text-neutral-400 leading-relaxed max-w-xl">
+                    Every ChatGPT Plus subscription is backed by our <strong className="text-white">full-period validity guarantee</strong>. If your access is interrupted or expires before your plan ends for any reason, we replace your subscription immediately — completely free, zero questions asked.
+                  </p>
+                </div>
+                <div className="flex-shrink-0 grid grid-cols-3 gap-3 text-center">
+                  {[
+                    { label: "1 Month", sub: "Flexible", color: "text-emerald-400", border: "border-emerald-500/30", bg: "bg-emerald-500/8" },
+                    { label: "6 Months", sub: "Popular", color: "text-emerald-400", border: "border-emerald-400/50", bg: "bg-emerald-500/15" },
+                    { label: "1 Year", sub: "Best Value", color: "text-purple-400", border: "border-purple-500/40", bg: "bg-purple-500/10" },
+                  ].map((plan) => (
+                    <div key={plan.label} className={`px-3 py-3 rounded-2xl border ${plan.border} ${plan.bg} flex flex-col items-center gap-1`}>
+                      <span className={`font-extrabold text-sm ${plan.color}`}>{plan.label}</span>
+                      <span className="text-[10px] text-neutral-500 font-mono">{plan.sub}</span>
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-1" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* What You Get Grid */}
+            <div className="rounded-2xl sm:rounded-3xl p-5 sm:p-8 border border-white/[0.08] bg-[#0d1118]/80">
+              <div className="flex items-center gap-2 mb-5">
+                <Sparkles className="w-4 h-4 text-purple-400" />
+                <h3 className="font-bold text-xs uppercase tracking-wider text-white">What's Included with ChatGPT Plus</h3>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {[
+                  { icon: "🤖", title: "GPT-4o Model", desc: "Flagship multimodal AI with vision, voice, and advanced reasoning." },
+                  { icon: "🎨", title: "DALL·E 3 Images", desc: "Generate photorealistic images, art, and mockups via text prompts." },
+                  { icon: "💻", title: "Code Interpreter", desc: "Execute Python, analyze data, debug code, and create charts." },
+                  { icon: "🌐", title: "Web Browsing", desc: "Real-time live search for current news, research, and market data." },
+                  { icon: "🧩", title: "Custom GPTs", desc: "Build and use personal AI agents trained on your own documents." },
+                  { icon: "⚡", title: "Priority Access", desc: "Always fast — never throttled or queued during peak demand." },
+                ].map((item, i) => (
+                  <div key={i} className="p-3.5 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-emerald-500/30 transition-all space-y-1.5">
+                    <div className="flex items-center gap-2.5">
+                      <span className="text-xl">{item.icon}</span>
+                      <span className="font-bold text-xs text-white">{item.title}</span>
+                    </div>
+                    <p className="text-[11px] text-neutral-400 leading-snug">{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Delivery Process */}
+            <div className="rounded-2xl sm:rounded-3xl p-5 sm:p-8 border border-white/[0.08] bg-gradient-to-r from-neutral-900/60 via-[#0d1020] to-neutral-900/60">
+              <h3 className="font-extrabold text-sm sm:text-base text-white mb-5 flex items-center gap-2">
+                <Zap className="w-4 h-4 text-emerald-400" />
+                How ChatGPT Plus Delivery Works
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {[
+                  { step: "01", title: "Select Your Plan", desc: "Choose 1 Month, 6 Month, or 1 Year. Complete checkout via Card, PayPal, or Crypto.", color: "text-blue-400", bg: "bg-blue-500/15", border: "border-blue-500/20" },
+                  { step: "02", title: "Instant Delivery", desc: "ChatGPT Plus credentials are delivered to your email and saved in your Order Vault.", color: "text-emerald-400", bg: "bg-emerald-500/15", border: "border-emerald-500/20" },
+                  { step: "03", title: "Validity Protected", desc: "If access drops before your plan ends, we replace it free — no questions asked.", color: "text-purple-400", bg: "bg-purple-500/15", border: "border-purple-500/20" },
+                ].map((step) => (
+                  <div key={step.step} className={`p-4 rounded-2xl bg-white/[0.02] border ${step.border} space-y-2`}>
+                    <div className={`w-7 h-7 rounded-xl ${step.bg} font-bold font-mono text-xs flex items-center justify-center ${step.color}`}>{step.step}</div>
+                    <h4 className="font-bold text-sm text-white">{step.title}</h4>
+                    <p className="text-xs text-neutral-400 leading-relaxed">{step.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* 100% Verified Customer Reviews & Audits */}
         <div className="mt-12">
           <ProductReviewsSection
