@@ -9,6 +9,8 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
+export const instant = false;
+
 export function generateStaticParams() {
   return INITIAL_CATEGORIES.map((c) => ({
     slug: c.slug,
