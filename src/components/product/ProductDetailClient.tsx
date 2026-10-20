@@ -36,18 +36,175 @@ interface ProductDetailClientProps {
   product: DigitalProduct;
 }
 
+const ADSENSE_TIERS = [
+  {
+    id: "FRESH",
+    label: "Freshly Approved Tech Blog",
+    shortLabel: "Fresh Approved",
+    tagline: "High-CPC tech blog, 100% active green check, GAM potential",
+    badge: "ENTRY NICHE",
+    badgeStyle: "bg-blue-500/15 text-blue-300 border border-blue-500/30",
+    basePrice: 189,
+    baseOrigPrice: 249,
+    pinText: "Ready for Postal PIN setup",
+    gamText: "GAM Included where available (not guaranteed)",
+  },
+  {
+    id: "PIN",
+    label: "PIN-Verified AdSense Website",
+    shortLabel: "PIN Verified",
+    tagline: "Postal address PIN cleared, withdrawal-ready, zero postal wait",
+    badge: "MOST POPULAR",
+    badgeStyle: "bg-emerald-400 text-neutral-950 font-black shadow-sm",
+    basePrice: 369,
+    baseOrigPrice: 480,
+    pinText: "100% Postal PIN Cleared (Instant Bank Linking)",
+    gamText: "Google Ad Manager Native Support",
+  },
+  {
+    id: "VETERAN",
+    label: "5x Paid Veteran + Guaranteed GAM",
+    shortLabel: "5x Paid + GAM",
+    tagline: "5+ wire payouts cleared, maximum trust, guaranteed GAM 360",
+    badge: "ELITE ASSET",
+    badgeStyle: "bg-amber-500/20 text-amber-300 border border-amber-500/30",
+    basePrice: 589,
+    baseOrigPrice: 750,
+    pinText: "5+ Historical Google Bank Wire Payouts Cleared",
+    gamText: "Guaranteed GAM 360 / MCM Approved",
+  },
+] as const;
+
+const ADSENSE_COUNTRIES = [
+  {
+    code: "USA",
+    name: "United States",
+    flag: "🇺🇸",
+    currency: "USD ($)",
+    modifier: 60,
+    cpcText: "$0.80 - $4.50+",
+  },
+  {
+    code: "UK",
+    name: "United Kingdom",
+    flag: "🇬🇧",
+    currency: "GBP (£)",
+    modifier: 50,
+    cpcText: "£0.65 - £3.80+",
+  },
+  {
+    code: "CAN",
+    name: "Canada",
+    flag: "🇨🇦",
+    currency: "CAD ($)",
+    modifier: 40,
+    cpcText: "$0.70 - $3.90+",
+  },
+  {
+    code: "IND",
+    name: "India",
+    flag: "🇮🇳",
+    currency: "INR (₹)",
+    modifier: -10,
+    cpcText: "₹15 - ₹180+",
+  },
+  {
+    code: "TUR",
+    name: "Turkey",
+    flag: "🇹🇷",
+    currency: "TRY (₺)",
+    modifier: -10,
+    cpcText: "₺8 - ₺65+",
+  },
+  {
+    code: "GCC",
+    name: "Middle East (GCC)",
+    flag: "🇦🇪",
+    currency: "USD / AED",
+    modifier: 30,
+    cpcText: "$0.50 - $2.80+",
+  },
+  {
+    code: "GLOBAL",
+    name: "Global / Multi-Geo",
+    flag: "🌐",
+    currency: "Multi-Currency",
+    modifier: 0,
+    cpcText: "$0.60 - $3.00+",
+  },
+] as const;
+
 export default function ProductDetailClient({ product: initialProduct }: ProductDetailClientProps) {
   const storeProduct = useProductStore((state) =>
     state.products.find((p) => p.id === initialProduct.id || p.slug === initialProduct.slug)
   );
   const product = storeProduct || initialProduct;
 
+  const isAdSense = product.slug === "google-adsense-approved-websites" || product.slug.includes("adsense");
+  const [adSenseTier, setAdSenseTier] = useState<"FRESH" | "PIN" | "VETERAN">("PIN");
+  const [adSenseCountry, setAdSenseCountry] = useState<string>("USA");
+
   const [selectedImage, setSelectedImage] = useState(0);
-  const [selectedVariant, setSelectedVariant] = useState(
-    product.variants && product.variants.length > 0
+  const [selectedVariant, setSelectedVariant] = useState(() => {
+    if (isAdSense) {
+      const t = ADSENSE_TIERS[1];
+      const c = ADSENSE_COUNTRIES[0];
+      return {
+        id: `adsense-${t.id.toLowerCase()}-${c.code.toLowerCase()}`,
+        sku: `ADS-${t.id}-${c.code}`,
+        title: `${t.label} — ${c.name} (${c.currency})`,
+        tierName: t.label,
+        price: t.basePrice + c.modifier,
+        originalPrice: t.baseOrigPrice + c.modifier,
+        stockQuantity: 3,
+        perks: [
+          `Target Region: ${c.flag} ${c.name} (${c.currency})`,
+          "Original Master Gmail Account with 2FA Handshake",
+          "Full WordPress Website Backup (Files + SQL Database)",
+          "Free Domain Authorization Push at Namecheap/GoDaddy/Porkbun",
+          t.pinText,
+          t.gamText,
+          "Strict Anti-Ad Loading Policy (Zero Bot / Artificial Traffic)",
+          "0 Active TOS Violations • Never Ad-Limited",
+          "14-Day Escrow Replacement Warranty",
+        ],
+      };
+    }
+    return product.variants && product.variants.length > 0
       ? product.variants[0]
-      : { id: "default", sku: "DEFAULT", title: "Standard License", price: product.price || 0, stockQuantity: 99 }
-  );
+      : { id: "default", sku: "DEFAULT", title: "Standard License", price: product.price || 0, stockQuantity: 99 };
+  });
+
+  const handleAdSenseConfigChange = (newTierId: "FRESH" | "PIN" | "VETERAN", newCountryCode: string) => {
+    setAdSenseTier(newTierId);
+    setAdSenseCountry(newCountryCode);
+
+    const t = ADSENSE_TIERS.find((x) => x.id === newTierId) || ADSENSE_TIERS[1];
+    const c = ADSENSE_COUNTRIES.find((x) => x.code === newCountryCode) || ADSENSE_COUNTRIES[0];
+    const price = t.basePrice + c.modifier;
+    const origPrice = t.baseOrigPrice + c.modifier;
+
+    setSelectedVariant({
+      id: `adsense-${t.id.toLowerCase()}-${c.code.toLowerCase()}`,
+      sku: `ADS-${t.id}-${c.code}`,
+      title: `${t.label} — ${c.name} (${c.currency})`,
+      tierName: t.label,
+      price,
+      originalPrice: origPrice,
+      stockQuantity: 3,
+      perks: [
+        `Target Region: ${c.flag} ${c.name} (${c.currency})`,
+        "Original Master Gmail Account with 2FA Handshake",
+        "Full WordPress Website Backup (Files + SQL Database)",
+        "Free Domain Authorization Push at Namecheap/GoDaddy/Porkbun",
+        t.pinText,
+        t.gamText,
+        "Strict Anti-Ad Loading Policy (Zero Bot / Artificial Traffic)",
+        "0 Active TOS Violations • Never Ad-Limited",
+        "14-Day Escrow Replacement Warranty",
+      ],
+    });
+  };
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
 
@@ -216,24 +373,33 @@ export default function ProductDetailClient({ product: initialProduct }: Product
           <div className="lg:col-span-5 flex flex-col justify-start">
             <div className="space-y-6">
               {/* Delivery Type Header Pill */}
-              <div className="flex items-center gap-2">
-                {product.deliveryType === "SERVICE_SETUP" && (
-                  <span className="text-[11px] font-bold px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 flex items-center gap-1.5">
-                    <Wrench className="w-3.5 h-3.5" />
-                    WP Activation Service
-                  </span>
-                )}
-                {product.deliveryType === "INSTANT_CODE" && (
+              <div className="flex items-center gap-2 flex-wrap">
+                {isAdSense ? (
                   <span className="text-[11px] font-bold px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1.5">
-                    <Zap className="w-3.5 h-3.5" />
-                    Instant Key Dispenser
+                    <ShieldCheck className="w-3.5 h-3.5" />
+                    Turnkey Escrow Handshake • Master Gmail Included
                   </span>
-                )}
-                {product.deliveryType === "MANUAL_HANDOFF" && (
-                  <span className="text-[11px] font-bold px-3 py-1 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20 flex items-center gap-1.5">
-                    <Globe className="w-3.5 h-3.5" />
-                    Turnkey Asset Transfer
-                  </span>
+                ) : (
+                  <>
+                    {product.deliveryType === "SERVICE_SETUP" && (
+                      <span className="text-[11px] font-bold px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 flex items-center gap-1.5">
+                        <Wrench className="w-3.5 h-3.5" />
+                        WP Activation Service
+                      </span>
+                    )}
+                    {product.deliveryType === "INSTANT_CODE" && (
+                      <span className="text-[11px] font-bold px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1.5">
+                        <Zap className="w-3.5 h-3.5" />
+                        Instant Key Dispenser
+                      </span>
+                    )}
+                    {product.deliveryType === "MANUAL_HANDOFF" && (
+                      <span className="text-[11px] font-bold px-3 py-1 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20 flex items-center gap-1.5">
+                        <Globe className="w-3.5 h-3.5" />
+                        Turnkey Asset Transfer
+                      </span>
+                    )}
+                  </>
                 )}
 
                 {product.isFeatured && (
@@ -298,121 +464,282 @@ export default function ProductDetailClient({ product: initialProduct }: Product
                 {product.shortDescription || "Select your preferred license tier below and receive direct updates & official support."}
               </p>
 
-              {/* Tiered License Options Section */}
-              {product.variants.length > 1 && (
-                <div className="pt-2 border-t border-white/[0.08] space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Layers className="w-4 h-4 text-blue-400" />
-                      <span className="text-xs font-bold uppercase tracking-wider text-white">
-                        Choose License Tier
+              {/* DEDICATED GOOGLE ADSENSE ASSET CONFIGURATOR */}
+              {isAdSense ? (
+                <div className="pt-2 border-t border-white/[0.08] space-y-4">
+                  {/* Step 1: Account Maturity Tier */}
+                  <div className="space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                        <span className="text-xs font-bold uppercase tracking-wider text-white">
+                          Step 1: Choose Account Maturity Tier
+                        </span>
+                      </div>
+                      <span className="text-[10.5px] text-emerald-400 font-mono font-bold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                        3 Verified Tiers
                       </span>
                     </div>
-                    <span className="text-[11px] text-neutral-400 font-medium">
-                      {product.variants.length} options available
-                    </span>
-                  </div>
 
-                  <div className="space-y-2.5">
-                    {product.variants.map((variant) => {
-                      const isSelected = selectedVariant.id === variant.id;
-                      const varOrigPrice = variant.originalPrice || (product.originalPrice ? product.originalPrice * (variant.licenseCount || 1) : undefined);
+                    <div className="space-y-2">
+                      {ADSENSE_TIERS.map((tier) => {
+                        const isSelected = adSenseTier === tier.id;
+                        const matchingCountry = ADSENSE_COUNTRIES.find((c) => c.code === adSenseCountry) || ADSENSE_COUNTRIES[0];
+                        const tierPrice = tier.basePrice + matchingCountry.modifier;
+                        const tierOrigPrice = tier.baseOrigPrice + matchingCountry.modifier;
 
-                      return (
-                        <div
-                          key={variant.id}
-                          onClick={() => setSelectedVariant(variant)}
-                          className={`cursor-pointer rounded-2xl p-4 transition-all relative border text-left ${
-                            isSelected
-                              ? "border-blue-500 bg-blue-600/[0.08] ring-1 ring-blue-500/40 shadow-xl shadow-blue-500/10"
-                              : "border-white/[0.08] bg-[#12141e]/70 hover:border-white/20 hover:bg-[#12141e]"
-                          }`}
-                        >
-                          {/* Top Row: Radio, Title, Badge, Price */}
-                          <div className="flex items-start justify-between gap-3">
-                            <div className="flex items-start gap-3">
-                              <div className="mt-0.5">
-                                <div
-                                  className={`w-4 h-4 rounded-full border flex items-center justify-center transition-colors ${
-                                    isSelected
-                                      ? "border-blue-400 bg-blue-500"
-                                      : "border-neutral-600 bg-neutral-900"
-                                  }`}
-                                >
-                                  {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                        return (
+                          <div
+                            key={tier.id}
+                            onClick={() => handleAdSenseConfigChange(tier.id, adSenseCountry)}
+                            className={`cursor-pointer rounded-2xl p-3 sm:p-3.5 transition-all border text-left ${
+                              isSelected
+                                ? "border-emerald-500 bg-emerald-600/[0.08] ring-1 ring-emerald-500/50 shadow-xl shadow-emerald-500/10"
+                                : "border-white/[0.08] bg-[#12141e]/70 hover:border-white/20 hover:bg-[#12141e]"
+                            }`}
+                          >
+                            <div className="flex items-start justify-between gap-3">
+                              <div className="flex items-start gap-2.5">
+                                <div className="mt-0.5">
+                                  <div
+                                    className={`w-4 h-4 rounded-full border flex items-center justify-center transition-colors ${
+                                      isSelected
+                                        ? "border-emerald-400 bg-emerald-500"
+                                        : "border-neutral-600 bg-neutral-900"
+                                    }`}
+                                  >
+                                    {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-neutral-950 font-bold" />}
+                                  </div>
+                                </div>
+
+                                <div className="space-y-0.5">
+                                  <div className="flex items-center gap-2 flex-wrap">
+                                    <span className="font-bold text-xs sm:text-sm text-white">{tier.label}</span>
+                                    <span className={`text-[9px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider ${tier.badgeStyle}`}>
+                                      {tier.badge}
+                                    </span>
+                                  </div>
+                                  <p className="text-[11px] text-neutral-400 leading-snug">{tier.tagline}</p>
                                 </div>
                               </div>
 
-                              <div>
-                                <div className="flex items-center gap-2 flex-wrap">
-                                  <span className="font-bold text-sm text-white">{variant.title}</span>
-                                  {variant.badge && (
-                                    <span
-                                      className={`text-[9px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider ${
-                                        variant.badge.includes("POPULAR")
-                                          ? "bg-gradient-to-r from-amber-400 to-orange-500 text-black shadow-sm"
-                                          : variant.badge.includes("VALUE") || variant.badge.includes("SAVE")
-                                          ? "bg-gradient-to-r from-emerald-400 to-teal-500 text-black shadow-sm"
-                                          : "bg-blue-500/20 text-blue-300 border border-blue-500/30"
-                                      }`}
-                                    >
-                                      {variant.badge}
-                                    </span>
-                                  )}
+                              <div className="text-right shrink-0">
+                                <div className="text-sm sm:text-base font-extrabold text-white font-mono">
+                                  {formatPrice(tierPrice)}
+                                </div>
+                                <div className="text-[10px] text-neutral-500 line-through font-mono">
+                                  {formatPrice(tierOrigPrice)}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Step 2: Target Country & Payout Region */}
+                  <div className="pt-2 border-t border-white/[0.08] space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Globe className="w-4 h-4 text-blue-400" />
+                        <span className="text-xs font-bold uppercase tracking-wider text-white">
+                          Step 2: Choose Target Payout Country
+                        </span>
+                      </div>
+                      <span className="text-[10.5px] text-neutral-400 font-mono">
+                        7 Regions
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+                      {ADSENSE_COUNTRIES.map((country) => {
+                        const isSelected = adSenseCountry === country.code;
+                        const activeTierData = ADSENSE_TIERS.find((t) => t.id === adSenseTier) || ADSENSE_TIERS[1];
+                        const totalCountryPrice = activeTierData.basePrice + country.modifier;
+
+                        return (
+                          <button
+                            key={country.code}
+                            type="button"
+                            onClick={() => handleAdSenseConfigChange(adSenseTier, country.code)}
+                            className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                              isSelected
+                                ? "bg-emerald-500/15 border-emerald-400 text-white ring-1 ring-emerald-500/40 shadow-md shadow-emerald-500/10"
+                                : "bg-white/[0.02] border-white/[0.08] text-neutral-400 hover:text-white hover:bg-white/[0.05]"
+                            }`}
+                          >
+                            <div className="flex items-center justify-between">
+                              <span className="text-base">{country.flag}</span>
+                              <span className="text-[10px] font-mono text-emerald-400 font-bold">
+                                {formatPrice(totalCountryPrice)}
+                              </span>
+                            </div>
+                            <div className="font-bold text-[11px] text-white mt-1 truncate">{country.name}</div>
+                            <div className="text-[9.5px] text-neutral-400 font-mono">{country.currency}</div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Step 3: Delivery System & Handshake Card */}
+                  <div className="p-3.5 rounded-2xl bg-neutral-900/90 border border-white/[0.08] space-y-2.5">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-bold text-white flex items-center gap-1.5">
+                        <Lock className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>Delivery System &amp; Inclusions</span>
+                      </span>
+                      <span className="text-[10px] font-mono text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                        Manual Escrow Handshake
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2 text-[11px] text-neutral-300">
+                      <div className="p-2 rounded-xl bg-white/[0.02] border border-white/[0.04]">
+                        <span className="text-neutral-500 text-[9.5px] block font-mono">Fulfillment SLA</span>
+                        <span className="font-bold text-white text-[11px] mt-0.5 block">24 – 48 Hours Handover</span>
+                      </div>
+                      <div className="p-2 rounded-xl bg-white/[0.02] border border-white/[0.04]">
+                        <span className="text-neutral-500 text-[9.5px] block font-mono">Domain Transfer</span>
+                        <span className="font-bold text-emerald-400 text-[11px] mt-0.5 block">Free Registrar Push</span>
+                      </div>
+                    </div>
+
+                    <div className="pt-1.5 border-t border-white/[0.06] space-y-1 text-[11px] text-neutral-300">
+                      <div className="flex items-center gap-1.5">
+                        <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                        <span><strong>Master Gmail Account:</strong> Clean original email with 2FA &amp; recovery phone transferred</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                        <span><strong>Full Website Archive:</strong> Complete WordPress SQL database + source files export</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                        <span><strong>Clean Compliance:</strong> 0 active TOS violations • Never ad-limited • No bot ad loading</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                        <span><strong>14-Day Escrow Warranty:</strong> Zero-risk replacement guarantee against pre-existing defects</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                /* STREAMLINED COMPACT LICENSE PLAN SELECTOR (FOR WORDPRESS / OTHER PRODUCTS) */
+                product.variants.length > 1 && (
+                  <div className="pt-2 border-t border-white/[0.08] space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Layers className="w-4 h-4 text-blue-400" />
+                        <span className="text-xs font-bold uppercase tracking-wider text-white">
+                          Choose License Plan
+                        </span>
+                      </div>
+                      <span className="text-[11px] text-neutral-400 font-medium">
+                        {product.variants.length} options available
+                      </span>
+                    </div>
+
+                    {/* Compact Variant Selector Cards */}
+                    <div className="space-y-2">
+                      {product.variants.map((variant) => {
+                        const isSelected = selectedVariant.id === variant.id;
+                        const varOrigPrice = variant.originalPrice || (product.originalPrice ? product.originalPrice * (variant.licenseCount || 1) : undefined);
+
+                        return (
+                          <div
+                            key={variant.id}
+                            onClick={() => setSelectedVariant(variant)}
+                            className={`cursor-pointer rounded-2xl p-3 sm:p-3.5 transition-all border text-left ${
+                              isSelected
+                                ? "border-blue-500 bg-blue-600/[0.08] ring-1 ring-blue-500/40 shadow-lg shadow-blue-500/10"
+                                : "border-white/[0.08] bg-[#12141e]/70 hover:border-white/20 hover:bg-[#12141e]"
+                            }`}
+                          >
+                            <div className="flex items-start justify-between gap-3">
+                              <div className="flex items-start gap-2.5">
+                                <div className="mt-0.5">
+                                  <div
+                                    className={`w-4 h-4 rounded-full border flex items-center justify-center transition-colors ${
+                                      isSelected
+                                        ? "border-blue-400 bg-blue-500"
+                                        : "border-neutral-600 bg-neutral-900"
+                                    }`}
+                                  >
+                                    {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                                  </div>
                                 </div>
 
-                                {variant.tierName && (
-                                  <div className="flex items-center gap-1.5 text-[11px] text-neutral-400 mt-1">
-                                    {variant.licenseCount && variant.licenseCount >= 999 ? (
-                                      <>
-                                        <Building2 className="w-3 h-3 text-purple-400" />
-                                        <span className="text-purple-300 font-medium">Unlimited Multi-Client Capacity</span>
-                                      </>
-                                    ) : variant.licenseCount && variant.licenseCount > 1 ? (
-                                      <>
-                                        <Globe className="w-3 h-3 text-blue-400" />
-                                        <span className="text-blue-300 font-medium">{variant.licenseCount} Installations / Sites</span>
-                                      </>
-                                    ) : (
-                                      <>
-                                        <CheckCircle2 className="w-3 h-3 text-neutral-400" />
-                                        <span>Single Installation License</span>
-                                      </>
+                                <div>
+                                  <div className="flex items-center gap-2 flex-wrap">
+                                    <span className="font-bold text-xs sm:text-sm text-white">{variant.title}</span>
+                                    {variant.badge && (
+                                      <span
+                                        className={`text-[9px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider ${
+                                          variant.badge.includes("POPULAR")
+                                            ? "bg-gradient-to-r from-amber-400 to-orange-500 text-black shadow-sm"
+                                            : variant.badge.includes("VALUE") || variant.badge.includes("SAVE")
+                                            ? "bg-gradient-to-r from-emerald-400 to-teal-500 text-black shadow-sm"
+                                            : "bg-blue-500/20 text-blue-300 border border-blue-500/30"
+                                        }`}
+                                      >
+                                        {variant.badge}
+                                      </span>
                                     )}
+                                  </div>
+
+                                  <div className="text-[11px] text-neutral-400 mt-0.5">
+                                    {variant.licenseCount && variant.licenseCount >= 999 ? (
+                                      <span className="text-purple-300 font-medium">Unlimited Multi-Client Capacity</span>
+                                    ) : variant.licenseCount && variant.licenseCount > 1 ? (
+                                      <span className="text-blue-300 font-medium">{variant.licenseCount} Websites Official Activation</span>
+                                    ) : product.deliveryType === "SERVICE_SETUP" ? (
+                                      <span>1 Website Agency Activation (Dashboard Updates)</span>
+                                    ) : product.deliveryType === "INSTANT_CODE" ? (
+                                      <span>1 PC Official Retail Serial Key</span>
+                                    ) : (
+                                      <span>Turnkey Asset Handover</span>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="text-right shrink-0">
+                                <div className="text-sm sm:text-base font-extrabold text-white font-mono">
+                                  {formatPrice(variant.price)}
+                                </div>
+                                {varOrigPrice && varOrigPrice > variant.price && (
+                                  <div className="text-[10px] text-neutral-500 line-through font-mono">
+                                    {formatPrice(varOrigPrice)}
                                   </div>
                                 )}
                               </div>
                             </div>
-
-                            {/* Price Column */}
-                            <div className="text-right flex-shrink-0">
-                              <div className="text-base font-extrabold text-white font-mono">
-                                {formatPrice(variant.price)}
-                              </div>
-                              {varOrigPrice && varOrigPrice > variant.price && (
-                                <div className="text-[11px] text-neutral-500 line-through font-mono">
-                                  {formatPrice(varOrigPrice)}
-                                </div>
-                              )}
-                            </div>
                           </div>
+                        );
+                      })}
+                    </div>
 
-                          {/* Perks Bullet Points */}
-                          {variant.perks && variant.perks.length > 0 && (
-                            <div className="mt-3 pt-3 border-t border-white/[0.06] grid grid-cols-1 sm:grid-cols-2 gap-1.5">
-                              {variant.perks.map((perk, pIdx) => (
-                                <div key={pIdx} className="flex items-center gap-1.5 text-[11px] text-neutral-300">
-                                  <Check className={`w-3.5 h-3.5 flex-shrink-0 ${isSelected ? "text-emerald-400" : "text-neutral-500"}`} />
-                                  <span className="leading-tight">{perk}</span>
-                                </div>
-                              ))}
+                    {/* Consolidated Selected Plan Perks Box */}
+                    {selectedVariant.perks && selectedVariant.perks.length > 0 && (
+                      <div className="p-3.5 rounded-2xl bg-[#0e1017] border border-white/[0.06] space-y-2">
+                        <span className="text-[10.5px] font-bold uppercase tracking-wider text-neutral-400 block font-mono">
+                          Selected Plan Inclusions &amp; Delivery SLA:
+                        </span>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                          {selectedVariant.perks.map((perk, pIdx) => (
+                            <div key={pIdx} className="flex items-center gap-1.5 text-[11px] text-neutral-300">
+                              <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                              <span className="leading-tight">{perk}</span>
                             </div>
-                          )}
+                          ))}
                         </div>
-                      );
-                    })}
+                      </div>
+                    )}
                   </div>
-                </div>
+                )
               )}
 
               {/* CTAs */}
