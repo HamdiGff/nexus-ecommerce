@@ -15,12 +15,31 @@ import {
   Key,
   MessageSquare,
   Sparkles,
+  ArrowRight,
+  Lock,
+  ChevronRight,
+  ExternalLink,
+  Cpu,
+  BadgeCheck,
+  Clock,
+  X,
+  FileText,
+  ShieldAlert,
+  HelpCircle,
+  Flame,
+  CheckCircle2,
+  Gamepad2,
+  Server,
+  Layers,
 } from "lucide-react";
+
+type ModalType = "terms" | "privacy" | "adsense-guarantee" | null;
 
 export default function Footer() {
   const pathname = usePathname();
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
+  const [activeModal, setActiveModal] = useState<ModalType>(null);
 
   // Do not render consumer storefront footer on admin panel
   if (pathname?.startsWith("/admin")) {
@@ -31,206 +50,682 @@ export default function Footer() {
     e.preventDefault();
     if (email) {
       setSubscribed(true);
-      setTimeout(() => setSubscribed(false), 3000);
+      setTimeout(() => setSubscribed(false), 3500);
       setEmail("");
     }
   };
 
   return (
-    <footer className="bg-[#050608] text-neutral-300 pt-20 pb-12 border-t border-white/[0.08] relative overflow-hidden">
-      {/* Background glow orb */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-gradient-to-t from-blue-600/10 via-purple-600/5 to-transparent blur-3xl pointer-events-none" />
+    <>
+      <footer className="bg-[#05070B] text-neutral-300 pt-20 pb-12 border-t border-white/[0.08] relative overflow-hidden">
+        {/* Glow Effects & Ambient Mesh */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[1px] bg-gradient-to-r from-transparent via-blue-500/50 to-transparent pointer-events-none" />
+        <div className="absolute -top-32 left-1/4 w-[600px] h-[350px] bg-blue-600/10 rounded-full blur-[140px] pointer-events-none" />
+        <div className="absolute top-1/2 right-10 w-[500px] h-[300px] bg-purple-600/[0.07] rounded-full blur-[130px] pointer-events-none" />
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[850px] h-[250px] bg-gradient-to-t from-emerald-500/[0.05] via-blue-500/[0.05] to-transparent blur-3xl pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Value Proposition Strip */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pb-16 border-b border-white/[0.08]">
-          <div className="p-5 rounded-2xl bg-white/[0.02] border border-white/[0.05] flex items-center gap-4 hover:border-white/[0.12] transition-colors">
-            <div className="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl">
-              <Zap className="w-5 h-5" />
-            </div>
-            <div>
-              <h4 className="text-white font-bold text-xs uppercase tracking-wider">Instant Auto-Delivery</h4>
-              <p className="text-[11px] text-neutral-400 mt-0.5">Dispensed on screen in &lt; 60 seconds</p>
-            </div>
-          </div>
+        {/* Subtle geometric dot grid pattern */}
+        <div 
+          className="absolute inset-0 opacity-[0.03] pointer-events-none" 
+          style={{ backgroundImage: "radial-gradient(#ffffff 1px, transparent 1px)", backgroundSize: "32px 32px" }} 
+        />
 
-          <div className="p-5 rounded-2xl bg-white/[0.02] border border-white/[0.05] flex items-center gap-4 hover:border-white/[0.12] transition-colors">
-            <div className="p-3 bg-blue-500/10 text-blue-400 rounded-xl">
-              <Wrench className="w-5 h-5" />
-            </div>
-            <div>
-              <h4 className="text-white font-bold text-xs uppercase tracking-wider">WordPress Setup SLA</h4>
-              <p className="text-[11px] text-neutral-400 mt-0.5">Official activations within 30-45 mins</p>
-            </div>
-          </div>
-
-          <div className="p-5 rounded-2xl bg-white/[0.02] border border-white/[0.05] flex items-center gap-4 hover:border-white/[0.12] transition-colors">
-            <div className="p-3 bg-amber-500/10 text-amber-400 rounded-xl">
-              <Coins className="w-5 h-5" />
-            </div>
-            <div>
-              <h4 className="text-white font-bold text-xs uppercase tracking-wider">Multi-Currency & Crypto</h4>
-              <p className="text-[11px] text-neutral-400 mt-0.5">BTC, ETH, USDT, Card & PayPal</p>
-            </div>
-          </div>
-
-          <div className="p-5 rounded-2xl bg-white/[0.02] border border-white/[0.05] flex items-center gap-4 hover:border-white/[0.12] transition-colors">
-            <div className="p-3 bg-purple-500/10 text-purple-400 rounded-xl">
-              <ShieldCheck className="w-5 h-5" />
-            </div>
-            <div>
-              <h4 className="text-white font-bold text-xs uppercase tracking-wider">Zero Risk Guarantee</h4>
-              <p className="text-[11px] text-neutral-400 mt-0.5">100% Genuine retail & agency keys</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Links & Newsletter Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mt-16 pb-16 border-b border-white/[0.08]">
-          {/* Brand & Newsletter Column */}
-          <div className="md:col-span-5 space-y-6">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-neutral-900 border border-white/20 flex items-center justify-center font-bold text-white text-lg">
-                <span className="text-transparent bg-clip-text bg-gradient-to-tr from-blue-400 to-white">
-                  N
-                </span>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          
+          {/* ========================================================= */}
+          {/* VALUE PROPOSITION STRIP: 4 Interactive High-Tech Glass Cards */}
+          {/* ========================================================= */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pb-16 border-b border-white/[0.08]">
+            
+            {/* Value 1: Instant Auto-Delivery */}
+            <div className="group relative p-5 rounded-2xl bg-neutral-900/40 border border-white/[0.06] hover:border-emerald-500/40 hover:bg-white/[0.03] transition-all duration-300 shadow-lg shadow-black/20 hover:shadow-emerald-500/10">
+              <div className="flex items-start gap-4">
+                <div className="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl border border-emerald-500/20 group-hover:scale-105 group-hover:bg-emerald-500/20 transition-all shrink-0">
+                  <Zap className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <h4 className="text-white font-bold text-xs uppercase tracking-wider">Instant Delivery</h4>
+                    <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                      &lt;60s
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-neutral-400 leading-relaxed">
+                    Automated code dispenser on screen & email receipt immediately after checkout.
+                  </p>
+                </div>
               </div>
-              <span className="font-extrabold tracking-tight text-xl text-white font-sans">
-                NEXUS DIGITAL
-              </span>
             </div>
 
-            <p className="text-xs text-neutral-400 leading-relaxed max-w-sm">
-              The premier digital software and assets marketplace. Official WordPress agency licenses, turnkey Google AdSense approved websites, and verified developer tools.
-            </p>
-
-            {/* Newsletter Subscription Box */}
-            <form onSubmit={handleSubscribe} className="space-y-2 max-w-sm">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-300 block">
-                Exclusive Deals & Serial Drops
-              </span>
-              <div className="flex gap-2">
-                <input
-                  type="email"
-                  required
-                  placeholder="Enter your email address..."
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="flex-1 px-3.5 py-2.5 rounded-xl border border-white/10 bg-white/[0.03] text-xs text-white placeholder-neutral-500 focus:outline-hidden focus:ring-1 focus:ring-blue-500"
-                />
-                <button
-                  type="submit"
-                  className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:brightness-110 text-white font-bold text-xs flex items-center gap-1.5 transition-all shrink-0"
-                >
-                  {subscribed ? <Check className="w-4 h-4 text-emerald-300" /> : <Send className="w-3.5 h-3.5" />}
-                  <span>{subscribed ? "Joined!" : "Join"}</span>
-                </button>
+            {/* Value 2: WordPress White-Glove SLA */}
+            <div className="group relative p-5 rounded-2xl bg-neutral-900/40 border border-white/[0.06] hover:border-blue-500/40 hover:bg-white/[0.03] transition-all duration-300 shadow-lg shadow-black/20 hover:shadow-blue-500/10">
+              <div className="flex items-start gap-4">
+                <div className="p-3 bg-blue-500/10 text-blue-400 rounded-xl border border-blue-500/20 group-hover:scale-105 group-hover:bg-blue-500/20 transition-all shrink-0">
+                  <Wrench className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <h4 className="text-white font-bold text-xs uppercase tracking-wider">Agency SLA Setup</h4>
+                    <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                      30-45M
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-neutral-400 leading-relaxed">
+                    Certified technician activations for Elementor, Rank Math, WP Rocket & Astra Pro.
+                  </p>
+                </div>
               </div>
-            </form>
+            </div>
+
+            {/* Value 3: AdSense Escrow & Security */}
+            <div className="group relative p-5 rounded-2xl bg-neutral-900/40 border border-white/[0.06] hover:border-amber-500/40 hover:bg-white/[0.03] transition-all duration-300 shadow-lg shadow-black/20 hover:shadow-amber-500/10">
+              <div className="flex items-start gap-4">
+                <div className="p-3 bg-amber-500/10 text-amber-400 rounded-xl border border-amber-500/20 group-hover:scale-105 group-hover:bg-amber-500/20 transition-all shrink-0">
+                  <Globe className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <h4 className="text-white font-bold text-xs uppercase tracking-wider">AdSense Transfer</h4>
+                    <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                      14D SLA
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-neutral-400 leading-relaxed">
+                    Clean Gmail, free domain push, backup SQL & zero policy violation guarantee.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Value 4: Zero Risk Guarantee & Crypto */}
+            <div className="group relative p-5 rounded-2xl bg-neutral-900/40 border border-white/[0.06] hover:border-purple-500/40 hover:bg-white/[0.03] transition-all duration-300 shadow-lg shadow-black/20 hover:shadow-purple-500/10">
+              <div className="flex items-start gap-4">
+                <div className="p-3 bg-purple-500/10 text-purple-400 rounded-xl border border-purple-500/20 group-hover:scale-105 group-hover:bg-purple-500/20 transition-all shrink-0">
+                  <ShieldCheck className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <h4 className="text-white font-bold text-xs uppercase tracking-wider">Escrow Security</h4>
+                    <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-semibold bg-purple-500/10 text-purple-400 border border-purple-500/20">
+                      ENCRYPTED
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-neutral-400 leading-relaxed">
+                    256-bit checkout, Stripe, PayPal & Web3 Crypto with automated post-delivery data purge.
+                  </p>
+                </div>
+              </div>
+            </div>
+
           </div>
 
-          {/* Links Column 1: Products */}
-          <div className="md:col-span-2 space-y-3">
-            <h5 className="text-white font-bold text-xs uppercase tracking-wider">WordPress Tools</h5>
-            <ul className="space-y-2.5 text-xs text-neutral-400">
-              <li>
-                <Link href="/products/elementor-pro" className="hover:text-white transition-colors">
-                  Elementor Pro Builder
-                </Link>
-              </li>
-              <li>
-                <Link href="/products/rank-math-pro" className="hover:text-white transition-colors">
-                  Rank Math PRO (Just PRO)
-                </Link>
-              </li>
-              <li>
-                <Link href="/products/wp-rocket" className="hover:text-white transition-colors">
-                  WP Rocket Caching
-                </Link>
-              </li>
-              <li>
-                <Link href="/products/astra-pro-theme" className="hover:text-white transition-colors">
-                  Astra Pro Theme
-                </Link>
-              </li>
-              <li>
-                <Link href="/#catalog" className="text-blue-400 hover:text-blue-300 transition-colors font-medium">
-                  View All Plugins &rarr;
-                </Link>
-              </li>
-            </ul>
+          {/* ========================================================= */}
+          {/* MAIN FOOTER NAVIGATION & NEWSLETTER GRID */}
+          {/* ========================================================= */}
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mt-16 pb-16 border-b border-white/[0.08]">
+            
+            {/* BRAND & NEWSLETTER COLUMN (5 Cols) */}
+            <div className="md:col-span-4 lg:col-span-4 space-y-6">
+              <div>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-neutral-800 to-neutral-950 border border-white/20 flex items-center justify-center font-bold text-white text-lg shadow-inner shadow-white/10">
+                    <span className="text-transparent bg-clip-text bg-gradient-to-tr from-blue-400 via-indigo-300 to-white">
+                      N
+                    </span>
+                  </div>
+                  <div>
+                    <span className="font-extrabold tracking-tight text-xl text-white font-sans block leading-none">
+                      NEXUS<span className="text-blue-500 font-light">DIGITAL</span>
+                    </span>
+                    <span className="text-[10px] text-neutral-400 font-mono tracking-widest uppercase">
+                      Premium Digital Assets &amp; Escrow
+                    </span>
+                  </div>
+                </div>
+
+                {/* System Operational Pulse Pill */}
+                <div className="mt-3.5 inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-500/[0.08] border border-emerald-500/20 text-[11px] font-mono text-emerald-400">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                  </span>
+                  <span>99.98% System Uptime • Auto-Dispenser Online</span>
+                </div>
+              </div>
+
+              <p className="text-xs text-neutral-400 leading-relaxed">
+                The trusted ecosystem for authentic WordPress agency activations, turnkey Google AdSense websites, licensed software, and instant gaming codes. Delivered with escrow protection and zero-risk handoff.
+              </p>
+
+              {/* VIP Serial Drops & Restock Alerts Box */}
+              <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.07] space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-200 flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-blue-400" />
+                    Serial Drops &amp; Restock Alerts
+                  </span>
+                  <span className="text-[10px] text-neutral-400 font-mono">No Spam</span>
+                </div>
+
+                <form onSubmit={handleSubscribe} className="space-y-2">
+                  <div className="flex gap-2">
+                    <input
+                      type="email"
+                      required
+                      placeholder="Enter your work email..."
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="flex-1 px-3.5 py-2.5 rounded-xl border border-white/10 bg-neutral-900/60 text-xs text-white placeholder-neutral-500 focus:outline-hidden focus:ring-1 focus:ring-blue-500/60 focus:border-blue-500/40 transition-all"
+                    />
+                    <button
+                      type="submit"
+                      disabled={subscribed}
+                      className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs flex items-center gap-1.5 transition-all shrink-0 shadow-md shadow-blue-600/20 hover:scale-[1.02] active:scale-[0.98]"
+                    >
+                      {subscribed ? (
+                        <>
+                          <Check className="w-3.5 h-3.5 text-emerald-300" />
+                          <span>Joined!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Send className="w-3.5 h-3.5" />
+                          <span>Notify Me</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </form>
+
+                <div className="flex items-center gap-4 text-[10px] text-neutral-400 font-mono pt-1">
+                  <span className="flex items-center gap-1">
+                    <CheckCircle2 className="w-3 h-3 text-emerald-400" /> Instant Alerts
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <CheckCircle2 className="w-3 h-3 text-blue-400" /> 20% Off Vouchers
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <CheckCircle2 className="w-3 h-3 text-purple-400" /> Zero Junk
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* NAVIGATION COLUMNS (8 Cols divided into 4 columns) */}
+            <div className="md:col-span-8 lg:col-span-8 grid grid-cols-2 sm:grid-cols-4 gap-8">
+              
+              {/* COLUMN 1: WordPress Agency Tools */}
+              <div className="space-y-3.5">
+                <div className="flex items-center gap-1.5 pb-1 border-b border-white/[0.05]">
+                  <Wrench className="w-3.5 h-3.5 text-blue-400" />
+                  <h5 className="text-white font-bold text-xs uppercase tracking-wider">
+                    WP Licenses
+                  </h5>
+                </div>
+                <ul className="space-y-2.5 text-xs text-neutral-400">
+                  <li>
+                    <Link
+                      href="/products/elementor-pro"
+                      className="group flex items-center justify-between hover:text-white transition-colors"
+                    >
+                      <span>Elementor Pro</span>
+                      <span className="text-[9px] px-1 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 font-mono group-hover:border-blue-400">
+                        PRO
+                      </span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/products/rank-math-pro"
+                      className="group flex items-center justify-between hover:text-white transition-colors"
+                    >
+                      <span>Rank Math PRO</span>
+                      <span className="text-[9px] px-1 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono group-hover:border-amber-400">
+                        SEO
+                      </span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/products/wp-rocket"
+                      className="group flex items-center justify-between hover:text-white transition-colors"
+                    >
+                      <span>WP Rocket</span>
+                      <span className="text-[9px] px-1 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono group-hover:border-emerald-400">
+                        CACHE
+                      </span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/products/astra-pro-theme"
+                      className="group flex items-center justify-between hover:text-white transition-colors"
+                    >
+                      <span>Astra Pro Theme</span>
+                      <span className="text-[9px] px-1 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20 font-mono group-hover:border-purple-400">
+                        AGENCY
+                      </span>
+                    </Link>
+                  </li>
+                  <li className="pt-2">
+                    <Link
+                      href="/category/wordpress"
+                      className="inline-flex items-center gap-1 text-[11px] text-blue-400 hover:text-blue-300 font-medium transition-colors group"
+                    >
+                      <span>All WordPress Goods</span>
+                      <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              {/* COLUMN 2: Turnkey Google AdSense Sites */}
+              <div className="space-y-3.5">
+                <div className="flex items-center gap-1.5 pb-1 border-b border-white/[0.05]">
+                  <Globe className="w-3.5 h-3.5 text-amber-400" />
+                  <h5 className="text-white font-bold text-xs uppercase tracking-wider">
+                    Google AdSense
+                  </h5>
+                </div>
+                <ul className="space-y-2.5 text-xs text-neutral-400">
+                  <li>
+                    <Link
+                      href="/products/google-adsense-approved-websites"
+                      className="group flex items-center justify-between hover:text-white transition-colors"
+                    >
+                      <span>Fresh Tech Blogs</span>
+                      <span className="text-[9px] px-1 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono group-hover:border-emerald-400">
+                        HOT
+                      </span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/products/google-adsense-approved-websites"
+                      className="group flex items-center justify-between hover:text-white transition-colors"
+                    >
+                      <span>PIN-Verified Sites</span>
+                      <span className="text-[9px] px-1 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono group-hover:border-amber-400">
+                        READY
+                      </span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/products/google-adsense-approved-websites"
+                      className="group flex items-center justify-between hover:text-white transition-colors"
+                    >
+                      <span>5+ Payouts &amp; GAM</span>
+                      <span className="text-[9px] px-1 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 font-mono group-hover:border-blue-400">
+                        VIP
+                      </span>
+                    </Link>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => setActiveModal("adsense-guarantee")}
+                      className="hover:text-amber-300 text-left transition-colors flex items-center gap-1"
+                    >
+                      <span>Transfer Guarantee</span>
+                      <ExternalLink className="w-2.5 h-2.5 text-amber-400" />
+                    </button>
+                  </li>
+                  <li className="pt-2">
+                    <Link
+                      href="/category/adsense-websites"
+                      className="inline-flex items-center gap-1 text-[11px] text-amber-400 hover:text-amber-300 font-medium transition-colors group"
+                    >
+                      <span>Browse AdSense Sites</span>
+                      <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              {/* COLUMN 3: Digital Software & Gaming */}
+              <div className="space-y-3.5">
+                <div className="flex items-center gap-1.5 pb-1 border-b border-white/[0.05]">
+                  <Gamepad2 className="w-3.5 h-3.5 text-emerald-400" />
+                  <h5 className="text-white font-bold text-xs uppercase tracking-wider">
+                    Digital &amp; Gaming
+                  </h5>
+                </div>
+                <ul className="space-y-2.5 text-xs text-neutral-400">
+                  <li>
+                    <Link
+                      href="/category/software-licenses"
+                      className="group flex items-center justify-between hover:text-white transition-colors"
+                    >
+                      <span>Windows 11/10 Pro</span>
+                      <span className="text-[9px] px-1 py-0.5 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-mono">
+                        RETAIL
+                      </span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/category/software-licenses"
+                      className="hover:text-white transition-colors block"
+                    >
+                      <span>IDM Lifetime Keys</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/category/game-digital-codes"
+                      className="group flex items-center justify-between hover:text-white transition-colors"
+                    >
+                      <span>Steam Gift Cards</span>
+                      <span className="text-[9px] px-1 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono">
+                        INSTANT
+                      </span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/category/ai-tools"
+                      className="group flex items-center justify-between hover:text-white transition-colors"
+                    >
+                      <span>AI Pro Accounts</span>
+                      <span className="text-[9px] px-1 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20 font-mono">
+                        AI
+                      </span>
+                    </Link>
+                  </li>
+                  <li className="pt-2">
+                    <Link
+                      href="/#catalog"
+                      className="inline-flex items-center gap-1 text-[11px] text-emerald-400 hover:text-emerald-300 font-medium transition-colors group"
+                    >
+                      <span>All Digital Goods</span>
+                      <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              {/* COLUMN 4: Escrow, Vault & Support */}
+              <div className="space-y-3.5">
+                <div className="flex items-center gap-1.5 pb-1 border-b border-white/[0.05]">
+                  <ShieldCheck className="w-3.5 h-3.5 text-purple-400" />
+                  <h5 className="text-white font-bold text-xs uppercase tracking-wider">
+                    Escrow &amp; Vault
+                  </h5>
+                </div>
+                <ul className="space-y-2.5 text-xs text-neutral-400">
+                  <li>
+                    <Link
+                      href="/orders"
+                      className="group flex items-center justify-between hover:text-white transition-colors"
+                    >
+                      <span>Customer Order Vault</span>
+                      <span className="text-[9px] px-1 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20 font-mono">
+                        TRACK
+                      </span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/orders"
+                      className="hover:text-white transition-colors block"
+                    >
+                      <span>Live Delivery Chat</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/support"
+                      className="hover:text-white transition-colors block"
+                    >
+                      <span>24/7 Support Desk</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => setActiveModal("privacy")}
+                      className="hover:text-neutral-200 text-left transition-colors flex items-center gap-1"
+                    >
+                      <span>Data Purge Policy</span>
+                      <ExternalLink className="w-2.5 h-2.5 text-neutral-400" />
+                    </button>
+                  </li>
+                  <li className="pt-2">
+                    <Link
+                      href="/support"
+                      className="inline-flex items-center gap-1 text-[11px] text-purple-400 hover:text-purple-300 font-medium transition-colors group"
+                    >
+                      <span>Help &amp; SLA Guide</span>
+                      <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+            </div>
+
           </div>
 
-          {/* Links Column 2: Software Bundles & Vault */}
-          <div className="md:col-span-2 space-y-3">
-            <h5 className="text-white font-bold text-xs uppercase tracking-wider">AdSense &amp; Bundles</h5>
-            <ul className="space-y-2.5 text-xs text-neutral-400">
-              <li>
-                <Link href="/products/google-adsense-approved-websites" className="hover:text-emerald-400 transition-colors font-medium">
-                  Google AdSense Sites
-                </Link>
-              </li>
-              <li>
-                <Link href="/products/google-adsense-approved-websites" className="hover:text-white transition-colors">
-                  PIN &amp; GAM Verified
-                </Link>
-              </li>
-              <li>
-                <Link href="/products/wp-rocket" className="hover:text-white transition-colors">
-                  Power Duo (Speed + SEO)
-                </Link>
-              </li>
-              <li>
-                <Link href="/orders" className="text-amber-400 hover:text-amber-300 transition-colors font-medium">
-                  Track Order Vault &rarr;
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Links Column 3: Platform & Support */}
-          <div className="md:col-span-3 space-y-4">
-            <h5 className="text-white font-bold text-xs uppercase tracking-wider">Operations & Escrow</h5>
-            <div className="flex flex-wrap gap-1.5">
-              <span className="px-2 py-1 rounded bg-white/[0.04] border border-white/[0.08] text-[10px] font-mono text-neutral-300">
-                Stripe Elements
+          {/* ========================================================= */}
+          {/* PAYMENT RAILS & SECURITY SEALS BAR */}
+          {/* ========================================================= */}
+          <div className="py-8 flex flex-col md:flex-row items-center justify-between gap-6 border-b border-white/[0.06]">
+            
+            {/* Payment Rails / Currencies */}
+            <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
+              <span className="text-[11px] font-mono text-neutral-400 uppercase tracking-wider mr-1">
+                Accepted Rails:
               </span>
-              <span className="px-2 py-1 rounded bg-white/[0.04] border border-white/[0.08] text-[10px] font-mono text-neutral-300">
-                PayPal Smart
+              <span className="px-2.5 py-1 rounded-lg bg-neutral-900/60 border border-white/[0.08] text-[11px] font-mono text-neutral-300 hover:border-blue-500/30 transition-colors">
+                💳 Stripe (Cards / Apple Pay)
               </span>
-              <span className="px-2 py-1 rounded bg-amber-500/10 border border-amber-500/20 text-[10px] font-mono text-amber-400">
-                BTC Native
+              <span className="px-2.5 py-1 rounded-lg bg-neutral-900/60 border border-white/[0.08] text-[11px] font-mono text-neutral-300 hover:border-blue-500/30 transition-colors">
+                🅿️ PayPal Smart
               </span>
-              <span className="px-2 py-1 rounded bg-cyan-500/10 border border-cyan-500/20 text-[10px] font-mono text-cyan-400">
-                ETH Mainnet
+              <span className="px-2.5 py-1 rounded-lg bg-amber-500/[0.06] border border-amber-500/20 text-[11px] font-mono text-amber-400 hover:border-amber-400/40 transition-colors">
+                ₿ Bitcoin SegWit
               </span>
-              <span className="px-2 py-1 rounded bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-mono text-emerald-400">
-                USDT Polygon
+              <span className="px-2.5 py-1 rounded-lg bg-cyan-500/[0.06] border border-cyan-500/20 text-[11px] font-mono text-cyan-400 hover:border-cyan-400/40 transition-colors">
+                Ξ Ethereum ERC-20
+              </span>
+              <span className="px-2.5 py-1 rounded-lg bg-emerald-500/[0.06] border border-emerald-500/20 text-[11px] font-mono text-emerald-400 hover:border-emerald-400/40 transition-colors">
+                ₮ USDT Polygon
               </span>
             </div>
 
-            <div className="pt-2">
+            {/* Escrow & Security Trust Badges */}
+            <div className="flex items-center gap-4 text-[11px] text-neutral-400 font-mono">
+              <span className="flex items-center gap-1.5 text-neutral-300">
+                <Lock className="w-3.5 h-3.5 text-emerald-400" />
+                <span>256-Bit SSL Escrow</span>
+              </span>
+              <span className="text-white/20">•</span>
+              <span className="flex items-center gap-1.5 text-neutral-300">
+                <BadgeCheck className="w-3.5 h-3.5 text-blue-400" />
+                <span>100% Genuine Guarantee</span>
+              </span>
+            </div>
+
+          </div>
+
+          {/* ========================================================= */}
+          {/* BOTTOM COPYRIGHT & LEGAL MODAL TRIGGERS */}
+          {/* ========================================================= */}
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-neutral-500 gap-4">
+            <div className="flex items-center gap-2">
+              <p>© 2026 NEXUS DIGITAL COMMERCE INC. ALL RIGHTS RESERVED.</p>
+            </div>
+            
+            <div className="flex flex-wrap items-center gap-6 text-[11px]">
+              <button
+                onClick={() => setActiveModal("terms")}
+                className="hover:text-neutral-300 transition-colors underline-offset-4 hover:underline"
+              >
+                Terms of Service
+              </button>
+              <button
+                onClick={() => setActiveModal("privacy")}
+                className="hover:text-neutral-300 transition-colors underline-offset-4 hover:underline"
+              >
+                Privacy &amp; Data Purge Policy
+              </button>
+              <button
+                onClick={() => setActiveModal("adsense-guarantee")}
+                className="hover:text-neutral-300 transition-colors underline-offset-4 hover:underline text-amber-400/80 hover:text-amber-300"
+              >
+                AdSense Compliance Warranty
+              </button>
               <Link
                 href="/support"
-                className="inline-flex items-center gap-2 text-xs font-semibold text-neutral-200 hover:text-white bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] px-3.5 py-2 rounded-xl transition-all"
+                className="hover:text-neutral-300 transition-colors underline-offset-4 hover:underline"
               >
-                <MessageSquare className="w-3.5 h-3.5 text-blue-400" />
-                <span>24/7 Dedicated Support Desk</span>
+                Contact Support Desk
               </Link>
             </div>
           </div>
-        </div>
 
-        {/* Bottom Bar */}
-        <div className="mt-12 flex flex-col sm:flex-row items-center justify-between text-xs text-neutral-500 gap-4">
-          <p>© 2026 NEXUS Digital Commerce Inc. All rights reserved.</p>
-          <div className="flex items-center gap-6 text-[11px]">
-            <Link href="/support" className="hover:text-neutral-300">Terms of Service</Link>
-            <Link href="/support" className="hover:text-neutral-300">Privacy & Data Purge Policy</Link>
-            <Link href="/orders" className="hover:text-neutral-300">Credential Security Protocol</Link>
+        </div>
+      </footer>
+
+      {/* ========================================================= */}
+      {/* INTERACTIVE LEGAL MODALS */}
+      {/* ========================================================= */}
+      {activeModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="relative w-full max-w-2xl bg-[#090D14] border border-white/10 rounded-2xl shadow-2xl p-6 max-h-[85vh] overflow-y-auto text-neutral-300">
+            
+            {/* Close Button */}
+            <button
+              onClick={() => setActiveModal(null)}
+              className="absolute top-5 right-5 p-2 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] text-neutral-400 hover:text-white transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* Modal 1: Terms of Service */}
+            {activeModal === "terms" && (
+              <div className="space-y-4">
+                <div className="flex items-center gap-3 pb-3 border-b border-white/10">
+                  <div className="p-2 rounded-xl bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                    <FileText className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-white">Terms of Service</h3>
+                    <p className="text-xs text-neutral-400 font-mono">Last Updated: October 2026</p>
+                  </div>
+                </div>
+
+                <div className="space-y-3 text-xs leading-relaxed text-neutral-300">
+                  <h4 className="font-bold text-white uppercase tracking-wider text-[11px]">1. Digital Good Dispensation</h4>
+                  <p>
+                    All instant digital products (including software retail keys, serial tokens, and gift card pins) are dispensed on-screen and archived within your customer vault upon payment confirmation.
+                  </p>
+
+                  <h4 className="font-bold text-white uppercase tracking-wider text-[11px]">2. WordPress Agency Setup SLA</h4>
+                  <p>
+                    Official agency activations require administrative WP credentials submitted via our 256-bit encrypted intake system. Activations are performed by certified technicians within 30 to 45 minutes during standard operational hours.
+                  </p>
+
+                  <h4 className="font-bold text-white uppercase tracking-wider text-[11px]">3. Refunds &amp; Replacement</h4>
+                  <p>
+                    Defective or invalidated serials qualify for instantaneous automated replacement via the Order Vault or live technician resolution within 24 hours.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Modal 2: Privacy & Data Purge Policy */}
+            {activeModal === "privacy" && (
+              <div className="space-y-4">
+                <div className="flex items-center gap-3 pb-3 border-b border-white/10">
+                  <div className="p-2 rounded-xl bg-purple-500/10 text-purple-400 border border-purple-500/20">
+                    <ShieldCheck className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-white">Privacy &amp; Data Purge Protocol</h3>
+                    <p className="text-xs text-neutral-400 font-mono">Zero-Knowledge Storage Policy</p>
+                  </div>
+                </div>
+
+                <div className="space-y-3 text-xs leading-relaxed text-neutral-300">
+                  <p className="p-3 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-200">
+                    🛡️ <strong>Automated Purge Guarantee:</strong> All buyer domain registrar usernames, temporary setup passwords, and WordPress access credentials are encrypted at rest and automatically purged from our servers 48 hours after delivery confirmation.
+                  </p>
+
+                  <h4 className="font-bold text-white uppercase tracking-wider text-[11px]">Encrypted Transit &amp; Isolation</h4>
+                  <p>
+                    All communications between customer checkout and the Admin Dispatch Console are encrypted via TLS 1.3 / AES-256. Staff members never store credentials locally.
+                  </p>
+
+                  <h4 className="font-bold text-white uppercase tracking-wider text-[11px]">No Third-Party Sharing</h4>
+                  <p>
+                    Your email and transactional details are strictly used for order handoff and account recovery. We will never sell, lease, or share your data with advertisers.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Modal 3: AdSense Compliance Warranty */}
+            {activeModal === "adsense-guarantee" && (
+              <div className="space-y-4">
+                <div className="flex items-center gap-3 pb-3 border-b border-white/10">
+                  <div className="p-2 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                    <Globe className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-white">Google AdSense Safety &amp; Transfer Warranty</h3>
+                    <p className="text-xs text-amber-400 font-mono">14-Day Replacement SLA &amp; Clean History Pledge</p>
+                  </div>
+                </div>
+
+                <div className="space-y-3 text-xs leading-relaxed text-neutral-300">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 my-2">
+                    <div className="p-3 rounded-xl bg-neutral-900 border border-white/10">
+                      <span className="font-bold text-emerald-400 block mb-1">✓ Zero Active Violations</span>
+                      <p className="text-[11px] text-neutral-400">
+                        100% policy-compliant AdSense accounts with clean standing, no policy strikes, and zero ad-limit flags.
+                      </p>
+                    </div>
+                    <div className="p-3 rounded-xl bg-neutral-900 border border-white/10">
+                      <span className="font-bold text-emerald-400 block mb-1">✓ Organic Traffic Only</span>
+                      <p className="text-[11px] text-neutral-400">
+                        Never subjected to artificial traffic generation, bot clicks, or invalid traffic loading schemes.
+                      </p>
+                    </div>
+                    <div className="p-3 rounded-xl bg-neutral-900 border border-white/10">
+                      <span className="font-bold text-emerald-400 block mb-1">✓ Free Domain Push</span>
+                      <p className="text-[11px] text-neutral-400">
+                        Internal account-to-account push to your Namecheap, Hostinger, or Dynadot account at $0 transfer fee.
+                      </p>
+                    </div>
+                    <div className="p-3 rounded-xl bg-neutral-900 border border-white/10">
+                      <span className="font-bold text-emerald-400 block mb-1">✓ 14-Day Guarantee</span>
+                      <p className="text-[11px] text-neutral-400">
+                        Full warranty coverage against transfer failure, initial login invalidation, or pre-existing account lock.
+                      </p>
+                    </div>
+                  </div>
+
+                  <h4 className="font-bold text-white uppercase tracking-wider text-[11px]">Step-by-Step Security Handoff</h4>
+                  <p>
+                    Every AdSense asset includes primary Gmail account ownership, 2FA backup codes, domain transfer authorization, and full WordPress database and file archives.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Bottom Dismiss Button */}
+            <div className="pt-4 mt-6 border-t border-white/10 flex justify-end">
+              <button
+                onClick={() => setActiveModal(null)}
+                className="px-5 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-white font-semibold text-xs transition-colors"
+              >
+                Close Window
+              </button>
+            </div>
+
           </div>
         </div>
-      </div>
-    </footer>
+      )}
+    </>
   );
 }
