@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -24,6 +24,10 @@ import {
   Flame,
   Layers,
   Palette,
+  ChevronLeft,
+  ChevronRight,
+  Gamepad2,
+  Cpu,
 } from "lucide-react";
 import { CATEGORIES, DeliveryType, MOCK_PRODUCT_BUNDLES } from "@/data/mockProducts";
 import ProductCard from "@/components/product/ProductCard";
@@ -44,6 +48,46 @@ export default function HomePage() {
 
   // Hero interactive preview card state
   const [heroActiveIndex, setHeroActiveIndex] = useState(0);
+
+  // Category horizontal scroll ref & handlers
+  const categoryScrollRef = useRef<HTMLDivElement>(null);
+
+  const handleCategoryWheel = (e: React.WheelEvent) => {
+    if (categoryScrollRef.current) {
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        categoryScrollRef.current.scrollLeft += e.deltaY;
+      }
+    }
+  };
+
+  const scrollCategories = (direction: "left" | "right") => {
+    if (categoryScrollRef.current) {
+      const scrollAmount = 260;
+      categoryScrollRef.current.scrollBy({
+        left: direction === "left" ? -scrollAmount : scrollAmount,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  const getCategoryIcon = (slugOrId: string) => {
+    switch (slugOrId) {
+      case "all":
+        return Sparkles;
+      case "wordpress":
+        return Wrench;
+      case "game-digital-codes":
+        return Gamepad2;
+      case "software-licenses":
+        return Key;
+      case "ai-tools":
+        return Cpu;
+      case "adsense-websites":
+        return Globe;
+      default:
+        return Layers;
+    }
+  };
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
@@ -467,28 +511,38 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Search & Delivery Type Filter Bar */}
-          <div className="p-4 rounded-2xl bg-neutral-900/60 border border-white/[0.08] backdrop-blur-xl mb-6 space-y-4">
-            <div className="flex flex-col sm:flex-row gap-3">
+          {/* Modern Compact Search & Filter Console */}
+          <div className="p-4 sm:p-5 rounded-3xl bg-neutral-900/80 border border-white/[0.08] backdrop-blur-2xl mb-6 space-y-3.5 shadow-2xl shadow-black/60">
+            {/* Top Bar: Search Input + Delivery Filter Buttons */}
+            <div className="flex flex-col lg:flex-row gap-3">
               {/* Search Bar */}
               <div className="relative flex-1">
                 <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400" />
                 <input
                   type="text"
-                  placeholder="Search Rank Math Pro, WP Rocket, IDM, Steam, AdSense..."
+                  placeholder="Search products by keyword (e.g. Rank Math, WP Rocket, IDM, Steam, Elementor, Astra)..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 text-xs text-white placeholder-neutral-500 focus:outline-hidden focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
+                  className="w-full pl-10 pr-10 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 text-xs text-white placeholder-neutral-500 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery("")}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-white text-xs p-1 cursor-pointer"
+                    title="Clear search"
+                  >
+                    ✕
+                  </button>
+                )}
               </div>
 
               {/* Delivery Filter Pills */}
               <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
                 <button
                   onClick={() => setDeliveryFilter("ALL")}
-                  className={`px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
+                  className={`px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
                     deliveryFilter === "ALL"
-                      ? "bg-white text-neutral-950"
+                      ? "bg-white text-neutral-950 shadow-md"
                       : "bg-white/[0.04] text-neutral-300 hover:bg-white/[0.08]"
                   }`}
                 >
@@ -496,19 +550,19 @@ export default function HomePage() {
                 </button>
                 <button
                   onClick={() => setDeliveryFilter("INSTANT_CODE")}
-                  className={`px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap flex items-center gap-1 transition-all ${
+                  className={`px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap flex items-center gap-1.5 transition-all cursor-pointer ${
                     deliveryFilter === "INSTANT_CODE"
-                      ? "bg-emerald-500 text-neutral-950 shadow-md shadow-emerald-500/20"
+                      ? "bg-emerald-500 text-neutral-950 shadow-md shadow-emerald-500/25"
                       : "bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20"
                   }`}
                 >
-                  <Zap className="w-3.5 h-3.5" /> Instant Key
+                  <Zap className="w-3.5 h-3.5 fill-current" /> Instant Key
                 </button>
                 <button
                   onClick={() => setDeliveryFilter("SERVICE_SETUP")}
-                  className={`px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap flex items-center gap-1 transition-all ${
+                  className={`px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap flex items-center gap-1.5 transition-all cursor-pointer ${
                     deliveryFilter === "SERVICE_SETUP"
-                      ? "bg-blue-600 text-white shadow-md shadow-blue-600/20"
+                      ? "bg-blue-600 text-white shadow-md shadow-blue-600/25"
                       : "bg-blue-500/10 text-blue-400 hover:bg-blue-500/20"
                   }`}
                 >
@@ -516,9 +570,9 @@ export default function HomePage() {
                 </button>
                 <button
                   onClick={() => setDeliveryFilter("MANUAL_HANDOFF")}
-                  className={`px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap flex items-center gap-1 transition-all ${
+                  className={`px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap flex items-center gap-1.5 transition-all cursor-pointer ${
                     deliveryFilter === "MANUAL_HANDOFF"
-                      ? "bg-purple-600 text-white shadow-md shadow-purple-600/20"
+                      ? "bg-purple-600 text-white shadow-md shadow-purple-600/25"
                       : "bg-purple-500/10 text-purple-400 hover:bg-purple-500/20"
                   }`}
                 >
@@ -527,77 +581,123 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Category Pills */}
-            <div className="flex items-center gap-2 overflow-x-auto pt-2 border-t border-white/[0.06] scrollbar-none">
-              <button
-                onClick={() => setSelectedCategory("all")}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-2 ${
-                  selectedCategory === "all"
-                    ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-600/25 border border-blue-400/30"
-                    : "bg-white/[0.03] text-neutral-400 hover:text-white hover:bg-white/[0.07] border border-transparent"
-                }`}
-              >
-                <span>All Products</span>
-                <span
-                  className={`text-[10px] font-mono px-1.5 py-0.2 rounded-full ${
-                    selectedCategory === "all"
-                      ? "bg-white/20 text-white font-bold"
-                      : "bg-white/[0.06] text-neutral-400"
-                  }`}
+            {/* Bottom Bar: Category Ribbon with Left/Right Mouse Arrows + Wheel Scroll + Category Icons */}
+            <div className="pt-3 border-t border-white/[0.07] relative">
+              <div className="flex items-center gap-2">
+                {/* Scroll Left Button */}
+                <button
+                  type="button"
+                  onClick={() => scrollCategories("left")}
+                  className="hidden sm:flex items-center justify-center w-8 h-8 rounded-xl bg-white/[0.04] border border-white/10 hover:border-white/20 text-neutral-400 hover:text-white hover:bg-white/[0.08] transition-all shrink-0 active:scale-95 shadow-sm cursor-pointer"
+                  title="Scroll categories left"
+                  aria-label="Scroll categories left"
                 >
-                  {products.length}
-                </span>
-              </button>
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
 
-              {categories.map((cat) => {
-                const count = products.filter(
-                  (p) => p.category === cat.slug || p.category === cat.id
-                ).length;
-
-                return (
-                  <div key={cat.id} className="flex items-center gap-1">
-                    <button
-                      onClick={() => setSelectedCategory(cat.slug)}
-                      className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-2 ${
-                        selectedCategory === cat.slug || selectedCategory === cat.id
-                          ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-600/25 border border-blue-400/30"
-                          : "bg-white/[0.03] text-neutral-400 hover:text-white hover:bg-white/[0.07] border border-transparent"
+                {/* Horizontal Category Scroller Container (Mouse wheel + touch smooth scroll) */}
+                <div
+                  ref={categoryScrollRef}
+                  onWheel={handleCategoryWheel}
+                  className="flex-1 flex items-center gap-2 overflow-x-auto scroll-smooth py-1 px-0.5 scrollbar-none touch-pan-x"
+                >
+                  {/* All Products Pill */}
+                  <button
+                    onClick={() => setSelectedCategory("all")}
+                    className={`px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-2 shrink-0 cursor-pointer ${
+                      selectedCategory === "all"
+                        ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-600/30 border border-blue-400/40"
+                        : "bg-white/[0.03] text-neutral-400 hover:text-white hover:bg-white/[0.07] border border-white/[0.06]"
+                    }`}
+                  >
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>All Products</span>
+                    <span
+                      className={`text-[10px] font-mono px-1.5 py-0.5 rounded-full ${
+                        selectedCategory === "all"
+                          ? "bg-white/25 text-white font-bold"
+                          : "bg-white/[0.06] text-neutral-400"
                       }`}
                     >
-                      <span>{cat.name}</span>
-                      <span
-                        className={`text-[10px] font-mono px-1.5 py-0.2 rounded-full ${
-                          selectedCategory === cat.slug || selectedCategory === cat.id
-                            ? "bg-white/20 text-white font-bold"
-                            : "bg-white/[0.06] text-neutral-400"
-                        }`}
-                      >
-                        {count}
-                      </span>
-                    </button>
+                      {products.length}
+                    </span>
+                  </button>
 
-                    <Link
-                      href={`/category/${cat.slug}`}
-                      title={`Go to ${cat.name} dedicated page`}
-                      className="p-1.5 rounded-lg text-neutral-500 hover:text-blue-400 hover:bg-white/[0.05] transition-colors"
-                    >
-                      <ArrowUpRight className="w-3.5 h-3.5" />
-                    </Link>
-                  </div>
-                );
-              })}
+                  {/* Individual Categories */}
+                  {categories.map((cat) => {
+                    const count = products.filter(
+                      (p) => p.category === cat.slug || p.category === cat.id
+                    ).length;
+                    const Icon = getCategoryIcon(cat.slug || cat.id);
+                    const isSelected = selectedCategory === cat.slug || selectedCategory === cat.id;
+
+                    return (
+                      <div key={cat.id} className="flex items-center gap-1 shrink-0">
+                        <button
+                          onClick={() => setSelectedCategory(cat.slug)}
+                          className={`px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer ${
+                            isSelected
+                              ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-600/30 border border-blue-400/40"
+                              : "bg-white/[0.03] text-neutral-400 hover:text-white hover:bg-white/[0.07] border border-white/[0.06]"
+                          }`}
+                        >
+                          <Icon className="w-3.5 h-3.5" />
+                          <span>{cat.name}</span>
+                          <span
+                            className={`text-[10px] font-mono px-1.5 py-0.5 rounded-full ${
+                              isSelected
+                                ? "bg-white/25 text-white font-bold"
+                                : "bg-white/[0.06] text-neutral-400"
+                            }`}
+                          >
+                            {count}
+                          </span>
+                        </button>
+
+                        <Link
+                          href={`/category/${cat.slug}`}
+                          title={`Go to ${cat.name} dedicated page`}
+                          className="p-2 rounded-xl text-neutral-500 hover:text-blue-400 hover:bg-white/[0.06] border border-transparent hover:border-white/10 transition-colors shrink-0"
+                        >
+                          <ArrowUpRight className="w-3.5 h-3.5" />
+                        </Link>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Scroll Right Button */}
+                <button
+                  type="button"
+                  onClick={() => scrollCategories("right")}
+                  className="hidden sm:flex items-center justify-center w-8 h-8 rounded-xl bg-white/[0.04] border border-white/10 hover:border-white/20 text-neutral-400 hover:text-white hover:bg-white/[0.08] transition-all shrink-0 active:scale-95 shadow-sm cursor-pointer"
+                  title="Scroll categories right"
+                  aria-label="Scroll categories right"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Mobile Swipe Hint */}
+              <div className="flex sm:hidden items-center justify-between pt-1.5 px-1 text-[10px] text-neutral-500">
+                <span>{categories.length} categories available</span>
+                <span className="font-mono flex items-center gap-0.5">
+                  Scroll horizontally &rarr;
+                </span>
+              </div>
             </div>
           </div>
 
           {/* Active Inventory Count & Reset Tag Bar */}
-          <div className="flex items-center justify-between text-xs text-neutral-400 mb-6 px-1">
+          <div className="flex flex-wrap items-center justify-between text-xs text-neutral-400 mb-6 px-1 gap-2">
             <div className="flex items-center gap-2">
-              <span className="font-semibold text-white">
+              <span className="font-extrabold text-white text-sm">
                 {filteredProducts.length}
               </span>
               <span>
                 {filteredProducts.length === 1 ? "product available" : "products available"}
               </span>
+
               {(selectedCategory !== "all" || deliveryFilter !== "ALL" || searchQuery) && (
                 <button
                   onClick={() => {
@@ -605,12 +705,18 @@ export default function HomePage() {
                     setDeliveryFilter("ALL");
                     setSearchQuery("");
                   }}
-                  className="ml-2 text-[11px] text-blue-400 hover:text-blue-300 underline underline-offset-4"
+                  className="ml-2 text-[11px] text-blue-400 hover:text-blue-300 underline underline-offset-4 cursor-pointer font-semibold"
                 >
                   Clear all filters
                 </button>
               )}
             </div>
+
+            {selectedCategory !== "all" && (
+              <span className="text-[11px] bg-white/[0.04] px-2.5 py-1 rounded-lg border border-white/[0.08] text-neutral-300">
+                Viewing: <strong className="text-white capitalize">{selectedCategory.replace(/-/g, " ")}</strong>
+              </span>
+            )}
           </div>
 
           {/* Product Grid */}

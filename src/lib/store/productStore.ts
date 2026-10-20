@@ -184,7 +184,7 @@ export const useProductStore = create<ProductStoreState>()(
     }),
     {
       name: "nexus-admin-products-storage",
-      version: 10,
+      version: 11,
       migrate: (persistedState: any) => {
         const existingProducts: DigitalProduct[] = persistedState?.products || [];
         const mockMap = new Map<string, DigitalProduct>(MOCK_DIGITAL_PRODUCTS.map((p) => [p.id, p]));
@@ -199,35 +199,18 @@ export const useProductStore = create<ProductStoreState>()(
       },
       onRehydrateStorage: () => (state) => {
         if (!state) return;
-        const rmIndex = state.products.findIndex((p) => p.id === "rank-math-pro" || p.slug === "rank-math-pro");
-        const defaultRm = MOCK_DIGITAL_PRODUCTS.find((p) => p.id === "rank-math-pro");
-        if (defaultRm) {
-          if (rmIndex === -1) {
-            state.products = [...state.products, defaultRm];
-          } else {
-            state.products[rmIndex].images = defaultRm.images;
-          }
+        const currentIds = new Set(state.products.map((p) => p.id));
+        const missing = MOCK_DIGITAL_PRODUCTS.filter((p) => !currentIds.has(p.id));
+        if (missing.length > 0) {
+          state.products = [...state.products, ...missing];
         }
-
-        const elIndex = state.products.findIndex((p) => p.id === "elementor-pro" || p.slug === "elementor-pro");
-        const defaultEl = MOCK_DIGITAL_PRODUCTS.find((p) => p.id === "elementor-pro");
-        if (defaultEl) {
-          if (elIndex === -1) {
-            state.products = [...state.products, defaultEl];
-          } else {
-            state.products[elIndex].images = defaultEl.images;
+        // Always sync images
+        MOCK_DIGITAL_PRODUCTS.forEach((dp) => {
+          const idx = state.products.findIndex((p) => p.id === dp.id);
+          if (idx !== -1 && dp.images.length > 0) {
+            state.products[idx].images = dp.images;
           }
-        }
-
-        const astraIndex = state.products.findIndex((p) => p.id === "astra-pro-theme" || p.slug === "astra-pro-theme");
-        const defaultAstra = MOCK_DIGITAL_PRODUCTS.find((p) => p.id === "astra-pro-theme");
-        if (defaultAstra) {
-          if (astraIndex === -1) {
-            state.products = [...state.products, defaultAstra];
-          } else {
-            state.products[astraIndex].images = defaultAstra.images;
-          }
-        }
+        });
       },
     }
   )
