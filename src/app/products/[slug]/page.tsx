@@ -25,6 +25,10 @@ export function generateStaticParams() {
       slugs.push({ slug: "elementor" });
       slugs.push({ slug: "elementor-pro-page-builder" });
     }
+    if (product.slug === "astra-pro-theme") {
+      slugs.push({ slug: "astra-pro" });
+      slugs.push({ slug: "astra-pro-theme-agency" });
+    }
   });
   return slugs;
 }
@@ -35,7 +39,8 @@ function resolveProduct(slug: string) {
     (p) =>
       p.slug.toLowerCase() === clean ||
       (clean.startsWith("rank-math") && p.slug.startsWith("rank-math")) ||
-      (clean.startsWith("elementor") && p.slug.startsWith("elementor"))
+      (clean.startsWith("elementor") && p.slug.startsWith("elementor")) ||
+      (clean.startsWith("astra") && p.slug.startsWith("astra"))
   );
 }
 

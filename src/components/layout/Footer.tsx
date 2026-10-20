@@ -149,7 +149,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/products/astra-pro-theme-agency" className="hover:text-white transition-colors">
+                <Link href="/products/astra-pro-theme" className="hover:text-white transition-colors">
                   Astra Pro Theme
                 </Link>
               </li>

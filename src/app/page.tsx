@@ -23,6 +23,7 @@ import {
   TrendingUp,
   Flame,
   Layers,
+  Palette,
 } from "lucide-react";
 import { CATEGORIES, DeliveryType, MOCK_PRODUCT_BUNDLES } from "@/data/mockProducts";
 import ProductCard from "@/components/product/ProductCard";
@@ -99,6 +100,18 @@ export default function HomePage() {
       accent: "from-pink-500 to-rose-600",
       slug: "elementor-pro",
       image: "/products/elementor-pro.svg",
+    },
+    {
+      title: "Astra Pro Theme - Agency Fleet & Starter Sites",
+      subtitle: "Official agency activation, <50KB zero-jQuery core & 280+ starter kits",
+      price: "$12.00",
+      originalPrice: "$59.00",
+      type: "SERVICE_SETUP" as const,
+      badge: "Fastest WordPress Theme",
+      icon: Palette,
+      accent: "from-purple-500 to-indigo-600",
+      slug: "astra-pro-theme",
+      image: "/products/astra-pro-theme.svg",
     },
     {
       title: "IDM 1-PC Lifetime Retail Key",

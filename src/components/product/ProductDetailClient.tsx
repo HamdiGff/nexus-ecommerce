@@ -26,6 +26,7 @@ import BundleSaveEngine from "@/components/product/BundleSaveEngine";
 import WPRocketProductExperience from "@/components/product/WPRocketProductExperience";
 import RankMathProductExperience from "@/components/product/RankMathProductExperience";
 import ElementorProductExperience from "@/components/product/ElementorProductExperience";
+import AstraProductExperience from "@/components/product/AstraProductExperience";
 import ProductReviewsSection from "@/components/product/ProductReviewsSection";
 import { useProductStore } from "@/lib/store/productStore";
 
@@ -577,6 +578,12 @@ export default function ProductDetailClient({ product: initialProduct }: Product
         {(product.slug === "elementor-pro" || product.slug.startsWith("elementor")) && (
           <div className="mt-12">
             <ElementorProductExperience />
+          </div>
+        )}
+
+        {(product.slug === "astra-pro-theme" || product.slug.startsWith("astra")) && (
+          <div className="mt-12">
+            <AstraProductExperience />
           </div>
         )}
 

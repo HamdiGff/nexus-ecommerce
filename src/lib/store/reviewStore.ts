@@ -24,6 +24,8 @@ const SEED_ORDERS: Record<string, { email: string; products: string[]; customerN
   "NEX-947420": { email: "dmitri.volkov@example.com", products: ["rank-math-pro", "rank-math"], customerName: "Dmitri Volkov" },
   "NEX-948110": { email: "claire.dupont@example.com", products: ["elementor-pro"], customerName: "Claire Dupont" },
   "NEX-947602": { email: "kenji.sato@example.com", products: ["elementor-pro"], customerName: "Kenji Sato" },
+  "NEX-948301": { email: "oliver.davies@example.com", products: ["astra-pro-theme", "astra-pro"], customerName: "Oliver Davies" },
+  "NEX-948122": { email: "seraphina.vance@example.com", products: ["astra-pro-theme", "astra-pro"], customerName: "Seraphina Vance" },
 };
 
 export const useReviewStore = create<ReviewStoreState>()(
@@ -87,6 +89,7 @@ export const useReviewStore = create<ReviewStoreState>()(
         return get().reviews.filter(
           (r) =>
             r.productId.toLowerCase() === clean ||
+            (clean.startsWith("astra") && r.productId.startsWith("astra")) ||
             (clean.startsWith("elementor") && r.productId.startsWith("elementor")) ||
             (clean.startsWith("rank-math") && r.productId.startsWith("rank-math")) ||
             (clean.startsWith("wp-rocket") && r.productId.startsWith("wp-rocket"))
@@ -156,7 +159,7 @@ export const useReviewStore = create<ReviewStoreState>()(
     }),
     {
       name: "nexus-product-reviews-store",
-      version: 4,
+      version: 5,
       migrate: (persistedState: any) => {
         const existing: ProductReview[] = persistedState?.reviews || [];
         const existingIds = new Set(existing.map((r) => r.id));

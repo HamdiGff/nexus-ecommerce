@@ -1,0 +1,203 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0c071e" />
+      <stop offset="50%" stop-color="#140b2e" />
+      <stop offset="100%" stop-color="#070412" />
+    </linearGradient>
+    <linearGradient id="astraGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a855f7" />
+      <stop offset="50%" stop-color="#7c3aed" />
+      <stop offset="100%" stop-color="#4f46e5" />
+    </linearGradient>
+    <linearGradient id="badgeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#c084fc" />
+      <stop offset="100%" stop-color="#818cf8" />
+    </linearGradient>
+    <linearGradient id="accentGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7c3aed" stop-opacity="0.25" />
+      <stop offset="100%" stop-color="#c084fc" stop-opacity="0" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="30" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    <radialGradient id="radialGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#7c3aed" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#7c3aed" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Background Canvas -->
+  <rect width="1200" height="675" fill="url(#bgGrad)" />
+
+  <!-- Radial Glow Orbs -->
+  <circle cx="280" cy="337" r="320" fill="url(#radialGlow)" filter="url(#glow)" />
+  <circle cx="950" cy="200" r="260" fill="url(#radialGlow)" filter="url(#glow)" />
+
+  <!-- Subtle Cyber Matrix Grid -->
+  <g stroke="#ffffff" stroke-opacity="0.04" stroke-width="1">
+    <line x1="100" y1="0" x2="100" y2="675" />
+    <line x1="250" y1="0" x2="250" y2="675" />
+    <line x1="400" y1="0" x2="400" y2="675" />
+    <line x1="550" y1="0" x2="550" y2="675" />
+    <line x1="700" y1="0" x2="700" y2="675" />
+    <line x1="850" y1="0" x2="850" y2="675" />
+    <line x1="1000" y1="0" x2="1000" y2="675" />
+    <line x1="0" y1="120" x2="1200" y2="120" />
+    <line x1="0" y1="260" x2="1200" y2="260" />
+    <line x1="0" y1="400" x2="1200" y2="400" />
+    <line x1="0" y1="540" x2="1200" y2="540" />
+  </g>
+
+  <!-- Left Hero Badge & Astra Icon Group -->
+  <g transform="translate(100, 150)">
+    <!-- Icon Container Box with Glow -->
+    <rect x="0" y="0" width="160" height="160" rx="36" fill="#1e1045" stroke="#7c3aed" stroke-width="2" stroke-opacity="0.6" filter="url(#glow)" />
+    <rect x="0" y="0" width="160" height="160" rx="36" fill="url(#astraGrad)" />
+
+    <!-- Stylized Astra Pro 'A' Geometric Glyph -->
+    <g transform="translate(80, 80)">
+      <!-- Left leg -->
+      <path d="M-42 45 L0 -48 L14 -48 L-14 45 Z" fill="#ffffff" opacity="0.95" />
+      <!-- Right leg with Astra trademark fold -->
+      <path d="M0 -48 L42 45 L14 45 L-7 -10 Z" fill="#ffffff" opacity="0.8" />
+      <!-- Cross bridge -->
+      <path d="M-22 15 L22 15 L18 27 L-26 27 Z" fill="#f3e8ff" />
+      <!-- Pro star sparkle badge -->
+      <circle cx="28" cy="-28" r="8" fill="#fbbf24" />
+      <polygon points="28,-40 31,-31 40,-28 31,-25 28,-16 25,-25 16,-28 25,-31" fill="#fef08a" />
+    </g>
+
+    <!-- Top Status Pill -->
+    <rect x="190" y="8" width="310" height="36" rx="18" fill="#2e1065" stroke="#a855f7" stroke-width="1.5" stroke-opacity="0.6" />
+    <circle cx="212" cy="26" r="6" fill="#10b981" />
+    <text x="228" y="31" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="700" fill="#f3e8ff" letter-spacing="1.5">OFFICIAL BRAINSTORM FORCE AGENCY</text>
+
+    <!-- Main Title Heading -->
+    <text x="190" y="82" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="44" font-weight="900" fill="#ffffff" letter-spacing="-1">
+      ASTRA <tspan fill="url(#badgeGrad)">PRO</tspan> THEME
+    </text>
+
+    <!-- Subtitle / Tagline -->
+    <text x="190" y="118" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="20" font-weight="600" fill="#c4b5fd">
+      The World's Most Popular &amp; Ultra-Lightweight WordPress Theme
+    </text>
+    <text x="190" y="145" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="15" font-weight="400" fill="#94a3b8">
+      1.6M+ Active Websites • Less Than 50 KB • Zero jQuery • 280+ Premium Starter Kits
+    </text>
+  </g>
+
+  <!-- Right Visual Feature Showcase Glass Card -->
+  <g transform="translate(680, 85)">
+    <!-- Glass Panel Backdrop -->
+    <rect x="0" y="0" width="440" height="490" rx="24" fill="#130b2b" fill-opacity="0.85" stroke="#7c3aed" stroke-width="1.5" stroke-opacity="0.4" />
+
+    <!-- Card Header Strip -->
+    <rect x="0" y="0" width="440" height="52" rx="24" fill="#24124d" fill-opacity="0.7" />
+    <circle cx="28" cy="26" r="6" fill="#ef4444" opacity="0.8" />
+    <circle cx="48" cy="26" r="6" fill="#eab308" opacity="0.8" />
+    <circle cx="68" cy="26" r="6" fill="#22c55e" opacity="0.8" />
+    <text x="100" y="31" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="700" fill="#e9d5ff">ASTRA PRO AGENCY FLEET ENGINE</text>
+    <rect x="340" y="14" width="80" height="24" rx="12" fill="#10b981" fill-opacity="0.2" stroke="#10b981" stroke-width="1" />
+    <text x="352" y="30" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" fill="#34d399">VERIFIED</text>
+
+    <!-- Item 1: Starter Templates -->
+    <g transform="translate(24, 76)">
+      <rect width="392" height="74" rx="14" fill="#1e1140" stroke="#7c3aed" stroke-opacity="0.3" stroke-width="1" />
+      <rect x="14" y="14" width="46" height="46" rx="10" fill="#7c3aed" fill-opacity="0.2" stroke="#a855f7" stroke-width="1" />
+      <!-- Templates Icon -->
+      <rect x="23" y="23" width="12" height="12" rx="2" fill="#c084fc" />
+      <rect x="39" y="23" width="12" height="12" rx="2" fill="#c084fc" opacity="0.6" />
+      <rect x="23" y="39" width="12" height="12" rx="2" fill="#c084fc" opacity="0.6" />
+      <rect x="39" y="39" width="12" height="12" rx="2" fill="#c084fc" />
+      <text x="72" y="34" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="15" font-weight="700" fill="#ffffff">280+ Premium Starter Kits</text>
+      <text x="72" y="52" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" fill="#a78bfa">Complete 1-click importable niche website kits</text>
+    </g>
+
+    <!-- Item 2: Header & Footer Builder -->
+    <g transform="translate(24, 162)">
+      <rect width="392" height="74" rx="14" fill="#1e1140" stroke="#7c3aed" stroke-opacity="0.3" stroke-width="1" />
+      <rect x="14" y="14" width="46" height="46" rx="10" fill="#7c3aed" fill-opacity="0.2" stroke="#a855f7" stroke-width="1" />
+      <!-- Layout Icon -->
+      <line x1="24" y1="26" x2="50" y2="26" stroke="#c084fc" stroke-width="3" stroke-linecap="round" />
+      <line x1="24" y1="36" x2="38" y2="36" stroke="#c084fc" stroke-width="2.5" stroke-linecap="round" />
+      <line x1="24" y1="46" x2="50" y2="46" stroke="#c084fc" stroke-width="3" stroke-linecap="round" />
+      <text x="72" y="34" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="15" font-weight="700" fill="#ffffff">Visual Header &amp; Footer Builder</text>
+      <text x="72" y="52" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" fill="#a78bfa">Sticky, transparent, mobile off-canvas &amp; mega menus</text>
+    </g>
+
+    <!-- Item 3: Custom Layouts & Hooks -->
+    <g transform="translate(24, 248)">
+      <rect width="392" height="74" rx="14" fill="#1e1140" stroke="#7c3aed" stroke-opacity="0.3" stroke-width="1" />
+      <rect x="14" y="14" width="46" height="46" rx="10" fill="#7c3aed" fill-opacity="0.2" stroke="#a855f7" stroke-width="1" />
+      <!-- Hook Code Icon -->
+      <path d="M26 37 L32 31 L26 25" stroke="#c084fc" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+      <path d="M48 37 L42 31 L48 25" stroke="#c084fc" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+      <line x1="39" y1="23" x2="35" y2="39" stroke="#e9d5ff" stroke-width="2" stroke-linecap="round" />
+      <text x="72" y="34" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="15" font-weight="700" fill="#ffffff">Custom Layouts &amp; Action Hooks</text>
+      <text x="72" y="52" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" fill="#a78bfa">Inject conditional sections without template child code</text>
+    </g>
+
+    <!-- Item 4: High-Performance WooCommerce -->
+    <g transform="translate(24, 334)">
+      <rect width="392" height="74" rx="14" fill="#1e1140" stroke="#7c3aed" stroke-opacity="0.3" stroke-width="1" />
+      <rect x="14" y="14" width="46" height="46" rx="10" fill="#7c3aed" fill-opacity="0.2" stroke="#a855f7" stroke-width="1" />
+      <!-- Cart Icon -->
+      <circle cx="31" cy="45" r="3.5" fill="#c084fc" />
+      <circle cx="43" cy="45" r="3.5" fill="#c084fc" />
+      <path d="M23 25 h6 l4 13 h13 l3 -9 h-22" stroke="#c084fc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+      <text x="72" y="34" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="15" font-weight="700" fill="#ffffff">Deep WooCommerce Optimization</text>
+      <text x="72" y="52" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" fill="#a78bfa">Off-canvas filters, quick-view, distraction-free checkout</text>
+    </g>
+
+    <!-- Footer Guarantee -->
+    <g transform="translate(24, 422)">
+      <rect width="392" height="48" rx="12" fill="#0f0724" border="1" stroke="#381575" stroke-width="1" />
+      <circle cx="40" cy="24" r="8" fill="#10b981" fill-opacity="0.2" />
+      <path d="M37 24 l2 2 l4 -4" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+      <text x="58" y="28" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="600" fill="#d8b4fe">1-Click Direct WP Dashboard Updates • 100% Genuine</text>
+    </g>
+  </g>
+
+  <!-- Bottom Metric Bar Strips -->
+  <g transform="translate(100, 360)">
+    <!-- Stat 1 -->
+    <g>
+      <rect width="160" height="92" rx="16" fill="#190e38" stroke="#7c3aed" stroke-width="1" stroke-opacity="0.4" />
+      <text x="20" y="38" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="28" font-weight="900" fill="#ffffff">&lt; 50 KB</text>
+      <text x="20" y="62" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="600" fill="#a855f7">LIGHTEST CORE</text>
+      <text x="20" y="77" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" fill="#94a3b8">Zero jQuery overhead</text>
+    </g>
+
+    <!-- Stat 2 -->
+    <g transform="translate(180, 0)">
+      <rect width="160" height="92" rx="16" fill="#190e38" stroke="#7c3aed" stroke-width="1" stroke-opacity="0.4" />
+      <text x="20" y="38" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="28" font-weight="900" fill="#ffffff">0.4 sec</text>
+      <text x="20" y="62" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="600" fill="#10b981">LOAD TIME</text>
+      <text x="20" y="77" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" fill="#94a3b8">Pingdom benchmarked</text>
+    </g>
+
+    <!-- Stat 3 -->
+    <g transform="translate(360, 0)">
+      <rect width="160" height="92" rx="16" fill="#190e38" stroke="#7c3aed" stroke-width="1" stroke-opacity="0.4" />
+      <text x="20" y="38" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="28" font-weight="900" fill="#ffffff">280+</text>
+      <text x="20" y="62" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="600" fill="#38bdf8">STARTER SITES</text>
+      <text x="20" y="77" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" fill="#94a3b8">Elementor &amp; Spectra ready</text>
+    </g>
+  </g>
+
+  <!-- Bottom Agency Activation Guarantee Bar -->
+  <g transform="translate(100, 485)">
+    <rect width="520" height="66" rx="16" fill="#180e38" stroke="#a855f7" stroke-width="1.5" stroke-opacity="0.5" />
+    <circle cx="36" cy="33" r="16" fill="#7c3aed" fill-opacity="0.3" />
+    <path d="M30 33 l4 4 l8 -8" stroke="#c084fc" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+    <text x="64" y="28" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="700" fill="#ffffff">Official Agency Key &amp; White Label Ready</text>
+    <text x="64" y="48" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" fill="#cbd5e1">100% Genuine Brainstorm Force Activation • Rebrand as your own agency theme</text>
+  </g>
+
+  <!-- Bottom Brand Footnote -->
+  <text x="100" y="610" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" fill="#64748b">
+    NEXUS DIGITAL STORE • AUTHENTIC WORDPRESS AGENCY ASSETS • INSTANT 1-CLICK DISPATCH
+  </text>
+</svg>

@@ -1,0 +1,154 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bgGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0c071e" />
+      <stop offset="100%" stop-color="#140b2e" />
+    </linearGradient>
+    <linearGradient id="astraGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+    <linearGradient id="astraPurple" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a855f7" />
+      <stop offset="100%" stop-color="#7c3aed" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bgGrad3)" />
+
+  <!-- Top Title Strip -->
+  <g transform="translate(60, 40)">
+    <rect width="240" height="32" rx="16" fill="#142e20" stroke="#10b981" stroke-width="1" />
+    <text x="16" y="21" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="700" fill="#6ee7b7">CORE WEB VITALS BENCHMARK</text>
+    <text x="0" y="70" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="28" font-weight="800" fill="#ffffff">
+      Astra Pro Performance Benchmark vs Other Themes
+    </text>
+    <text x="0" y="96" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="400" fill="#94a3b8">
+      Less than 50 KB total frontend resources with 100/100 Google PageSpeed and zero jQuery bloat.
+    </text>
+  </g>
+
+  <!-- Left: Head-to-Head Theme Benchmark Matrix (620px wide) -->
+  <g transform="translate(60, 160)">
+    <rect width="560" height="460" rx="20" fill="#130b2c" stroke="#7c3aed" stroke-width="1.5" stroke-opacity="0.5" />
+    
+    <rect width="560" height="44" rx="20" fill="#1e1040" />
+    <text x="24" y="27" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="700" fill="#ddd6fe">INDEPENDENT SPEED BENCHMARK (PINGDOM / GOOGLE PSI)</text>
+
+    <!-- Table Header -->
+    <g transform="translate(24, 60)">
+      <text x="0" y="16" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" fill="#94a3b8">THEME</text>
+      <text x="160" y="16" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" fill="#94a3b8">PAGE WEIGHT</text>
+      <text x="280" y="16" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" fill="#94a3b8">LOAD TIME</text>
+      <text x="390" y="16" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" fill="#94a3b8">REQUESTS</text>
+      <line x1="0" y1="26" x2="512" y2="26" stroke="#381d69" stroke-width="1" />
+    </g>
+
+    <!-- Row 1: Astra Pro (Highlighted Winner) -->
+    <g transform="translate(24, 100)">
+      <rect width="512" height="68" rx="12" fill="#173123" stroke="#10b981" stroke-width="1.5" />
+      <!-- Star/Crown Icon -->
+      <circle cx="28" cy="34" r="14" fill="url(#astraGreen)" />
+      <text x="24" y="39" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="900" fill="#ffffff">A</text>
+      <text x="52" y="28" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="800" fill="#ffffff">Astra Pro</text>
+      <text x="52" y="46" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" fill="#6ee7b7">WINNER (Zero jQuery)</text>
+      
+      <text x="160" y="38" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="15" font-weight="800" fill="#10b981">&lt; 50 KB</text>
+      <text x="280" y="38" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="15" font-weight="800" fill="#10b981">0.4 sec</text>
+      <text x="390" y="38" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="15" font-weight="800" fill="#10b981">8 req</text>
+      <rect x="445" y="22" width="54" height="24" rx="12" fill="#10b981" />
+      <text x="456" y="38" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="800" fill="#ffffff">100 PSI</text>
+    </g>
+
+    <!-- Row 2: OceanWP -->
+    <g transform="translate(24, 180)">
+      <rect width="512" height="58" rx="10" fill="#190e38" stroke="#381d69" stroke-width="1" />
+      <circle cx="28" cy="29" r="12" fill="#2563eb" opacity="0.6" />
+      <text x="52" y="26" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="700" fill="#e2e8f0">OceanWP</text>
+      <text x="52" y="42" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" fill="#94a3b8">Multi-purpose Theme</text>
+      
+      <text x="160" y="35" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" fill="#cbd5e1">1,820 KB</text>
+      <text x="280" y="35" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" fill="#cbd5e1">2.1 sec</text>
+      <text x="390" y="35" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" fill="#cbd5e1">28 req</text>
+      <text x="460" y="35" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="700" fill="#facc15">78 PSI</text>
+    </g>
+
+    <!-- Row 3: Avada Theme -->
+    <g transform="translate(24, 248)">
+      <rect width="512" height="58" rx="10" fill="#190e38" stroke="#381d69" stroke-width="1" />
+      <circle cx="28" cy="29" r="12" fill="#ea580c" opacity="0.6" />
+      <text x="52" y="26" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="700" fill="#e2e8f0">Avada / Fusion</text>
+      <text x="52" y="42" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" fill="#94a3b8">Heavy All-in-One</text>
+      
+      <text x="160" y="35" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" fill="#f87171">4,200 KB</text>
+      <text x="280" y="35" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" fill="#f87171">3.4 sec</text>
+      <text x="390" y="35" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" fill="#f87171">54 req</text>
+      <text x="460" y="35" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="700" fill="#ef4444">52 PSI</text>
+    </g>
+
+    <!-- Row 4: Divi Theme -->
+    <g transform="translate(24, 316)">
+      <rect width="512" height="58" rx="10" fill="#190e38" stroke="#381d69" stroke-width="1" />
+      <circle cx="28" cy="29" r="12" fill="#8b5cf6" opacity="0.6" />
+      <text x="52" y="26" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="700" fill="#e2e8f0">Divi Theme</text>
+      <text x="52" y="42" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" fill="#94a3b8">Built-in Builder</text>
+      
+      <text x="160" y="35" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" fill="#f87171">2,850 KB</text>
+      <text x="280" y="35" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" fill="#f87171">2.7 sec</text>
+      <text x="390" y="35" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" fill="#f87171">38 req</text>
+      <text x="460" y="35" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="700" fill="#facc15">68 PSI</text>
+    </g>
+
+    <!-- Footer Note -->
+    <g transform="translate(24, 390)">
+      <rect width="512" height="50" rx="10" fill="#160c32" stroke="#4c1d95" stroke-width="1" />
+      <text x="16" y="22" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" fill="#c084fc">RESULT:</text>
+      <text x="75" y="22" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" fill="#e2e8f0">Astra loads 8x faster than traditional multi-purpose WordPress themes,</text>
+      <text x="16" y="38" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" fill="#94a3b8">giving your site an immediate boost in Google Core Web Vitals and SEO rankings.</text>
+    </g>
+  </g>
+
+  <!-- Right: 3 Core Speed Architectures (480px wide) -->
+  <g transform="translate(660, 160)">
+    <rect width="480" height="460" rx="20" fill="#130b2c" stroke="#7c3aed" stroke-width="1.5" stroke-opacity="0.5" />
+    
+    <rect width="480" height="44" rx="20" fill="#1e1040" />
+    <text x="24" y="27" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="700" fill="#ddd6fe">ENGINEERING FOR MAXIMUM VELOCITY</text>
+
+    <!-- Feature 1: Zero jQuery -->
+    <g transform="translate(24, 60)">
+      <rect width="432" height="88" rx="12" fill="#180e38" stroke="#7c3aed" stroke-width="1" stroke-opacity="0.4" />
+      <circle cx="28" cy="28" r="14" fill="#7c3aed" fill-opacity="0.2" />
+      <text x="22" y="33" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="900" fill="#a855f7">JS</text>
+      <text x="52" y="26" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="700" fill="#ffffff">Vanilla JavaScript • Zero jQuery</text>
+      <text x="52" y="44" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" fill="#cbd5e1">Astra completely replaced render-blocking jQuery with pure, lightweight vanilla JS to eliminate execution delays.</text>
+    </g>
+
+    <!-- Feature 2: Local Google Fonts -->
+    <g transform="translate(24, 160)">
+      <rect width="432" height="88" rx="12" fill="#180e38" stroke="#7c3aed" stroke-width="1" stroke-opacity="0.4" />
+      <circle cx="28" cy="28" r="14" fill="#10b981" fill-opacity="0.2" />
+      <text x="22" y="33" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="900" fill="#10b981">Aa</text>
+      <text x="52" y="26" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="700" fill="#ffffff">Self-Hosted Fonts &amp; GDPR Compliant</text>
+      <text x="52" y="44" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" fill="#cbd5e1">Google Fonts are loaded locally directly from your server with preload tags, stopping external DNS calls.</text>
+    </g>
+
+    <!-- Feature 3: Native Schema Markup -->
+    <g transform="translate(24, 260)">
+      <rect width="432" height="88" rx="12" fill="#180e38" stroke="#7c3aed" stroke-width="1" stroke-opacity="0.4" />
+      <circle cx="28" cy="28" r="14" fill="#38bdf8" fill-opacity="0.2" />
+      <text x="22" y="33" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="900" fill="#38bdf8">&lt;/&gt;</text>
+      <text x="52" y="26" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="700" fill="#ffffff">Built-in Schema.org Markup</text>
+      <text x="52" y="44" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" fill="#cbd5e1">Pre-configured Organization, Article, Breadcrumb, and CreativeWork microdata to maximize search rankings.</text>
+    </g>
+
+    <!-- Bottom Performance Gauge -->
+    <g transform="translate(24, 360)">
+      <rect width="432" height="76" rx="12" fill="#1b3024" stroke="#10b981" stroke-width="1" />
+      <circle cx="36" cy="38" r="22" fill="#10b981" />
+      <text x="26" y="43" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="900" fill="#ffffff">100</text>
+      <text x="70" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="700" fill="#ffffff">Google PageSpeed Mobile &amp; Desktop</text>
+      <text x="70" y="52" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" fill="#86efac">Pairs seamlessly with WP Rocket and Rank Math PRO</text>
+    </g>
+  </g>
+</svg>

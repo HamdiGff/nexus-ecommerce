@@ -177,13 +177,14 @@ export const useProductStore = create<ProductStoreState>()(
           (p) =>
             p.slug.toLowerCase() === clean ||
             (clean.startsWith("rank-math") && p.slug.startsWith("rank-math")) ||
-            (clean.startsWith("elementor") && p.slug.startsWith("elementor"))
+            (clean.startsWith("elementor") && p.slug.startsWith("elementor")) ||
+            (clean.startsWith("astra") && p.slug.startsWith("astra"))
         );
       },
     }),
     {
       name: "nexus-admin-products-storage",
-      version: 8,
+      version: 9,
       migrate: (persistedState: any) => {
         const existingProducts: DigitalProduct[] = persistedState?.products || [];
         const mockMap = new Map<string, DigitalProduct>(MOCK_DIGITAL_PRODUCTS.map((p) => [p.id, p]));
@@ -215,6 +216,16 @@ export const useProductStore = create<ProductStoreState>()(
             state.products = [...state.products, defaultEl];
           } else if (state.products[elIndex].images.length < defaultEl.images.length) {
             state.products[elIndex].images = defaultEl.images;
+          }
+        }
+
+        const astraIndex = state.products.findIndex((p) => p.id === "astra-pro-theme" || p.slug === "astra-pro-theme");
+        const defaultAstra = MOCK_DIGITAL_PRODUCTS.find((p) => p.id === "astra-pro-theme");
+        if (defaultAstra) {
+          if (astraIndex === -1) {
+            state.products = [...state.products, defaultAstra];
+          } else if (state.products[astraIndex].images.length < defaultAstra.images.length) {
+            state.products[astraIndex].images = defaultAstra.images;
           }
         }
       },

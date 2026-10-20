@@ -1,0 +1,182 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bgGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0c071e" />
+      <stop offset="100%" stop-color="#140b2e" />
+    </linearGradient>
+    <linearGradient id="purpleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a855f7" />
+      <stop offset="100%" stop-color="#6366f1" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bgGrad2)" />
+
+  <!-- Top Title Strip -->
+  <g transform="translate(60, 40)">
+    <rect width="210" height="32" rx="16" fill="#2e1065" stroke="#a855f7" stroke-width="1" />
+    <text x="16" y="21" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="700" fill="#e9d5ff">THEME CUSTOMIZATION ARCHITECTURE</text>
+    <text x="0" y="70" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="28" font-weight="800" fill="#ffffff">
+      Astra Pro Header &amp; Footer Builder + 280+ Starter Site Kits
+    </text>
+    <text x="0" y="96" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="400" fill="#94a3b8">
+      Design responsive headers with drag &amp; drop rows, activate mega menus, and import full multi-page websites in 60 seconds.
+    </text>
+  </g>
+
+  <!-- Left: Visual Header Builder Simulator (600px wide) -->
+  <g transform="translate(60, 160)">
+    <rect width="520" height="460" rx="20" fill="#130b2c" stroke="#7c3aed" stroke-width="1.5" stroke-opacity="0.5" />
+    
+    <!-- Window Bar -->
+    <rect width="520" height="44" rx="20" fill="#1e1040" />
+    <circle cx="24" cy="22" r="5" fill="#ef4444" />
+    <circle cx="40" cy="22" r="5" fill="#eab308" />
+    <circle cx="56" cy="22" r="5" fill="#22c55e" />
+    <text x="76" y="27" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="700" fill="#ddd6fe">VISUAL HEADER BUILDER (3 ROWS)</text>
+
+    <!-- Header Canvas Simulation -->
+    <g transform="translate(24, 60)">
+      <!-- Row 1: Above Header -->
+      <rect width="472" height="34" rx="6" fill="#1a0f38" stroke="#4c1d95" stroke-width="1" />
+      <text x="14" y="21" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="600" fill="#a78bfa">ABOVE HEADER</text>
+      <text x="180" y="21" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" fill="#cbd5e1">Announcement: Free Agency Shipping on orders over $50</text>
+
+      <!-- Row 2: Primary Header -->
+      <g transform="translate(0, 42)">
+        <rect width="472" height="60" rx="8" fill="#241352" stroke="#7c3aed" stroke-width="1.5" />
+        <!-- Logo -->
+        <circle cx="28" cy="30" r="14" fill="url(#purpleGrad)" />
+        <text x="23" y="35" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="900" fill="#ffffff">A</text>
+        <text x="50" y="35" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="15" font-weight="800" fill="#ffffff">BRAND</text>
+        
+        <!-- Menu Elements -->
+        <text x="150" y="34" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" fill="#f5f3ff">Home</text>
+        <text x="205" y="34" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" fill="#a78bfa">Solutions ▼</text>
+        <text x="295" y="34" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" fill="#a78bfa">Pricing</text>
+        
+        <!-- Pro Button & Cart -->
+        <rect x="360" y="14" width="98" height="32" rx="16" fill="url(#purpleGrad)" />
+        <text x="382" y="34" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="700" fill="#ffffff">Get Started</text>
+      </g>
+
+      <!-- Row 3: Below Header (Mega Menu Dropdown preview) -->
+      <g transform="translate(0, 110)">
+        <rect width="472" height="84" rx="8" fill="#1e1042" stroke="#6366f1" stroke-width="1" stroke-dasharray="4 2" />
+        <text x="16" y="24" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" fill="#818cf8">ASTRA PRO ADVANCED MEGA MENU PREVIEW</text>
+        <!-- 3 Columns -->
+        <g transform="translate(16, 36)">
+          <text x="0" y="14" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" fill="#ffffff">E-Commerce</text>
+          <text x="0" y="30" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" fill="#94a3b8">WooCommerce Hub</text>
+        </g>
+        <g transform="translate(160, 36)">
+          <text x="0" y="14" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" fill="#ffffff">Performance</text>
+          <text x="0" y="30" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" fill="#94a3b8">&lt; 50KB Zero jQuery</text>
+        </g>
+        <g transform="translate(310, 36)">
+          <text x="0" y="14" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" fill="#ffffff">Custom Layouts</text>
+          <text x="0" y="30" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" fill="#94a3b8">Targeted Hooks</text>
+        </g>
+      </g>
+    </g>
+
+    <!-- Customizer Builder Elements Tray -->
+    <g transform="translate(24, 280)">
+      <text x="0" y="18" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="700" fill="#c084fc">DRAG &amp; DROP CUSTOMIZER WIDGETS</text>
+      
+      <g transform="translate(0, 30)">
+        <rect width="110" height="34" rx="8" fill="#2a165c" stroke="#7c3aed" stroke-width="1" />
+        <text x="14" y="21" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="600" fill="#ffffff">+ Primary Menu</text>
+      </g>
+      <g transform="translate(120, 30)">
+        <rect width="110" height="34" rx="8" fill="#2a165c" stroke="#7c3aed" stroke-width="1" />
+        <text x="14" y="21" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="600" fill="#ffffff">+ Search Bar</text>
+      </g>
+      <g transform="translate(240, 30)">
+        <rect width="110" height="34" rx="8" fill="#2a165c" stroke="#7c3aed" stroke-width="1" />
+        <text x="14" y="21" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="600" fill="#ffffff">+ Account Drop</text>
+      </g>
+      <g transform="translate(360, 30)">
+        <rect width="110" height="34" rx="8" fill="#2a165c" stroke="#7c3aed" stroke-width="1" />
+        <text x="14" y="21" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="600" fill="#ffffff">+ Woo Cart (AJAX)</text>
+      </g>
+    </g>
+
+    <g transform="translate(24, 380)">
+      <rect width="472" height="60" rx="10" fill="#180e35" stroke="#4c1d95" stroke-width="1" />
+      <circle cx="28" cy="30" r="12" fill="#10b981" fill-opacity="0.2" />
+      <path d="M24 30 l3 3 l6 -6" stroke="#10b981" stroke-width="2" fill="none" />
+      <text x="50" y="26" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="700" fill="#ffffff">Sticky &amp; Transparent Header Controls</text>
+      <text x="50" y="44" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" fill="#94a3b8">Shrink logo on scroll, adjust background blur &amp; lock navigation</text>
+    </g>
+  </g>
+
+  <!-- Right: 280+ Premium Starter Templates Visual Gallery (540px wide) -->
+  <g transform="translate(620, 160)">
+    <rect width="520" height="460" rx="20" fill="#130b2c" stroke="#7c3aed" stroke-width="1.5" stroke-opacity="0.5" />
+    
+    <rect width="520" height="44" rx="20" fill="#1e1040" />
+    <circle cx="24" cy="22" r="5" fill="#ef4444" />
+    <circle cx="40" cy="22" r="5" fill="#eab308" />
+    <circle cx="56" cy="22" r="5" fill="#22c55e" />
+    <text x="76" y="27" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="700" fill="#ddd6fe">280+ STARTER TEMPLATES FLEET (1-CLICK IMPORT)</text>
+
+    <!-- Grid of 4 Starter Site Mockups -->
+    <g transform="translate(24, 60)">
+      <!-- Kit 1: Agency Portfolio -->
+      <g>
+        <rect width="224" height="150" rx="12" fill="#1e1040" stroke="#7c3aed" stroke-width="1" />
+        <rect width="224" height="85" rx="12" fill="#2a1458" />
+        <circle cx="28" cy="30" r="10" fill="#ec4899" />
+        <rect x="46" y="25" width="80" height="10" rx="4" fill="#ffffff" opacity="0.8" />
+        <rect x="18" y="55" width="130" height="8" rx="4" fill="#a78bfa" opacity="0.6" />
+        <rect x="18" y="68" width="90" height="8" rx="4" fill="#a78bfa" opacity="0.4" />
+        <text x="16" y="112" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="700" fill="#ffffff">Digital Agency Pro</text>
+        <text x="16" y="132" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" fill="#c084fc">Elementor &amp; Spectra Ready</text>
+      </g>
+
+      <!-- Kit 2: Modern WooCommerce Store -->
+      <g transform="translate(248, 0)">
+        <rect width="224" height="150" rx="12" fill="#1e1040" stroke="#7c3aed" stroke-width="1" />
+        <rect width="224" height="85" rx="12" fill="#182046" />
+        <circle cx="28" cy="30" r="10" fill="#3b82f6" />
+        <rect x="46" y="25" width="90" height="10" rx="4" fill="#ffffff" opacity="0.8" />
+        <!-- Product card thumbnails -->
+        <rect x="18" y="50" width="56" height="24" rx="4" fill="#2563eb" opacity="0.5" />
+        <rect x="82" y="50" width="56" height="24" rx="4" fill="#2563eb" opacity="0.5" />
+        <rect x="146" y="50" width="56" height="24" rx="4" fill="#2563eb" opacity="0.5" />
+        <text x="16" y="112" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="700" fill="#ffffff">Fashion eCommerce</text>
+        <text x="16" y="132" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" fill="#60a5fa">WooCommerce Optimized</text>
+      </g>
+
+      <!-- Kit 3: SaaS Tech Platform -->
+      <g transform="translate(0, 168)">
+        <rect width="224" height="150" rx="12" fill="#1e1040" stroke="#7c3aed" stroke-width="1" />
+        <rect width="224" height="85" rx="12" fill="#122a3e" />
+        <circle cx="28" cy="30" r="10" fill="#06b6d4" />
+        <rect x="46" y="25" width="100" height="10" rx="4" fill="#ffffff" opacity="0.8" />
+        <rect x="18" y="52" width="188" height="12" rx="4" fill="#0284c7" opacity="0.4" />
+        <text x="16" y="112" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="700" fill="#ffffff">Cloud SaaS Platform</text>
+        <text x="16" y="132" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" fill="#38bdf8">High Conversion Hero</text>
+      </g>
+
+      <!-- Kit 4: Restaurant & Booking -->
+      <g transform="translate(248, 168)">
+        <rect width="224" height="150" rx="12" fill="#1e1040" stroke="#7c3aed" stroke-width="1" />
+        <rect width="224" height="85" rx="12" fill="#371e16" />
+        <circle cx="28" cy="30" r="10" fill="#f97316" />
+        <rect x="46" y="25" width="80" height="10" rx="4" fill="#ffffff" opacity="0.8" />
+        <rect x="18" y="52" width="188" height="12" rx="4" fill="#ea580c" opacity="0.4" />
+        <text x="16" y="112" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="700" fill="#ffffff">Artisan Dining &amp; Bar</text>
+        <text x="16" y="132" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" fill="#fb923c">Table Reservation Ready</text>
+      </g>
+    </g>
+
+    <!-- Bottom import status bar -->
+    <g transform="translate(24, 396)">
+      <rect width="472" height="44" rx="10" fill="#25134d" stroke="#7c3aed" stroke-width="1" />
+      <text x="16" y="27" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="700" fill="#c084fc">INSTANT STARTER IMPORT:</text>
+      <text x="195" y="27" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" fill="#e2e8f0">Imports customizer, content, widgets &amp; menus in 1-click</text>
+    </g>
+  </g>
+</svg>
