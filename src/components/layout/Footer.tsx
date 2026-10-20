@@ -163,43 +163,191 @@ export default function Footer() {
           {/* ========================================================= */}
           {/* MAIN FOOTER NAVIGATION & NEWSLETTER GRID */}
           {/* ========================================================= */}
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mt-16 pb-16 border-b border-white/[0.08]">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-10 mt-12 pb-12 border-b border-white/[0.08] items-start">
             
-            {/* BRAND & NEWSLETTER COLUMN (5 Cols) */}
-            <div className="md:col-span-4 lg:col-span-4 space-y-6">
-              <div>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-neutral-800 to-neutral-950 border border-white/20 flex items-center justify-center font-bold text-white text-lg shadow-inner shadow-white/10">
-                    <span className="text-transparent bg-clip-text bg-gradient-to-tr from-blue-400 via-indigo-300 to-white">
-                      N
-                    </span>
-                  </div>
-                  <div>
-                    <span className="font-extrabold tracking-tight text-xl text-white font-sans block leading-none">
-                      NEXUS<span className="text-blue-500 font-light">DIGITAL</span>
-                    </span>
-                    <span className="text-[10px] text-neutral-400 font-mono tracking-widest uppercase">
-                      Premium Digital Assets &amp; Escrow
-                    </span>
-                  </div>
-                </div>
-
-                {/* System Operational Pulse Pill */}
-                <div className="mt-3.5 inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-500/[0.08] border border-emerald-500/20 text-[11px] font-mono text-emerald-400">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            {/* BRAND COLUMN (4 cols on lg) */}
+            <div className="lg:col-span-4 space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-neutral-800 to-neutral-950 border border-white/20 flex items-center justify-center font-bold text-white text-lg shadow-inner shadow-white/10">
+                  <span className="text-transparent bg-clip-text bg-gradient-to-tr from-blue-400 via-indigo-300 to-white">
+                    N
                   </span>
-                  <span>99.98% System Uptime • Auto-Dispenser Online</span>
+                </div>
+                <div>
+                  <span className="font-extrabold tracking-tight text-xl text-white font-sans block leading-none">
+                    NEXUS<span className="text-blue-500 font-light">DIGITAL</span>
+                  </span>
+                  <span className="text-[10px] text-neutral-400 font-mono tracking-widest uppercase">
+                    Premium Digital Assets &amp; Escrow
+                  </span>
                 </div>
               </div>
 
-              <p className="text-xs text-neutral-400 leading-relaxed">
-                The trusted ecosystem for authentic WordPress agency activations, turnkey Google AdSense websites, licensed software, and instant gaming codes. Delivered with escrow protection and zero-risk handoff.
+              {/* System Operational Pulse Pill */}
+              <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-500/[0.08] border border-emerald-500/20 text-[11px] font-mono text-emerald-400">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                <span>99.98% System Uptime • Auto-Dispenser Online</span>
+              </div>
+
+              <p className="text-xs text-neutral-400 leading-relaxed max-w-sm">
+                Authentic WordPress agency activations and turnkey Google AdSense assets delivered with verified credentials and escrow protection.
               </p>
 
-              {/* VIP Serial Drops & Restock Alerts Box */}
-              <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.07] space-y-3">
+              {/* Quick Utility Links */}
+              <div className="flex items-center gap-3 pt-1 text-xs font-mono">
+                <Link
+                  href="/orders"
+                  className="text-blue-400 hover:text-blue-300 transition-colors flex items-center gap-1 group text-[11px]"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5 text-blue-400" />
+                  <span>Order Vault</span>
+                  <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+                </Link>
+                <span className="text-white/20">•</span>
+                <Link
+                  href="/support"
+                  className="text-neutral-400 hover:text-white transition-colors flex items-center gap-1 text-[11px]"
+                >
+                  <MessageSquare className="w-3.5 h-3.5 text-neutral-400" />
+                  <span>24/7 Support Desk</span>
+                </Link>
+              </div>
+            </div>
+
+            {/* COLUMN 1: WordPress Agency Tools (2 cols on lg) */}
+            <div className="lg:col-span-2 space-y-3.5">
+              <div className="flex items-center gap-1.5 pb-1 border-b border-white/[0.05]">
+                <Wrench className="w-3.5 h-3.5 text-blue-400" />
+                <h5 className="text-white font-bold text-xs uppercase tracking-wider">
+                  WP Licenses
+                </h5>
+              </div>
+              <ul className="space-y-2.5 text-xs text-neutral-400">
+                <li>
+                  <Link
+                    href="/products/elementor-pro"
+                    className="group flex items-center justify-between hover:text-white transition-colors"
+                  >
+                    <span>Elementor Pro</span>
+                    <span className="text-[9px] px-1 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 font-mono group-hover:border-blue-400">
+                      PRO
+                    </span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/products/rank-math-pro"
+                    className="group flex items-center justify-between hover:text-white transition-colors"
+                  >
+                    <span>Rank Math PRO</span>
+                    <span className="text-[9px] px-1 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono group-hover:border-amber-400">
+                      SEO
+                    </span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/products/wp-rocket"
+                    className="group flex items-center justify-between hover:text-white transition-colors"
+                  >
+                    <span>WP Rocket</span>
+                    <span className="text-[9px] px-1 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono group-hover:border-emerald-400">
+                      CACHE
+                    </span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/products/astra-pro-theme"
+                    className="group flex items-center justify-between hover:text-white transition-colors"
+                  >
+                    <span>Astra Pro Theme</span>
+                    <span className="text-[9px] px-1 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20 font-mono group-hover:border-purple-400">
+                      AGENCY
+                    </span>
+                  </Link>
+                </li>
+                <li className="pt-1.5">
+                  <Link
+                    href="/category/wordpress"
+                    className="inline-flex items-center gap-1 text-[11px] text-blue-400 hover:text-blue-300 font-medium transition-colors group"
+                  >
+                    <span>All WP Licenses</span>
+                    <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* COLUMN 2: Google AdSense Websites (2 cols on lg) */}
+            <div className="lg:col-span-2 space-y-3.5">
+              <div className="flex items-center gap-1.5 pb-1 border-b border-white/[0.05]">
+                <Globe className="w-3.5 h-3.5 text-amber-400" />
+                <h5 className="text-white font-bold text-xs uppercase tracking-wider">
+                  Google AdSense
+                </h5>
+              </div>
+              <ul className="space-y-2.5 text-xs text-neutral-400">
+                <li>
+                  <Link
+                    href="/products/google-adsense-approved-websites"
+                    className="group flex items-center justify-between hover:text-white transition-colors"
+                  >
+                    <span>Fresh Tech Blogs</span>
+                    <span className="text-[9px] px-1 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono group-hover:border-emerald-400">
+                      HOT
+                    </span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/products/google-adsense-approved-websites"
+                    className="group flex items-center justify-between hover:text-white transition-colors"
+                  >
+                    <span>PIN-Verified Sites</span>
+                    <span className="text-[9px] px-1 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono group-hover:border-amber-400">
+                      READY
+                    </span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/products/google-adsense-approved-websites"
+                    className="group flex items-center justify-between hover:text-white transition-colors"
+                  >
+                    <span>5+ Payouts &amp; GAM</span>
+                    <span className="text-[9px] px-1 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 font-mono group-hover:border-blue-400">
+                      VIP
+                    </span>
+                  </Link>
+                </li>
+                <li>
+                  <button
+                    onClick={() => setActiveModal("adsense-guarantee")}
+                    className="hover:text-amber-300 text-left transition-colors flex items-center gap-1"
+                  >
+                    <span>Transfer Guarantee</span>
+                    <ExternalLink className="w-2.5 h-2.5 text-amber-400" />
+                  </button>
+                </li>
+                <li className="pt-1.5">
+                  <Link
+                    href="/category/adsense-websites"
+                    className="inline-flex items-center gap-1 text-[11px] text-amber-400 hover:text-amber-300 font-medium transition-colors group"
+                  >
+                    <span>Browse All Sites</span>
+                    <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* COLUMN 3: NOTIFY ME & RESTOCK DROPS (Shifted to the RIGHT side alongside menus) (4 cols on lg) */}
+            <div className="lg:col-span-4">
+              <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.08] space-y-3 shadow-lg shadow-black/20 hover:border-white/15 transition-all">
                 <div className="flex items-center justify-between">
                   <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-200 flex items-center gap-1.5">
                     <Sparkles className="w-3.5 h-3.5 text-blue-400" />
@@ -208,20 +356,24 @@ export default function Footer() {
                   <span className="text-[10px] text-neutral-400 font-mono">No Spam</span>
                 </div>
 
+                <p className="text-[11px] text-neutral-400 leading-relaxed">
+                  Get instant notifications when newly approved AdSense sites or agency keys drop.
+                </p>
+
                 <form onSubmit={handleSubscribe} className="space-y-2">
                   <div className="flex gap-2">
                     <input
                       type="email"
                       required
-                      placeholder="Enter your work email..."
+                      placeholder="Enter your email..."
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="flex-1 px-3.5 py-2.5 rounded-xl border border-white/10 bg-neutral-900/60 text-xs text-white placeholder-neutral-500 focus:outline-hidden focus:ring-1 focus:ring-blue-500/60 focus:border-blue-500/40 transition-all"
+                      className="flex-1 px-3 py-2 rounded-xl border border-white/10 bg-neutral-900/70 text-xs text-white placeholder-neutral-500 focus:outline-hidden focus:ring-1 focus:ring-blue-500/60 focus:border-blue-500/40 transition-all"
                     />
                     <button
                       type="submit"
                       disabled={subscribed}
-                      className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs flex items-center gap-1.5 transition-all shrink-0 shadow-md shadow-blue-600/20 hover:scale-[1.02] active:scale-[0.98]"
+                      className="px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs flex items-center gap-1.5 transition-all shrink-0 shadow-md shadow-blue-600/20 hover:scale-[1.02] active:scale-[0.98]"
                     >
                       {subscribed ? (
                         <>
@@ -238,270 +390,18 @@ export default function Footer() {
                   </div>
                 </form>
 
-                <div className="flex items-center gap-4 text-[10px] text-neutral-400 font-mono pt-1">
+                <div className="flex items-center gap-3 text-[10px] text-neutral-400 font-mono pt-0.5">
                   <span className="flex items-center gap-1">
-                    <CheckCircle2 className="w-3 h-3 text-emerald-400" /> Instant Alerts
+                    <CheckCircle2 className="w-3 h-3 text-emerald-400" /> Instant Drops
                   </span>
                   <span className="flex items-center gap-1">
-                    <CheckCircle2 className="w-3 h-3 text-blue-400" /> 20% Off Vouchers
+                    <CheckCircle2 className="w-3 h-3 text-blue-400" /> 20% Vouchers
                   </span>
                   <span className="flex items-center gap-1">
                     <CheckCircle2 className="w-3 h-3 text-purple-400" /> Zero Junk
                   </span>
                 </div>
               </div>
-            </div>
-
-            {/* NAVIGATION COLUMNS (8 Cols divided into 4 columns) */}
-            <div className="md:col-span-8 lg:col-span-8 grid grid-cols-2 sm:grid-cols-4 gap-8">
-              
-              {/* COLUMN 1: WordPress Agency Tools */}
-              <div className="space-y-3.5">
-                <div className="flex items-center gap-1.5 pb-1 border-b border-white/[0.05]">
-                  <Wrench className="w-3.5 h-3.5 text-blue-400" />
-                  <h5 className="text-white font-bold text-xs uppercase tracking-wider">
-                    WP Licenses
-                  </h5>
-                </div>
-                <ul className="space-y-2.5 text-xs text-neutral-400">
-                  <li>
-                    <Link
-                      href="/products/elementor-pro"
-                      className="group flex items-center justify-between hover:text-white transition-colors"
-                    >
-                      <span>Elementor Pro</span>
-                      <span className="text-[9px] px-1 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 font-mono group-hover:border-blue-400">
-                        PRO
-                      </span>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/products/rank-math-pro"
-                      className="group flex items-center justify-between hover:text-white transition-colors"
-                    >
-                      <span>Rank Math PRO</span>
-                      <span className="text-[9px] px-1 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono group-hover:border-amber-400">
-                        SEO
-                      </span>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/products/wp-rocket"
-                      className="group flex items-center justify-between hover:text-white transition-colors"
-                    >
-                      <span>WP Rocket</span>
-                      <span className="text-[9px] px-1 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono group-hover:border-emerald-400">
-                        CACHE
-                      </span>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/products/astra-pro-theme"
-                      className="group flex items-center justify-between hover:text-white transition-colors"
-                    >
-                      <span>Astra Pro Theme</span>
-                      <span className="text-[9px] px-1 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20 font-mono group-hover:border-purple-400">
-                        AGENCY
-                      </span>
-                    </Link>
-                  </li>
-                  <li className="pt-2">
-                    <Link
-                      href="/category/wordpress"
-                      className="inline-flex items-center gap-1 text-[11px] text-blue-400 hover:text-blue-300 font-medium transition-colors group"
-                    >
-                      <span>All WordPress Goods</span>
-                      <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-
-              {/* COLUMN 2: Turnkey Google AdSense Sites */}
-              <div className="space-y-3.5">
-                <div className="flex items-center gap-1.5 pb-1 border-b border-white/[0.05]">
-                  <Globe className="w-3.5 h-3.5 text-amber-400" />
-                  <h5 className="text-white font-bold text-xs uppercase tracking-wider">
-                    Google AdSense
-                  </h5>
-                </div>
-                <ul className="space-y-2.5 text-xs text-neutral-400">
-                  <li>
-                    <Link
-                      href="/products/google-adsense-approved-websites"
-                      className="group flex items-center justify-between hover:text-white transition-colors"
-                    >
-                      <span>Fresh Tech Blogs</span>
-                      <span className="text-[9px] px-1 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono group-hover:border-emerald-400">
-                        HOT
-                      </span>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/products/google-adsense-approved-websites"
-                      className="group flex items-center justify-between hover:text-white transition-colors"
-                    >
-                      <span>PIN-Verified Sites</span>
-                      <span className="text-[9px] px-1 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono group-hover:border-amber-400">
-                        READY
-                      </span>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/products/google-adsense-approved-websites"
-                      className="group flex items-center justify-between hover:text-white transition-colors"
-                    >
-                      <span>5+ Payouts &amp; GAM</span>
-                      <span className="text-[9px] px-1 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 font-mono group-hover:border-blue-400">
-                        VIP
-                      </span>
-                    </Link>
-                  </li>
-                  <li>
-                    <button
-                      onClick={() => setActiveModal("adsense-guarantee")}
-                      className="hover:text-amber-300 text-left transition-colors flex items-center gap-1"
-                    >
-                      <span>Transfer Guarantee</span>
-                      <ExternalLink className="w-2.5 h-2.5 text-amber-400" />
-                    </button>
-                  </li>
-                  <li className="pt-2">
-                    <Link
-                      href="/category/adsense-websites"
-                      className="inline-flex items-center gap-1 text-[11px] text-amber-400 hover:text-amber-300 font-medium transition-colors group"
-                    >
-                      <span>Browse AdSense Sites</span>
-                      <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-
-              {/* COLUMN 3: Digital Software & Gaming */}
-              <div className="space-y-3.5">
-                <div className="flex items-center gap-1.5 pb-1 border-b border-white/[0.05]">
-                  <Gamepad2 className="w-3.5 h-3.5 text-emerald-400" />
-                  <h5 className="text-white font-bold text-xs uppercase tracking-wider">
-                    Digital &amp; Gaming
-                  </h5>
-                </div>
-                <ul className="space-y-2.5 text-xs text-neutral-400">
-                  <li>
-                    <Link
-                      href="/category/software-licenses"
-                      className="group flex items-center justify-between hover:text-white transition-colors"
-                    >
-                      <span>Windows 11/10 Pro</span>
-                      <span className="text-[9px] px-1 py-0.5 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-mono">
-                        RETAIL
-                      </span>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/category/software-licenses"
-                      className="hover:text-white transition-colors block"
-                    >
-                      <span>IDM Lifetime Keys</span>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/category/game-digital-codes"
-                      className="group flex items-center justify-between hover:text-white transition-colors"
-                    >
-                      <span>Steam Gift Cards</span>
-                      <span className="text-[9px] px-1 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono">
-                        INSTANT
-                      </span>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/category/ai-tools"
-                      className="group flex items-center justify-between hover:text-white transition-colors"
-                    >
-                      <span>AI Pro Accounts</span>
-                      <span className="text-[9px] px-1 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20 font-mono">
-                        AI
-                      </span>
-                    </Link>
-                  </li>
-                  <li className="pt-2">
-                    <Link
-                      href="/#catalog"
-                      className="inline-flex items-center gap-1 text-[11px] text-emerald-400 hover:text-emerald-300 font-medium transition-colors group"
-                    >
-                      <span>All Digital Goods</span>
-                      <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-
-              {/* COLUMN 4: Escrow, Vault & Support */}
-              <div className="space-y-3.5">
-                <div className="flex items-center gap-1.5 pb-1 border-b border-white/[0.05]">
-                  <ShieldCheck className="w-3.5 h-3.5 text-purple-400" />
-                  <h5 className="text-white font-bold text-xs uppercase tracking-wider">
-                    Escrow &amp; Vault
-                  </h5>
-                </div>
-                <ul className="space-y-2.5 text-xs text-neutral-400">
-                  <li>
-                    <Link
-                      href="/orders"
-                      className="group flex items-center justify-between hover:text-white transition-colors"
-                    >
-                      <span>Customer Order Vault</span>
-                      <span className="text-[9px] px-1 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20 font-mono">
-                        TRACK
-                      </span>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/orders"
-                      className="hover:text-white transition-colors block"
-                    >
-                      <span>Live Delivery Chat</span>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/support"
-                      className="hover:text-white transition-colors block"
-                    >
-                      <span>24/7 Support Desk</span>
-                    </Link>
-                  </li>
-                  <li>
-                    <button
-                      onClick={() => setActiveModal("privacy")}
-                      className="hover:text-neutral-200 text-left transition-colors flex items-center gap-1"
-                    >
-                      <span>Data Purge Policy</span>
-                      <ExternalLink className="w-2.5 h-2.5 text-neutral-400" />
-                    </button>
-                  </li>
-                  <li className="pt-2">
-                    <Link
-                      href="/support"
-                      className="inline-flex items-center gap-1 text-[11px] text-purple-400 hover:text-purple-300 font-medium transition-colors group"
-                    >
-                      <span>Help &amp; SLA Guide</span>
-                      <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-
             </div>
 
           </div>
