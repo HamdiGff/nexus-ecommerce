@@ -251,15 +251,25 @@ export default function ProductDetailClient({ product: initialProduct }: Product
   return (
     <div className="min-h-screen bg-[#090a0f] text-neutral-100 py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Breadcrumb Navigation */}
-        <div className="flex items-center justify-between mb-8 pb-4 border-b border-white/[0.08]">
-          <Link
-            href="/#catalog"
-            className="inline-flex items-center gap-2 text-xs font-semibold text-neutral-400 hover:text-white transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Back to Digital Marketplace</span>
-          </Link>
+        {/* Semantic Breadcrumbs Navigation Bar */}
+        <nav aria-label="Breadcrumb" className="flex items-center justify-between mb-8 pb-4 border-b border-white/[0.08] text-xs">
+          <ol className="flex items-center gap-2 text-neutral-400 overflow-x-auto">
+            <li>
+              <Link href="/" className="hover:text-white transition-colors">
+                Home
+              </Link>
+            </li>
+            <li>/</li>
+            <li>
+              <Link href={`/category/${product.category || "wordpress"}`} className="hover:text-white transition-colors capitalize">
+                {product.category?.replace(/-/g, " ") || "WordPress"}
+              </Link>
+            </li>
+            <li>/</li>
+            <li className="text-white font-medium truncate max-w-[220px] sm:max-w-md" aria-current="page">
+              {product.title}
+            </li>
+          </ol>
           <button
             onClick={() => {
               if (navigator.share) {
@@ -269,12 +279,12 @@ export default function ProductDetailClient({ product: initialProduct }: Product
                 alert("Product link copied to clipboard!");
               }
             }}
-            className="p-2 text-neutral-400 hover:text-white rounded-xl hover:bg-white/[0.06] transition-colors"
+            className="p-2 text-neutral-400 hover:text-white rounded-xl hover:bg-white/[0.06] transition-colors shrink-0"
             title="Share Product"
           >
             <Share2 className="w-4 h-4" />
           </button>
-        </div>
+        </nav>
 
         {/* Product Main Showcase Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
@@ -312,7 +322,7 @@ export default function ProductDetailClient({ product: initialProduct }: Product
                   >
                     <img
                       src={img}
-                      alt=""
+                      alt={`${product.title} preview screenshot ${idx + 1}`}
                       onError={(e) => {
                         const target = e.currentTarget;
                         if (!target.src.includes("rank-math-schema-rich-snippets")) {

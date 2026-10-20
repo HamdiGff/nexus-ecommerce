@@ -1,29 +1,45 @@
 import { MetadataRoute } from "next";
-import { MOCK_DIGITAL_PRODUCTS } from "@/data/mockProducts";
+import { MOCK_DIGITAL_PRODUCTS, INITIAL_CATEGORIES } from "@/data/mockProducts";
+import { getSiteUrl } from "@/lib/siteConfig";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  const baseUrl = getSiteUrl();
+  const buildDate = new Date("2026-10-20T00:00:00Z");
 
-  const productUrls = MOCK_DIGITAL_PRODUCTS.map((product) => ({
+  const productUrls: MetadataRoute.Sitemap = MOCK_DIGITAL_PRODUCTS.map((product) => ({
     url: `${baseUrl}/products/${product.slug}`,
-    lastModified: new Date(),
-    changeFrequency: "daily" as const,
-    priority: 0.8,
+    lastModified: buildDate,
+    changeFrequency: "daily",
+    priority: 0.9,
   }));
 
-  return [
+  const categoryUrls: MetadataRoute.Sitemap = INITIAL_CATEGORIES.map((category) => ({
+    url: `${baseUrl}/category/${category.slug}`,
+    lastModified: buildDate,
+    changeFrequency: "daily",
+    priority: 0.85,
+  }));
+
+  const staticUrls: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
-      lastModified: new Date(),
-      changeFrequency: "always" as const,
+      lastModified: buildDate,
+      changeFrequency: "always",
       priority: 1.0,
     },
     {
-      url: `${baseUrl}/checkout`,
-      lastModified: new Date(),
-      changeFrequency: "monthly" as const,
-      priority: 0.5,
+      url: `${baseUrl}/support`,
+      lastModified: buildDate,
+      changeFrequency: "weekly",
+      priority: 0.7,
     },
-    ...productUrls,
+    {
+      url: `${baseUrl}/orders`,
+      lastModified: buildDate,
+      changeFrequency: "daily",
+      priority: 0.6,
+    },
   ];
+
+  return [...staticUrls, ...categoryUrls, ...productUrls];
 }

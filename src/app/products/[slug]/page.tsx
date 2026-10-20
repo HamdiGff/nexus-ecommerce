@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { MOCK_DIGITAL_PRODUCTS } from "@/data/mockProducts";
 import ProductDetailClient from "@/components/product/ProductDetailClient";
 import JsonLd from "@/components/seo/JsonLd";
+import { getSiteUrl, SITE_CONFIG } from "@/lib/siteConfig";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -63,21 +64,38 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const title = `${product.title} - Official License & Instant Delivery`;
   const description = `${product.shortDescription || product.description.slice(0, 160)} Instant delivery, secure checkout with Card, PayPal, or Crypto.`;
 
+  const siteUrl = getSiteUrl();
+  const canonicalUrl = `${siteUrl}/products/${product.slug}`;
+  const imageUrl = product.images?.[0]?.startsWith("http")
+    ? product.images[0]
+    : `${siteUrl}${product.images?.[0] || "/og-image.png"}`;
+
   return {
-    title: `${title} | NEXUS`,
+    title,
     description,
     keywords: product.seoKeywords.join(", "),
+    alternates: {
+      canonical: canonicalUrl,
+    },
     openGraph: {
       title,
       description,
-      images: [{ url: product.images[0] }],
+      url: canonicalUrl,
+      images: [
+        {
+          url: imageUrl,
+          alt: `${product.title} - Official Digital License`,
+        },
+      ],
       type: "website",
+      siteName: SITE_CONFIG.name,
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: [product.images[0]],
+      creator: SITE_CONFIG.social.twitter,
+      images: [imageUrl],
     },
   };
 }
@@ -105,10 +123,11 @@ export default async function ProductDetailPage({ params }: PageProps) {
   };
 
   const resolved = product || fallbackProduct;
+  const siteUrl = getSiteUrl();
 
   return (
     <>
-      <JsonLd product={resolved} url={`http://localhost:3000/products/${resolved.slug}`} />
+      <JsonLd product={resolved} url={`${siteUrl}/products/${resolved.slug}`} />
       <ProductDetailClient product={resolved} />
     </>
   );

@@ -8,6 +8,9 @@ import QuickAddFeedbackEngine from "@/components/cart/QuickAddFeedbackEngine";
 import LiveChatWidget from "@/components/chat/LiveChatWidget";
 import FlashSaleBanner from "@/components/layout/FlashSaleBanner";
 
+import GlobalJsonLd from "@/components/seo/GlobalJsonLd";
+import { getSiteUrl, SITE_CONFIG } from "@/lib/siteConfig";
+
 const sans = Plus_Jakarta_Sans({
   subsets: ["latin"],
   variable: "--font-sans",
@@ -22,24 +25,19 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(getSiteUrl()),
   title: {
-    default: "NEXUS Digital | WordPress Licenses, Software Keys & Turnkey Websites",
-    template: "%s | NEXUS Digital",
+    default: `${SITE_CONFIG.name} | WordPress Licenses, Software Keys & Turnkey Websites`,
+    template: `%s | ${SITE_CONFIG.shortName}`,
   },
-  description:
-    "The premier digital goods marketplace. Buy Rank Math Pro, WP Rocket, IDM lifetime keys, Steam cards, and Google AdSense approved websites with instant delivery.",
-  keywords: [
-    "rank math pro license",
-    "wp rocket cheap",
-    "astra pro theme",
-    "idm lifetime serial key",
-    "buy steam gift card crypto",
-    "adsense approved website for sale",
-    "instant digital delivery",
-  ],
-  authors: [{ name: "NEXUS Digital Commerce" }],
-  creator: "NEXUS Digital",
-  publisher: "NEXUS Digital",
+  description: SITE_CONFIG.description,
+  keywords: SITE_CONFIG.keywords,
+  authors: [{ name: SITE_CONFIG.name }],
+  creator: SITE_CONFIG.name,
+  publisher: SITE_CONFIG.name,
+  alternates: {
+    canonical: "./",
+  },
   robots: {
     index: true,
     follow: true,
@@ -54,10 +52,25 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    siteName: "NEXUS Digital Marketplace",
-    title: "NEXUS Digital | WordPress Licenses, Software Keys & Turnkey Websites",
-    description:
-      "Official WordPress agency licenses, instant software activation codes, and turnkey AdSense monetized websites.",
+    url: getSiteUrl(),
+    siteName: SITE_CONFIG.name,
+    title: `${SITE_CONFIG.name} | WordPress Licenses, Software Keys & Turnkey Websites`,
+    description: SITE_CONFIG.description,
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: `${SITE_CONFIG.name} - Premier Digital Goods Marketplace`,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${SITE_CONFIG.name} | WordPress Licenses & Turnkey Websites`,
+    description: SITE_CONFIG.description,
+    creator: SITE_CONFIG.social.twitter,
+    images: ["/og-image.png"],
   },
 };
 
@@ -71,6 +84,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${sans.variable} ${mono.variable} h-full antialiased scroll-smooth dark`}>
       <body className="min-h-full flex flex-col bg-[#090a0f] text-neutral-100 font-sans selection:bg-blue-600 selection:text-white">
+        <GlobalJsonLd />
         <Suspense fallback={null}>
           <FlashSaleBanner />
         </Suspense>
