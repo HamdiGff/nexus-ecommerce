@@ -444,52 +444,52 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Glassmorphic Trust & Performance Stats Capsule */}
-          <div className="mt-12 rounded-2xl bg-gradient-to-b from-[#131624]/90 via-[#0e1019]/95 to-[#0a0c13]/98 border border-white/[0.08] backdrop-blur-xl p-5 sm:p-6 shadow-2xl shadow-black/60">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-0 lg:divide-x divide-white/[0.08] text-center">
+          {/* Glassmorphic Trust & Performance Stats Capsule (Mobile Optimized) */}
+          <div className="mt-8 sm:mt-12 rounded-2xl bg-gradient-to-b from-[#131624]/90 via-[#0e1019]/95 to-[#0a0c13]/98 border border-white/[0.08] backdrop-blur-xl p-3.5 sm:p-5 sm:p-6 shadow-2xl shadow-black/60">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-6 lg:gap-0 lg:divide-x divide-white/[0.08] text-center">
               <div className="lg:px-4 flex flex-col items-center">
-                <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 mb-2 border border-emerald-500/20">
-                  <ShieldCheck className="w-5 h-5" />
+                <div className="p-1.5 sm:p-2 rounded-xl bg-emerald-500/10 text-emerald-400 mb-1.5 sm:mb-2 border border-emerald-500/20">
+                  <ShieldCheck className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
-                <div className="font-mono text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                <div className="font-mono text-xl sm:text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
                   12,850+
                 </div>
-                <span className="text-xs font-semibold text-neutral-200 mt-1">Verified Digital Licenses</span>
-                <span className="text-[10px] text-neutral-500 mt-0.5">100% Zero-Revocation SLA</span>
+                <span className="text-[11px] sm:text-xs font-semibold text-neutral-200 mt-0.5 sm:mt-1 truncate max-w-full">Verified Licenses</span>
+                <span className="text-[9.5px] sm:text-[10px] text-neutral-500 mt-0.5 hidden xs:inline-block">100% Zero-Revocation</span>
               </div>
 
               <div className="lg:px-4 flex flex-col items-center">
-                <div className="p-2 rounded-xl bg-amber-500/10 text-amber-400 mb-2 border border-amber-500/20">
-                  <Star className="w-5 h-5 fill-amber-400" />
+                <div className="p-1.5 sm:p-2 rounded-xl bg-amber-500/10 text-amber-400 mb-1.5 sm:mb-2 border border-amber-500/20">
+                  <Star className="w-4 h-4 sm:w-5 sm:h-5 fill-amber-400" />
                 </div>
-                <div className="font-mono text-2xl sm:text-3xl font-extrabold text-white tracking-tight flex items-center gap-1">
+                <div className="font-mono text-xl sm:text-2xl sm:text-3xl font-extrabold text-white tracking-tight flex items-center gap-1">
                   <span>4.9</span>
-                  <span className="text-amber-400 text-lg">★</span>
+                  <span className="text-amber-400 text-base sm:text-lg">★</span>
                 </div>
-                <span className="text-xs font-semibold text-neutral-200 mt-1">1,400+ Verified Reviews</span>
-                <span className="text-[10px] text-neutral-500 mt-0.5">TrustScore 99.4% Positive</span>
+                <span className="text-[11px] sm:text-xs font-semibold text-neutral-200 mt-0.5 sm:mt-1 truncate max-w-full">1,400+ Reviews</span>
+                <span className="text-[9.5px] sm:text-[10px] text-neutral-500 mt-0.5 hidden xs:inline-block">99.4% Positive</span>
               </div>
 
               <div className="lg:px-4 flex flex-col items-center">
-                <div className="p-2 rounded-xl bg-blue-500/10 text-blue-400 mb-2 border border-blue-500/20">
-                  <Zap className="w-5 h-5 fill-blue-400" />
+                <div className="p-1.5 sm:p-2 rounded-xl bg-blue-500/10 text-blue-400 mb-1.5 sm:mb-2 border border-blue-500/20">
+                  <Zap className="w-4 h-4 sm:w-5 sm:h-5 fill-blue-400" />
                 </div>
-                <div className="font-mono text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                <div className="font-mono text-xl sm:text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
                   &lt; 60s
                 </div>
-                <span className="text-xs font-semibold text-neutral-200 mt-1">Instant Key Dispatch</span>
-                <span className="text-[10px] text-neutral-500 mt-0.5">Automated Screen Reveal</span>
+                <span className="text-[11px] sm:text-xs font-semibold text-neutral-200 mt-0.5 sm:mt-1 truncate max-w-full">Instant Dispatch</span>
+                <span className="text-[9.5px] sm:text-[10px] text-neutral-500 mt-0.5 hidden xs:inline-block">Auto Screen Reveal</span>
               </div>
 
               <div className="lg:px-4 flex flex-col items-center">
-                <div className="p-2 rounded-xl bg-purple-500/10 text-purple-400 mb-2 border border-purple-500/20">
-                  <Clock className="w-5 h-5" />
+                <div className="p-1.5 sm:p-2 rounded-xl bg-purple-500/10 text-purple-400 mb-1.5 sm:mb-2 border border-purple-500/20">
+                  <Clock className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
-                <div className="font-mono text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                <div className="font-mono text-xl sm:text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
                   24 / 7
                 </div>
-                <span className="text-xs font-semibold text-neutral-200 mt-1">Live Technician SLA</span>
-                <span className="text-[10px] text-neutral-500 mt-0.5">WhatsApp &amp; Live Chat Desk</span>
+                <span className="text-[11px] sm:text-xs font-semibold text-neutral-200 mt-0.5 sm:mt-1 truncate max-w-full">Technician SLA</span>
+                <span className="text-[9.5px] sm:text-[10px] text-neutral-500 mt-0.5 hidden xs:inline-block">Live Desk Support</span>
               </div>
             </div>
           </div>

@@ -282,35 +282,35 @@ export default function CheckoutPage() {
   // ORDER COMPLETE CONFIRMATION VIEW
   if (orderComplete) {
     return (
-      <div className="min-h-screen bg-[#090a0f] text-neutral-100 py-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-3xl mx-auto bg-[#10121a] rounded-3xl border border-white/[0.1] p-8 sm:p-12 shadow-2xl">
+      <div className="min-h-screen bg-[#090a0f] text-neutral-100 py-8 sm:py-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-3xl mx-auto bg-[#10121a] rounded-2xl sm:rounded-3xl border border-white/[0.1] p-5 sm:p-10 shadow-2xl">
           <div className="text-center">
-            <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-5">
-              <CheckCircle2 className="w-10 h-10" />
+            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-5 shadow-lg shadow-emerald-500/10">
+              <CheckCircle2 className="w-8 h-8 sm:w-10 sm:h-10" />
             </div>
 
-            <span className="text-xs font-bold tracking-widest text-emerald-700 uppercase bg-emerald-50 px-3.5 py-1 rounded-full border border-emerald-200">
+            <span className="text-[11px] sm:text-xs font-bold tracking-widest text-emerald-300 uppercase bg-emerald-500/10 px-3.5 py-1 rounded-full border border-emerald-500/20">
               Payment Confirmed • Digital Order Active
             </span>
 
-            <h1 className="text-3xl font-extrabold text-neutral-950 font-serif mt-4">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-white mt-4">
               Thank you for your purchase!
             </h1>
-            <p className="text-neutral-600 text-sm mt-2 max-w-lg mx-auto">
+            <p className="text-neutral-400 text-xs sm:text-sm mt-2 max-w-lg mx-auto leading-relaxed">
               Your order confirmation and activation details have been dispatched to{" "}
-              <strong className="text-neutral-900">{orderComplete.customer.email}</strong>.
+              <strong className="text-white">{orderComplete.customer.email}</strong>.
             </p>
           </div>
 
           {/* INSTANT LICENSE CODES SECTION */}
           {Object.keys(orderComplete.generatedLicenseKeys).length > 0 && (
-            <div className="mt-8 p-6 rounded-2xl bg-emerald-950 text-white border border-emerald-800 space-y-4">
+            <div className="mt-6 sm:mt-8 p-4 sm:p-6 rounded-2xl bg-emerald-950/60 text-white border border-emerald-800/80 space-y-4">
               <div className="flex items-center justify-between pb-3 border-b border-emerald-800/80">
                 <span className="text-xs font-bold uppercase tracking-wider text-emerald-300 flex items-center gap-1.5">
-                  <Zap className="w-4 h-4 fill-emerald-300 text-emerald-300" />
-                  Your Instant License Keys & Activation Codes
+                  <Zap className="w-4 h-4 fill-emerald-300 text-emerald-300 shrink-0" />
+                  <span>Instant License Keys &amp; Codes</span>
                 </span>
-                <span className="text-[11px] bg-emerald-900 text-emerald-200 px-2 py-0.5 rounded-md font-mono">
+                <span className="text-[10px] sm:text-[11px] bg-emerald-900/80 text-emerald-200 px-2 py-0.5 rounded-md font-mono border border-emerald-700/50">
                   Official Retail Codes
                 </span>
               </div>
@@ -324,17 +324,17 @@ export default function CheckoutPage() {
                     return (
                       <div
                         key={item.id}
-                        className="p-4 rounded-xl bg-neutral-950/80 border border-emerald-800/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                        className="p-3.5 sm:p-4 rounded-xl bg-neutral-950/80 border border-emerald-800/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
                       >
-                        <div>
-                          <p className="text-xs font-semibold text-neutral-200">{item.title}</p>
-                          <p className="font-mono text-base font-extrabold text-emerald-400 mt-0.5 select-all tracking-wider">
+                        <div className="min-w-0">
+                          <p className="text-xs font-semibold text-neutral-200 truncate">{item.title}</p>
+                          <p className="font-mono text-sm sm:text-base font-extrabold text-emerald-400 mt-0.5 select-all tracking-wider break-all">
                             {code}
                           </p>
                         </div>
                         <button
                           onClick={() => handleCopy(code, item.id)}
-                          className="px-3.5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-colors shrink-0"
+                          className="w-full sm:w-auto px-3.5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-colors shrink-0 cursor-pointer"
                         >
                           {isCopied ? (
                             <>
@@ -354,31 +354,31 @@ export default function CheckoutPage() {
               </div>
 
               <p className="text-[11px] text-emerald-200/80 pt-1">
-                📌 <em>To activate: Open the application or Steam client, paste your license key in the registration dialog, and submit.</em>
+                📌 <em>To activate: Open the application or dashboard, paste your license key in the registration dialog, and submit.</em>
               </p>
             </div>
           )}
 
           {/* WORDPRESS SETUP QUEUE STATUS */}
           {orderComplete.items.some((i: CartItem) => i.deliveryType === "SERVICE_SETUP") && (
-            <div className="mt-6 p-6 rounded-2xl bg-blue-50 border border-blue-200 space-y-3 text-left">
-              <div className="flex items-center gap-2 text-blue-900 font-bold text-sm">
-                <Wrench className="w-4 h-4 text-blue-600" />
+            <div className="mt-6 p-4 sm:p-6 rounded-2xl bg-blue-950/40 border border-blue-500/30 space-y-3 text-left">
+              <div className="flex items-center gap-2 text-blue-300 font-bold text-xs sm:text-sm">
+                <Wrench className="w-4 h-4 text-blue-400 shrink-0" />
                 <span>WordPress Activation Assigned to Installation Queue</span>
               </div>
-              <p className="text-xs text-blue-800 leading-relaxed">
+              <p className="text-xs text-neutral-300 leading-relaxed">
                 Our installation technician has received your temporary credentials and is activating the
                 official agency license on your specified site(s). 
               </p>
-              <div className="p-3 bg-white rounded-xl border border-blue-200 text-xs text-neutral-700 space-y-1 font-mono">
+              <div className="p-3 bg-black/40 rounded-xl border border-blue-500/20 text-xs text-neutral-300 space-y-1 font-mono">
                 {Object.entries(orderComplete.submissions).map(([itemId, creds]: any) => (
-                  <div key={itemId} className="flex justify-between">
-                    <span>Target URL: {creds.wpUrl}</span>
-                    <span className="text-blue-600 font-bold">Status: In Queue (30 - 45 min)</span>
+                  <div key={itemId} className="flex flex-col sm:flex-row justify-between gap-1">
+                    <span className="truncate">Target: {creds.wpUrl}</span>
+                    <span className="text-blue-400 font-bold">Status: In Queue (30 - 45 min)</span>
                   </div>
                 ))}
               </div>
-              <p className="text-[11px] text-blue-700">
+              <p className="text-[11px] text-blue-300/80">
                 🔒 Reminder: You will receive an email notice as soon as activation is complete, after which you can safely delete the temporary user.
               </p>
             </div>
@@ -386,36 +386,36 @@ export default function CheckoutPage() {
 
           {/* TURNKEY ASSET HANDOFF STATUS */}
           {orderComplete.items.some((i: CartItem) => i.deliveryType === "MANUAL_HANDOFF") && (
-            <div className="mt-6 p-6 rounded-2xl bg-purple-50 border border-purple-200 space-y-3 text-left">
-              <div className="flex items-center gap-2 text-purple-900 font-bold text-sm">
-                <Globe className="w-4 h-4 text-purple-600" />
-                <span>Turnkey Website & AdSense Account Transfer Initiated</span>
+            <div className="mt-6 p-4 sm:p-6 rounded-2xl bg-purple-950/40 border border-purple-500/30 space-y-3 text-left">
+              <div className="flex items-center gap-2 text-purple-300 font-bold text-xs sm:text-sm">
+                <Globe className="w-4 h-4 text-purple-400 shrink-0" />
+                <span>Turnkey Website &amp; AdSense Account Transfer Initiated</span>
               </div>
-              <p className="text-xs text-purple-800 leading-relaxed">
+              <p className="text-xs text-neutral-300 leading-relaxed">
                 Our transfer manager is preparing your domain authorization (EPP) push and dedicated Google account backup credentials. 
-                Handoff is guaranteed within <strong>2 to 6 hours</strong>.
+                Handoff is guaranteed within <strong className="text-white">2 to 6 hours</strong>.
               </p>
             </div>
           )}
 
           {/* Order Details Metadata Card */}
-          <div className="mt-6 p-6 bg-neutral-50 rounded-2xl border border-neutral-200 text-left space-y-3">
-            <div className="flex justify-between items-center pb-2 border-b border-neutral-200 text-xs">
-              <span className="text-neutral-500 font-medium">Order Number</span>
-              <span className="font-mono font-bold text-neutral-900">{orderComplete.orderId}</span>
+          <div className="mt-6 p-4 sm:p-6 bg-white/[0.03] rounded-2xl border border-white/10 text-left space-y-3">
+            <div className="flex justify-between items-center pb-2 border-b border-white/[0.08] text-xs">
+              <span className="text-neutral-400 font-medium">Order Number</span>
+              <span className="font-mono font-bold text-white">{orderComplete.orderId}</span>
             </div>
-            <div className="flex justify-between items-center pb-2 border-b border-neutral-200 text-xs">
-              <span className="text-neutral-500 font-medium">Payment Method</span>
-              <span className="font-semibold text-neutral-900">{orderComplete.paymentMethod}</span>
+            <div className="flex justify-between items-center pb-2 border-b border-white/[0.08] text-xs">
+              <span className="text-neutral-400 font-medium">Payment Method</span>
+              <span className="font-semibold text-neutral-200">{orderComplete.paymentMethod}</span>
             </div>
-            <div className="flex justify-between items-center pt-1 text-sm font-bold text-neutral-950">
+            <div className="flex justify-between items-center pt-1 text-sm font-bold text-white">
               <span>Total Paid</span>
-              <span className="font-mono">{formatPrice(orderComplete.total)}</span>
+              <span className="font-mono text-emerald-400">{formatPrice(orderComplete.total)}</span>
             </div>
           </div>
 
           {/* Action CTAs */}
-          <div className="mt-8 flex flex-col sm:flex-row flex-wrap gap-3 justify-center items-center">
+          <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row flex-wrap gap-3 justify-center items-center">
             <button
               onClick={() => {
                 const mapped = findOrderRecord(orderComplete.orderId);
@@ -423,7 +423,7 @@ export default function CheckoutPage() {
                   generateOrderPdf(mapped);
                 }
               }}
-              className="py-3 px-6 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm transition-all shadow-lg shadow-blue-600/20 text-center flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full sm:w-auto py-3 px-5 sm:px-6 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs sm:text-sm transition-all shadow-lg shadow-blue-600/20 text-center flex items-center justify-center gap-2 cursor-pointer"
             >
               <FileText className="w-4 h-4 text-white" />
               <span>Download Official PDF Invoice</span>
@@ -432,7 +432,7 @@ export default function CheckoutPage() {
             {orderComplete.items.length > 0 && (
               <Link
                 href={`/products/${orderComplete.items[0].slug || orderComplete.items[0].id}#reviews`}
-                className="py-3 px-6 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:brightness-110 text-white font-bold text-sm transition-all shadow-lg shadow-emerald-600/20 text-center flex items-center justify-center gap-2"
+                className="w-full sm:w-auto py-3 px-5 sm:px-6 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:brightness-110 text-white font-bold text-xs sm:text-sm transition-all shadow-lg shadow-emerald-600/20 text-center flex items-center justify-center gap-2"
               >
                 <CheckCircle2 className="w-4 h-4" />
                 <span>Write Verified Review Now</span>
@@ -441,16 +441,16 @@ export default function CheckoutPage() {
 
             <Link
               href={`/orders/${orderComplete.orderId}`}
-              className="py-3 px-6 rounded-xl bg-white/[0.08] hover:bg-white/[0.12] text-white border border-white/10 font-semibold text-sm transition-colors text-center"
+              className="w-full sm:w-auto py-3 px-5 sm:px-6 rounded-xl bg-white/[0.08] hover:bg-white/[0.12] text-white border border-white/10 font-semibold text-xs sm:text-sm transition-colors text-center"
             >
               Customer Order Vault
             </Link>
 
             <Link
               href="/"
-              className="py-3 px-6 rounded-xl bg-neutral-900 text-neutral-300 font-semibold text-sm hover:bg-neutral-800 transition-colors text-center"
+              className="w-full sm:w-auto py-3 px-5 sm:px-6 rounded-xl text-neutral-400 hover:text-white font-medium text-xs sm:text-sm transition-colors text-center"
             >
-              Back to Store
+              Return to Catalog
             </Link>
           </div>
         </div>
@@ -764,48 +764,48 @@ export default function CheckoutPage() {
                 Payment Method
               </h2>
 
-              {/* Payment Tabs */}
-              <div className="grid grid-cols-3 gap-3 mb-6">
+              {/* Payment Tabs (Responsive & Touch-Optimized) */}
+              <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-6">
                 <button
                   type="button"
                   onClick={() => setPaymentMethod("card")}
-                  className={`p-3.5 rounded-2xl border flex flex-col items-center justify-center gap-2 transition-all ${
+                  className={`p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl border flex flex-col items-center justify-center gap-1.5 sm:gap-2 transition-all cursor-pointer ${
                     paymentMethod === "card"
                       ? "border-neutral-950 bg-neutral-950 text-white shadow-sm"
                       : "border-neutral-200 text-neutral-700 hover:border-neutral-300 bg-neutral-50"
                   }`}
                 >
-                  <CreditCard className="w-5 h-5" />
-                  <span className="text-xs font-bold">Credit Card</span>
+                  <CreditCard className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <span className="text-[11px] sm:text-xs font-bold text-center">Credit Card</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setPaymentMethod("paypal")}
-                  className={`p-3.5 rounded-2xl border flex flex-col items-center justify-center gap-2 transition-all ${
+                  className={`p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl border flex flex-col items-center justify-center gap-1.5 sm:gap-2 transition-all cursor-pointer ${
                     paymentMethod === "paypal"
                       ? "border-neutral-950 bg-neutral-950 text-white shadow-sm"
                       : "border-neutral-200 text-neutral-700 hover:border-neutral-300 bg-neutral-50"
                   }`}
                 >
-                  <div className="font-extrabold italic text-sm tracking-tighter">
+                  <div className="font-extrabold italic text-xs sm:text-sm tracking-tighter">
                     <span className="text-cyan-400">Pay</span>
                     <span className="text-blue-500">Pal</span>
                   </div>
-                  <span className="text-xs font-bold">PayPal</span>
+                  <span className="text-[11px] sm:text-xs font-bold">PayPal</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setPaymentMethod("crypto")}
-                  className={`p-3.5 rounded-2xl border flex flex-col items-center justify-center gap-2 transition-all ${
+                  className={`p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl border flex flex-col items-center justify-center gap-1.5 sm:gap-2 transition-all cursor-pointer ${
                     paymentMethod === "crypto"
                       ? "border-neutral-950 bg-neutral-950 text-white shadow-sm"
                       : "border-neutral-200 text-neutral-700 hover:border-neutral-300 bg-neutral-50"
                   }`}
                 >
-                  <Sparkles className="w-5 h-5 text-amber-400" />
-                  <span className="text-xs font-bold">Crypto (Web3)</span>
+                  <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" />
+                  <span className="text-[11px] sm:text-xs font-bold text-center">Crypto (Web3)</span>
                 </button>
               </div>
 

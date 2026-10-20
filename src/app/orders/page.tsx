@@ -437,8 +437,8 @@ export default function OrderLookupPage() {
 
   // ── Render ────────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-[#090a0f] text-neutral-100 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto space-y-8">
+    <div className="min-h-screen bg-[#090a0f] text-neutral-100 py-6 sm:py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8">
         {/* Back link */}
         <Link href="/" className="inline-flex items-center gap-2 text-xs font-semibold text-neutral-400 hover:text-white transition-colors">
           <ArrowLeft className="w-4 h-4" /> Back to Marketplace
@@ -446,10 +446,10 @@ export default function OrderLookupPage() {
 
         {/* Hero */}
         <div className="text-center space-y-3">
-          <div className="w-14 h-14 bg-gradient-to-tr from-blue-500/20 via-indigo-500/10 to-amber-500/20 border border-blue-500/30 rounded-2xl flex items-center justify-center mx-auto shadow-lg shadow-blue-500/10">
-            <Key className="w-7 h-7 text-blue-400" />
+          <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-tr from-blue-500/20 via-indigo-500/10 to-amber-500/20 border border-blue-500/30 rounded-2xl flex items-center justify-center mx-auto shadow-lg shadow-blue-500/10">
+            <Key className="w-6 h-6 sm:w-7 sm:h-7 text-blue-400" />
           </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+          <h1 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
             Customer Portal &amp; Digital Vault
           </h1>
           <p className="text-xs sm:text-sm text-neutral-400 max-w-xl mx-auto leading-relaxed">
@@ -458,13 +458,13 @@ export default function OrderLookupPage() {
 
           {/* Logged-in identity pill */}
           {user ? (
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-300">
-              <User className="w-3.5 h-3.5" />
-              Signed in as <strong className="text-white">{user.email}</strong>
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-300 max-w-full">
+              <User className="w-3.5 h-3.5 shrink-0" />
+              <span className="truncate">Signed in as <strong className="text-white">{user.email}</strong></span>
             </div>
           ) : (
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-xs text-amber-300">
-              <LogIn className="w-3.5 h-3.5" />
+              <LogIn className="w-3.5 h-3.5 shrink-0" />
               <span>
                 <Link href="/" className="text-amber-200 underline underline-offset-2">Sign in</Link> to auto-load your orders &amp; tickets
               </span>
@@ -474,9 +474,9 @@ export default function OrderLookupPage() {
 
         {/* Email fallback (only if not logged in) */}
         {!user && (
-          <div className="bg-[#10121a] rounded-2xl border border-white/[0.08] p-4 flex flex-col sm:flex-row gap-3 items-center">
+          <div className="bg-[#10121a] rounded-2xl border border-white/[0.08] p-3.5 sm:p-4 flex flex-col sm:flex-row gap-3 items-center">
             <MailCheck className="w-4 h-4 text-blue-400 shrink-0" />
-            <p className="text-xs text-neutral-400 flex-1">Enter the email you used at checkout to auto-load your orders and tickets:</p>
+            <p className="text-xs text-neutral-400 flex-1 text-center sm:text-left">Enter the email you used at checkout to auto-load your orders and tickets:</p>
             <div className="flex gap-2 w-full sm:w-auto">
               <input
                 type="email"
@@ -497,21 +497,24 @@ export default function OrderLookupPage() {
         )}
 
         {/* Tab switcher */}
-        <div className="flex justify-center">
-          <div className="bg-[#10121a] p-1.5 rounded-2xl border border-white/[0.08] inline-flex gap-2">
+        <div className="flex justify-center w-full">
+          <div className="bg-[#10121a] p-1.5 rounded-2xl border border-white/[0.08] grid grid-cols-2 sm:inline-flex gap-1.5 sm:gap-2 w-full sm:w-auto">
             <button
               type="button"
               onClick={() => setActiveTab("orders")}
-              className={`px-5 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 transition-all cursor-pointer ${
+              className={`px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 sm:gap-2 transition-all cursor-pointer ${
                 activeTab === "orders"
                   ? "bg-blue-600 text-white shadow-lg shadow-blue-600/30"
                   : "text-neutral-400 hover:text-white hover:bg-white/[0.04]"
               }`}
             >
-              <PackageCheck className="w-4 h-4" />
-              My Orders &amp; Licenses
+              <PackageCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+              <span>
+                <span className="inline sm:hidden">Orders</span>
+                <span className="hidden sm:inline">My Orders &amp; Licenses</span>
+              </span>
               {userOrders.length > 0 && (
-                <span className={`px-2 py-0.5 rounded-full text-[10px] ${activeTab === "orders" ? "bg-white/20" : "bg-neutral-800 text-neutral-300"}`}>
+                <span className={`px-1.5 py-0.2 sm:px-2 sm:py-0.5 rounded-full text-[10px] ${activeTab === "orders" ? "bg-white/20" : "bg-neutral-800 text-neutral-300"}`}>
                   {userOrders.length}
                 </span>
               )}
@@ -520,16 +523,19 @@ export default function OrderLookupPage() {
             <button
               type="button"
               onClick={() => setActiveTab("tickets")}
-              className={`px-5 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 transition-all cursor-pointer ${
+              className={`px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 sm:gap-2 transition-all cursor-pointer ${
                 activeTab === "tickets"
                   ? "bg-blue-600 text-white shadow-lg shadow-blue-600/30"
                   : "text-neutral-400 hover:text-white hover:bg-white/[0.04]"
               }`}
             >
-              <Ticket className="w-4 h-4" />
-              Support Tickets
+              <Ticket className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+              <span>
+                <span className="inline sm:hidden">Tickets</span>
+                <span className="hidden sm:inline">Support Tickets</span>
+              </span>
               {tickets.length > 0 && (
-                <span className={`px-2 py-0.5 rounded-full text-[10px] ${activeTab === "tickets" ? "bg-white/20" : "bg-neutral-800 text-neutral-300"}`}>
+                <span className={`px-1.5 py-0.2 sm:px-2 sm:py-0.5 rounded-full text-[10px] ${activeTab === "tickets" ? "bg-white/20" : "bg-neutral-800 text-neutral-300"}`}>
                   {tickets.length}
                 </span>
               )}

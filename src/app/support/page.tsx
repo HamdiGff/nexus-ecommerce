@@ -291,22 +291,23 @@ export default function SupportPage() {
         </Link>
 
         {/* Tab switcher: Open Ticket vs Track Ticket */}
-        <div className="flex justify-center">
-          <div className="bg-[#10121a] p-1.5 rounded-2xl border border-white/[0.08] inline-flex gap-2">
+        <div className="flex justify-center w-full">
+          <div className="bg-[#10121a] p-1.5 rounded-2xl border border-white/[0.08] flex sm:inline-flex w-full sm:w-auto gap-1.5 sm:gap-2">
             <button
               type="button"
               onClick={() => {
                 setActiveTab("create");
                 setActiveTicket(null);
               }}
-              className={`px-5 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 transition-all cursor-pointer ${
+              className={`flex-1 sm:flex-none px-3.5 sm:px-5 py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 sm:gap-2 transition-all cursor-pointer ${
                 activeTab === "create" && !activeTicket
                   ? "bg-blue-600 text-white shadow-lg shadow-blue-600/30"
                   : "text-neutral-400 hover:text-white hover:bg-white/[0.04]"
               }`}
             >
-              <MessageSquare className="w-4 h-4" />
-              <span>Open Support Ticket</span>
+              <MessageSquare className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <span className="hidden sm:inline">Open Support Ticket</span>
+              <span className="sm:hidden">Open Ticket</span>
             </button>
 
             <button
@@ -315,14 +316,15 @@ export default function SupportPage() {
                 setActiveTab("track");
                 setActiveTicket(null);
               }}
-              className={`px-5 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 transition-all cursor-pointer ${
+              className={`flex-1 sm:flex-none px-3.5 sm:px-5 py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 sm:gap-2 transition-all cursor-pointer ${
                 activeTab === "track" || activeTicket
                   ? "bg-blue-600 text-white shadow-lg shadow-blue-600/30"
                   : "text-neutral-400 hover:text-white hover:bg-white/[0.04]"
               }`}
             >
-              <Ticket className="w-4 h-4" />
-              <span>Track Ticket Status & Replies</span>
+              <Ticket className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <span className="hidden sm:inline">Track Ticket Status &amp; Replies</span>
+              <span className="sm:hidden">Track Status</span>
             </button>
           </div>
         </div>
@@ -405,18 +407,18 @@ export default function SupportPage() {
 
             {/* Reply Input Box */}
             {activeTicket.status !== "CLOSED" ? (
-              <form onSubmit={handleSendReply} className="p-4 sm:p-5 bg-[#10121a] border-t border-white/[0.08] flex gap-2">
+              <form onSubmit={handleSendReply} className="p-3.5 sm:p-5 bg-[#10121a] border-t border-white/[0.08] flex flex-col sm:flex-row gap-2">
                 <input
                   type="text"
                   placeholder="Reply directly to NEXUS technical support..."
                   value={ticketReply}
                   onChange={(e) => setTicketReply(e.target.value)}
-                  className="flex-1 px-4 py-3 rounded-xl border border-white/10 bg-white/[0.04] text-xs text-white placeholder-neutral-500 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
+                  className="flex-1 px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-xl border border-white/10 bg-white/[0.04] text-xs text-white placeholder-neutral-500 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
                 />
                 <button
                   type="submit"
                   disabled={isSendingReply || !ticketReply.trim()}
-                  className="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-bold text-xs flex items-center gap-2 transition-all shadow-md cursor-pointer shrink-0"
+                  className="px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-md cursor-pointer shrink-0"
                 >
                   <Send className="w-3.5 h-3.5" />
                   <span>{isSendingReply ? "Sending..." : "Send Reply"}</span>

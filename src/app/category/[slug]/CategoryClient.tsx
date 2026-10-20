@@ -111,8 +111,8 @@ export default function CategoryClient({ slug }: { slug: string }) {
   const otherCategories = categories.filter((c) => c.slug !== activeCategory.slug);
 
   return (
-    <div className="min-h-screen bg-[#090a0f] text-neutral-100 py-10 selection:bg-blue-600 selection:text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+    <div className="min-h-screen bg-[#090a0f] text-neutral-100 py-6 sm:py-10 selection:bg-blue-600 selection:text-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 sm:space-y-8">
         {/* Breadcrumb Navigation */}
         <div className="flex items-center gap-2 text-xs text-neutral-400">
           <Link href="/" className="hover:text-white transition-colors">
@@ -127,15 +127,15 @@ export default function CategoryClient({ slug }: { slug: string }) {
         </div>
 
         {/* Category Hero Banner */}
-        <div className="relative rounded-3xl p-6 sm:p-8 bg-gradient-to-b from-[#131624]/90 via-[#0e1019]/95 to-[#090b12]/98 border border-white/[0.08] backdrop-blur-xl overflow-hidden shadow-2xl">
+        <div className="relative rounded-2xl sm:rounded-3xl p-4 sm:p-8 bg-gradient-to-b from-[#131624]/90 via-[#0e1019]/95 to-[#090b12]/98 border border-white/[0.08] backdrop-blur-xl overflow-hidden shadow-2xl">
           {/* Subtle Glows */}
           <div className="absolute top-0 right-10 w-96 h-96 bg-blue-600/10 blur-[100px] pointer-events-none -z-10" />
           <div className="absolute bottom-0 left-10 w-80 h-80 bg-purple-600/10 blur-[100px] pointer-events-none -z-10" />
 
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div className="space-y-3 max-w-2xl">
+            <div className="space-y-2.5 sm:space-y-3 max-w-2xl">
               <div className="flex items-center gap-2.5">
-                <div className="p-2.5 rounded-2xl bg-white/[0.05] border border-white/10 shrink-0">
+                <div className="p-2 sm:p-2.5 rounded-2xl bg-white/[0.05] border border-white/10 shrink-0">
                   {getCategoryIcon(activeCategory.iconName)}
                 </div>
                 {activeCategory.badge && (
@@ -155,12 +155,12 @@ export default function CategoryClient({ slug }: { slug: string }) {
             </div>
 
             {/* Quick Metrics Capsule */}
-            <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/[0.06] flex items-center gap-6 shrink-0">
+            <div className="p-3 sm:p-4 rounded-2xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-around sm:justify-start gap-4 sm:gap-6 shrink-0">
               <div>
                 <span className="text-[10px] font-mono text-neutral-400 block uppercase">
                   Products Available
                 </span>
-                <span className="text-2xl font-extrabold text-white font-mono">
+                <span className="text-xl sm:text-2xl font-extrabold text-white font-mono">
                   {categoryProducts.length}
                 </span>
               </div>
@@ -169,7 +169,7 @@ export default function CategoryClient({ slug }: { slug: string }) {
                 <span className="text-[10px] font-mono text-neutral-400 block uppercase">
                   Subcategories
                 </span>
-                <span className="text-2xl font-extrabold text-blue-400 font-mono">
+                <span className="text-xl sm:text-2xl font-extrabold text-blue-400 font-mono">
                   {activeCategory.subcategories.length}
                 </span>
               </div>
@@ -178,7 +178,7 @@ export default function CategoryClient({ slug }: { slug: string }) {
 
           {/* Subcategory Navigation Pills */}
           {activeCategory.subcategories.length > 0 && (
-            <div className="mt-6 pt-5 border-t border-white/[0.08] flex items-center gap-2 overflow-x-auto scrollbar-none">
+            <div className="mt-4 sm:mt-6 pt-3 sm:pt-5 border-t border-white/[0.08] flex items-center gap-2 overflow-x-auto scrollbar-none">
               <button
                 onClick={() => setSelectedSubcategory("all")}
                 className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${

@@ -249,10 +249,10 @@ export default function ProductDetailClient({ product: initialProduct }: Product
   };
 
   return (
-    <div className="min-h-screen bg-[#090a0f] text-neutral-100 py-12">
+    <div className="min-h-screen bg-[#090a0f] text-neutral-100 py-6 sm:py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Semantic Breadcrumbs Navigation Bar */}
-        <nav aria-label="Breadcrumb" className="flex items-center justify-between mb-8 pb-4 border-b border-white/[0.08] text-xs">
+        <nav aria-label="Breadcrumb" className="flex items-center justify-between mb-4 sm:mb-8 pb-3 sm:pb-4 border-b border-white/[0.08] text-xs">
           <ol className="flex items-center gap-2 text-neutral-400 overflow-x-auto">
             <li>
               <Link href="/" className="hover:text-white transition-colors">
@@ -266,7 +266,7 @@ export default function ProductDetailClient({ product: initialProduct }: Product
               </Link>
             </li>
             <li>/</li>
-            <li className="text-white font-medium truncate max-w-[220px] sm:max-w-md" aria-current="page">
+            <li className="text-white font-medium truncate max-w-[160px] xs:max-w-[220px] sm:max-w-md" aria-current="page">
               {product.title}
             </li>
           </ol>
@@ -287,7 +287,7 @@ export default function ProductDetailClient({ product: initialProduct }: Product
         </nav>
 
         {/* Product Main Showcase Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12">
           {/* Media Column */}
           <div className="lg:col-span-7 space-y-4">
             <div className="relative aspect-video bg-[#10121a] rounded-3xl overflow-hidden border border-white/[0.1] shadow-2xl">
@@ -337,9 +337,9 @@ export default function ProductDetailClient({ product: initialProduct }: Product
             )}
 
             {/* Transferred to Left Column: Overview Description & Included Features Card */}
-            <div className="pt-4 space-y-6">
+            <div className="pt-4 space-y-4 sm:space-y-6">
               {/* Product In-Depth Description */}
-              <div className="p-6 rounded-3xl bg-[#10121a]/90 border border-white/[0.08] backdrop-blur-xl space-y-3">
+              <div className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-[#10121a]/90 border border-white/[0.08] backdrop-blur-xl space-y-3">
                 <div className="flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-orange-400" />
                   <h3 className="font-bold text-xs uppercase tracking-wider text-white">
@@ -353,7 +353,7 @@ export default function ProductDetailClient({ product: initialProduct }: Product
 
               {/* Features Checklist */}
               {product.features && product.features.length > 0 && (
-                <div className="p-6 rounded-3xl bg-[#10121a]/90 border border-white/[0.08] backdrop-blur-xl space-y-4">
+                <div className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-[#10121a]/90 border border-white/[0.08] backdrop-blur-xl space-y-4">
                   <div className="flex items-center justify-between">
                     <h4 className="text-xs font-bold uppercase tracking-wider text-white flex items-center gap-2">
                       <CheckCircle2 className="w-4 h-4 text-emerald-400" />
@@ -386,8 +386,9 @@ export default function ProductDetailClient({ product: initialProduct }: Product
               <div className="flex items-center gap-2 flex-wrap">
                 {isAdSense ? (
                   <span className="text-[11px] font-bold px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1.5">
-                    <ShieldCheck className="w-3.5 h-3.5" />
-                    Turnkey Escrow Handshake • Master Gmail Included
+                    <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
+                    <span>Turnkey Escrow Handshake</span>
+                    <span className="hidden sm:inline">• Master Gmail Included</span>
                   </span>
                 ) : (
                   <>
@@ -807,12 +808,12 @@ export default function ProductDetailClient({ product: initialProduct }: Product
         </div>
 
         {/* 2. Seamless Bridge: How Activation & Delivery Works */}
-        <div className="mt-12 rounded-3xl p-6 sm:p-8 bg-gradient-to-r from-neutral-900/80 via-[#10121a] to-neutral-900/80 border border-white/[0.08] shadow-2xl relative overflow-hidden">
+        <div className="mt-8 sm:mt-12 rounded-2xl sm:rounded-3xl p-4 sm:p-8 bg-gradient-to-r from-neutral-900/80 via-[#10121a] to-neutral-900/80 border border-white/[0.08] shadow-2xl relative overflow-hidden">
           <div className="absolute top-0 right-1/4 w-72 h-72 bg-blue-500/5 blur-[100px] pointer-events-none -z-10" />
 
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-white/[0.08]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 sm:pb-6 border-b border-white/[0.08]">
             <div className="flex items-center gap-3">
-              <div className="p-3 rounded-2xl bg-gradient-to-br from-blue-500/10 to-indigo-500/10 text-blue-400 border border-blue-500/20">
+              <div className="p-2.5 sm:p-3 rounded-2xl bg-gradient-to-br from-blue-500/10 to-indigo-500/10 text-blue-400 border border-blue-500/20">
                 {product.deliveryType === "SERVICE_SETUP" && <Wrench className="w-5 h-5" />}
                 {product.deliveryType === "INSTANT_CODE" && <Zap className="w-5 h-5 text-emerald-400" />}
                 {product.deliveryType === "MANUAL_HANDOFF" && <Globe className="w-5 h-5 text-purple-400" />}

@@ -473,10 +473,11 @@ Thank you for choosing NEXUS Digital Marketplace!
             <button
               onClick={handleDownloadPdf}
               disabled={isGeneratingPdf}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-blue-500/30 bg-blue-500/10 hover:bg-blue-500/20 text-xs font-bold text-blue-300 hover:text-white transition-all shadow-md shadow-blue-500/10 cursor-pointer disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-xl border border-blue-500/30 bg-blue-500/10 hover:bg-blue-500/20 text-xs font-bold text-blue-300 hover:text-white transition-all shadow-md shadow-blue-500/10 cursor-pointer disabled:opacity-50"
             >
-              <FileText className="w-4 h-4 text-blue-400" />
-              <span>{isGeneratingPdf ? "Generating Official PDF..." : "Download PDF Invoice & Certificate"}</span>
+              <FileText className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-400" />
+              <span className="hidden sm:inline">{isGeneratingPdf ? "Generating Official PDF..." : "Download PDF Invoice & Certificate"}</span>
+              <span className="sm:hidden">{isGeneratingPdf ? "Generating..." : "Download PDF"}</span>
             </button>
 
             <Link
@@ -704,38 +705,38 @@ Thank you for choosing NEXUS Digital Marketplace!
             {/* Dynamic Credential Auto-Purge Countdown Timer */}
             <CredentialPurgeTimer purgeHours={activeOrder.purgeHours || 24} variant="customer" />
 
-            {/* 4-Step Visual Progress Stepper */}
-            <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 text-xs">
-              <div className="p-4 rounded-2xl bg-emerald-950/30 border border-emerald-500/20 space-y-1">
+            {/* 4-Step Visual Progress Stepper (Compact 2x2 on Mobile) */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4 text-xs">
+              <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-emerald-950/30 border border-emerald-500/20 space-y-1">
                 <div className="flex items-center gap-1.5 text-emerald-400 font-bold">
-                  <CheckCircle2 className="w-4 h-4" />
-                  <span>1. Payment Verified</span>
+                  <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                  <span className="truncate">1. Verified</span>
                 </div>
-                <p className="text-[11px] text-emerald-300/80">Stripe authorization confirmed.</p>
+                <p className="text-[10px] sm:text-[11px] text-emerald-300/80 leading-snug">Stripe confirmed.</p>
               </div>
 
-              <div className="p-4 rounded-2xl bg-emerald-950/30 border border-emerald-500/20 space-y-1">
+              <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-emerald-950/30 border border-emerald-500/20 space-y-1">
                 <div className="flex items-center gap-1.5 text-emerald-400 font-bold">
-                  <CheckCircle2 className="w-4 h-4" />
-                  <span>2. Credentials Buffered</span>
+                  <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                  <span className="truncate">2. Buffered</span>
                 </div>
-                <p className="text-[11px] text-emerald-300/80">AES-256 buffer locked.</p>
+                <p className="text-[10px] sm:text-[11px] text-emerald-300/80 leading-snug">AES-256 locked.</p>
               </div>
 
-              <div className="p-4 rounded-2xl bg-blue-500/10 border-2 border-blue-500/50 space-y-1 shadow-lg shadow-blue-500/10">
+              <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-blue-500/10 border-2 border-blue-500/50 space-y-1 shadow-lg shadow-blue-500/10">
                 <div className="flex items-center gap-1.5 text-blue-400 font-bold">
-                  <Wrench className="w-4 h-4 text-blue-400 animate-spin" />
-                  <span>3. Technician Installing</span>
+                  <Wrench className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-400 animate-spin shrink-0" />
+                  <span className="truncate">3. Installing</span>
                 </div>
-                <p className="text-[11px] text-blue-300/80 font-medium">Activating official agency stack.</p>
+                <p className="text-[10px] sm:text-[11px] text-blue-300/80 font-medium leading-snug">Agency stack setup.</p>
               </div>
 
-              <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06] space-y-1 opacity-60">
+              <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white/[0.02] border border-white/[0.06] space-y-1 opacity-60">
                 <div className="flex items-center gap-1.5 text-neutral-400 font-semibold">
-                  <ShieldCheck className="w-4 h-4" />
-                  <span>4. Ready & Revoke</span>
+                  <ShieldCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                  <span className="truncate">4. Revoke</span>
                 </div>
-                <p className="text-[11px] text-neutral-400">Safely delete temporary user.</p>
+                <p className="text-[10px] sm:text-[11px] text-neutral-400 leading-snug">Safe user deletion.</p>
               </div>
             </div>
 
