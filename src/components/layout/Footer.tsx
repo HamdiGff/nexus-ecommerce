@@ -134,8 +134,8 @@ export default function Footer() {
             <h5 className="text-white font-bold text-xs uppercase tracking-wider">WordPress Tools</h5>
             <ul className="space-y-2.5 text-xs text-neutral-400">
               <li>
-                <Link href="/products/rank-math-pro-seo" className="hover:text-white transition-colors">
-                  Rank Math Pro SEO
+                <Link href="/products/rank-math-pro" className="hover:text-white transition-colors">
+                  Rank Math PRO (Just PRO)
                 </Link>
               </li>
               <li>

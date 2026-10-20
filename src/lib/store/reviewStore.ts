@@ -2,7 +2,7 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { ProductReview, INITIAL_WP_ROCKET_REVIEWS } from "@/data/mockReviews";
+import { ProductReview, INITIAL_ALL_REVIEWS } from "@/data/mockReviews";
 
 interface ReviewStoreState {
   reviews: ProductReview[];
@@ -17,15 +17,17 @@ interface ReviewStoreState {
 
 const SEED_ORDERS: Record<string, { email: string; products: string[]; customerName: string }> = {
   "NEX-772910": { email: "alex.mercer@gmail.com", products: ["wp-rocket"], customerName: "Alex Mercer" },
-  "NEX-948210": { email: "alex.taylor@example.com", products: ["wp-rocket", "rank-math"], customerName: "Alex Taylor" },
+  "NEX-948210": { email: "alex.taylor@example.com", products: ["wp-rocket", "rank-math", "rank-math-pro"], customerName: "Alex Taylor" },
   "NEX-948209": { email: "david.lindqvist@example.com", products: ["wp-rocket", "idm-lifetime"], customerName: "David Lindqvist" },
   "NEX-948208": { email: "techpulse.blog.owner@gmail.com", products: ["adsense-tech-blog", "wp-rocket"], customerName: "TechPulse Owner" },
+  "NEX-947890": { email: "sophia.hernandez@example.com", products: ["rank-math-pro", "rank-math"], customerName: "Sophia Hernandez" },
+  "NEX-947420": { email: "dmitri.volkov@example.com", products: ["rank-math-pro", "rank-math"], customerName: "Dmitri Volkov" },
 };
 
 export const useReviewStore = create<ReviewStoreState>()(
   persist(
     (set, get) => ({
-      reviews: INITIAL_WP_ROCKET_REVIEWS,
+      reviews: INITIAL_ALL_REVIEWS,
 
       addReview: (reviewData) => {
         // If customer already submitted review for this exact order & product, update it
@@ -79,7 +81,13 @@ export const useReviewStore = create<ReviewStoreState>()(
       },
 
       getReviewsByProduct: (productId) => {
-        return get().reviews.filter((r) => r.productId === productId);
+        const clean = productId.toLowerCase();
+        return get().reviews.filter(
+          (r) =>
+            r.productId.toLowerCase() === clean ||
+            (clean.startsWith("rank-math") && r.productId.startsWith("rank-math")) ||
+            (clean.startsWith("wp-rocket") && r.productId.startsWith("wp-rocket"))
+        );
       },
 
       getUserReviewForOrder: (orderNumber, productId) => {
@@ -145,7 +153,15 @@ export const useReviewStore = create<ReviewStoreState>()(
     }),
     {
       name: "nexus-product-reviews-store",
-      version: 2,
+      version: 3,
+      migrate: (persistedState: any) => {
+        const existing: ProductReview[] = persistedState?.reviews || [];
+        const existingIds = new Set(existing.map((r) => r.id));
+        const newReviews = INITIAL_ALL_REVIEWS.filter((r) => !existingIds.has(r.id));
+        return {
+          reviews: [...existing, ...newReviews],
+        };
+      },
     }
   )
 );

@@ -76,6 +76,18 @@ export default function HomePage() {
       image: "/products/wp-rocket.svg",
     },
     {
+      title: "Rank Math PRO - Just PRO Plan",
+      subtitle: "Official agency activation with auto updates & Schema generator",
+      price: "$14.00",
+      originalPrice: "$59.00",
+      type: "SERVICE_SETUP" as const,
+      badge: "WordPress SEO Leader",
+      icon: TrendingUp,
+      accent: "from-blue-500 to-indigo-600",
+      slug: "rank-math-pro",
+      image: "/products/rank-math-pro.svg",
+    },
+    {
       title: "IDM 1-PC Lifetime Retail Key",
       subtitle: "Instant auto-delivery retail serial with lifetime updates",
       price: "$18.50",

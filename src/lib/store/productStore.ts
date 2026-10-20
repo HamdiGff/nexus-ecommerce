@@ -172,15 +172,39 @@ export const useProductStore = create<ProductStoreState>()(
       },
 
       getProductBySlug: (slug) => {
-        return get().products.find((p) => p.slug === slug);
+        const clean = slug.toLowerCase();
+        return get().products.find(
+          (p) =>
+            p.slug.toLowerCase() === clean ||
+            (clean.startsWith("rank-math") && p.slug.startsWith("rank-math"))
+        );
       },
     }),
     {
       name: "nexus-admin-products-storage",
-      version: 6,
-      migrate: () => ({
-        products: MOCK_DIGITAL_PRODUCTS,
-      }),
+      version: 7,
+      migrate: (persistedState: any) => {
+        const existingProducts: DigitalProduct[] = persistedState?.products || [];
+        const mockMap = new Map<string, DigitalProduct>(MOCK_DIGITAL_PRODUCTS.map((p) => [p.id, p]));
+        existingProducts.forEach((p) => {
+          if (!mockMap.has(p.id)) {
+            mockMap.set(p.id, p);
+          }
+        });
+        return {
+          products: Array.from(mockMap.values()),
+        };
+      },
+      onRehydrateStorage: () => (state) => {
+        if (!state) return;
+        const hasRankMath = state.products.some((p) => p.id === "rank-math-pro" || p.slug === "rank-math-pro");
+        if (!hasRankMath) {
+          const rm = MOCK_DIGITAL_PRODUCTS.find((p) => p.id === "rank-math-pro");
+          if (rm) {
+            state.products = [...state.products, rm];
+          }
+        }
+      },
     }
   )
 );

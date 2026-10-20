@@ -14,14 +14,29 @@ export function generateStaticParams() {
   if (MOCK_DIGITAL_PRODUCTS.length === 0) {
     return [{ slug: "preview" }];
   }
-  return MOCK_DIGITAL_PRODUCTS.map((product) => ({
-    slug: product.slug,
-  }));
+  const slugs: { slug: string }[] = [];
+  MOCK_DIGITAL_PRODUCTS.forEach((product) => {
+    slugs.push({ slug: product.slug });
+    if (product.slug === "rank-math-pro") {
+      slugs.push({ slug: "rank-math-pro-just-pro" });
+      slugs.push({ slug: "rank-math-pro-seo" });
+    }
+  });
+  return slugs;
+}
+
+function resolveProduct(slug: string) {
+  const clean = slug.toLowerCase();
+  return MOCK_DIGITAL_PRODUCTS.find(
+    (p) =>
+      p.slug.toLowerCase() === clean ||
+      (clean.startsWith("rank-math") && p.slug.startsWith("rank-math"))
+  );
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const product = MOCK_DIGITAL_PRODUCTS.find((p) => p.slug === slug);
+  const product = resolveProduct(slug);
 
   if (!product) {
     return {
@@ -53,7 +68,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function ProductDetailPage({ params }: PageProps) {
   const { slug } = await params;
-  const product = MOCK_DIGITAL_PRODUCTS.find((p) => p.slug === slug);
+  const product = resolveProduct(slug);
 
   const fallbackProduct = {
     id: `prod-${slug}`,

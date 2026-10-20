@@ -297,6 +297,111 @@ export const MOCK_DIGITAL_PRODUCTS: DigitalProduct[] = [
       "delay javascript execution wp rocket",
     ],
   },
+  {
+    id: "rank-math-pro",
+    title: "Rank Math PRO - Just PRO",
+    slug: "rank-math-pro",
+    category: "wordpress",
+    subcategory: "plugins",
+    deliveryType: "SERVICE_SETUP",
+    isInstantDelivery: false,
+    shortDescription:
+      "Skyrocket your WordPress search engine rankings with official Rank Math PRO (Just PRO plan) agency activation. Advanced Schema generator, Google Search Console sync, keyword rank tracking, and automated image SEO with 100% genuine one-click dashboard updates.",
+    description:
+      "Rank Math PRO is heralded as the Swiss Army Knife of WordPress SEO. Built from the ground up for modern search algorithms, Rank Math PRO delivers unmatched power, speed, and intelligence to help your content dominate Google search rankings.\n\nUnlike traditional bloated SEO plugins that slow down your database, Rank Math PRO is ultra-fast, lightweight, and modular. It features a sophisticated Schema Generator that automatically implements JSON-LD rich snippets (FAQ, How-To, Product, Recipe, Review, Video), a full Google Search Console integration right inside your WordPress admin dashboard, an automated rank tracker with position history, advanced local SEO, automated image SEO (auto ALT and Title tags), and deep WooCommerce optimization.\n\nOur official agency activation provides authentic, clean licensing connected directly through your WordPress dashboard. You receive direct one-click automatic updates from the official Rank Math repository—completely authentic, virus-free, and backed by our full warranty.",
+    price: 14.0,
+    originalPrice: 59.0,
+    rating: 4.9,
+    reviewsCount: 118,
+    images: [
+      "/products/rank-math-pro.svg",
+    ],
+    variants: [
+      {
+        id: "rmp-1site",
+        sku: "RMP-1SITE-1Y",
+        title: "1 Website — 1 Year Activation (Just PRO)",
+        tierName: "Just PRO Single License",
+        price: 14.0,
+        originalPrice: 59.0,
+        licenseCount: 1,
+        stockQuantity: 120,
+        badge: "STARTER DEAL",
+        perks: [
+          "1 WordPress Domain Official Activation",
+          "1 Year of Direct Dashboard Updates",
+          "Advanced Schema Generator (Rich Snippets)",
+          "Google Analytics 4 & Search Console Sync",
+          "Rank Tracker & Keyword Position Reports",
+          "Automated Image SEO & 404 Monitor",
+        ],
+      },
+      {
+        id: "rmp-3sites",
+        sku: "RMP-3SITES-1Y",
+        title: "3 Websites Pack — 1 Year Activation (Just PRO)",
+        tierName: "Just PRO Plus Pack (Save 75%)",
+        price: 29.0,
+        originalPrice: 118.0,
+        licenseCount: 3,
+        stockQuantity: 85,
+        badge: "MOST POPULAR — SAVE 75%",
+        perks: [
+          "3 WordPress Domains Activation ($9.66/site)",
+          "1 Year of Direct Dashboard Updates",
+          "Full WooCommerce SEO & Product Schema",
+          "Podcast & Video SEO Modules",
+          "Local SEO Multi-Location Support",
+          "Dedicated Priority Setup Assistance",
+        ],
+      },
+      {
+        id: "rmp-5sites",
+        sku: "RMP-5SITES-1Y",
+        title: "5 Websites Agency Pack — 1 Year Activation (Just PRO)",
+        tierName: "Just PRO Agency Pack",
+        price: 45.0,
+        originalPrice: 199.0,
+        licenseCount: 5,
+        stockQuantity: 60,
+        badge: "BEST VALUE FOR AGENCIES",
+        perks: [
+          "5 WordPress Domains Activation ($9.00/site)",
+          "1 Year of Direct Dashboard Updates",
+          "Full Agency License Authentication",
+          "Staging & Sub-domain Activations Included",
+          "Advanced Redirection Manager (301, 302, 410)",
+          "White-Glove Installation Guarantee",
+        ],
+      },
+    ],
+    features: [
+      "100% Official Agency License with Automatic WordPress Dashboard Updates",
+      "Advanced Schema Generator with Multi-Type Rich Snippets (Article, Product, FAQ, Recipe)",
+      "Built-in Google Search Console & Analytics 4 Dashboard Integration",
+      "Comprehensive Rank Tracker with Keyword Position History & Reports",
+      "Deep WooCommerce SEO Module with Automated Product Schema & Breadcrumbs",
+      "Automated Image SEO Optimization (Auto ALT and Title Attributes)",
+      "Advanced Redirection Manager (301, 302, 307, 410) & 404 Monitor",
+      "Compatible with Elementor, Divi, Gutenberg, Bricks, and Beaver Builder",
+      "Zero Nulled/GPL Code — 100% Clean Official Agency Deployment",
+    ],
+    isFeatured: true,
+    isNewArrival: true,
+    instantStockCount: 120,
+    seoKeywords: [
+      "rank math pro",
+      "rank math pro just pro",
+      "rank math pro discount",
+      "buy rank math pro cheap",
+      "rank math agency license",
+      "wordpress seo plugin",
+      "schema generator wordpress",
+      "rank math pro 1 website",
+      "rank math vs yoast seo",
+      "rank math seo agency",
+    ],
+  },
 ];
 
 export const MOCK_PRODUCTS = MOCK_DIGITAL_PRODUCTS;
@@ -310,4 +415,13 @@ export interface ProductBundle {
   discountPercent: number;
 }
 
-export const MOCK_PRODUCT_BUNDLES: ProductBundle[] = [];
+export const MOCK_PRODUCT_BUNDLES: ProductBundle[] = [
+  {
+    id: "bundle-wp-power-duo",
+    title: "WordPress Power Duo: WP Rocket + Rank Math PRO",
+    badge: "SAVE EXTRA 15% TOGETHER",
+    description: "The definitive WordPress accelerator and SEO combo. Maximum Google Core Web Vitals speed + Top-tier Rich Snippets & Search Rankings.",
+    productIds: ["wp-rocket", "rank-math-pro"],
+    discountPercent: 15,
+  },
+];
