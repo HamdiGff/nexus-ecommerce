@@ -41,6 +41,8 @@ export const SITE_CONFIG = {
     "adsense approved website for sale",
     "pin verified adsense websites",
     "chatgpt plus shared account",
+    "buy claude pro",
+    "claude team subscription",
     "instant digital delivery",
     "cheap software licenses",
     "official agency licenses",

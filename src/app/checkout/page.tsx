@@ -127,6 +127,12 @@ export default function CheckoutPage() {
     notes: "",
   });
 
+  // Claude Personal Account Activation State
+  const [claudeDetails, setClaudeDetails] = useState({
+    email: "",
+    notes: "",
+  });
+
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("card");
   const [selectedCrypto, setSelectedCrypto] = useState<CryptoCoin>("ETH");
   const [cryptoTxHash, setCryptoTxHash] = useState("");
@@ -189,6 +195,7 @@ export default function CheckoutPage() {
   const manualHandoffItems = items.filter((i) => i.deliveryType === "MANUAL_HANDOFF");
   const adsenseItems = items.filter((i) => i.slug.includes("adsense"));
   const chatgptItems = items.filter((i) => i.slug.includes("chatgpt"));
+  const claudeItems = items.filter((i) => i.slug.includes("claude"));
 
   const handlePlaceOrder = (e: React.FormEvent) => {
     e.preventDefault();
@@ -221,6 +228,17 @@ export default function CheckoutPage() {
       if (!emailToUse || !emailToUse.includes("@")) {
         setValidationError(
           "Please provide a valid personal ChatGPT / OpenAI account email address for activation."
+        );
+        return;
+      }
+    }
+
+    // Validate Claude Personal Email requirements
+    if (claudeItems.length > 0) {
+      const emailToUse = (claudeDetails.email || customer.email || "").trim();
+      if (!emailToUse || !emailToUse.includes("@")) {
+        setValidationError(
+          "Please provide a valid personal Claude / Anthropic account email address for activation."
         );
         return;
       }
@@ -271,6 +289,11 @@ export default function CheckoutPage() {
             email: (chatgptDetails.email || customer.email).trim(),
           },
           chatgptEmail: (chatgptDetails.email || customer.email).trim(),
+          claude: {
+            ...claudeDetails,
+            email: (claudeDetails.email || customer.email).trim(),
+          },
+          claudeEmail: (claudeDetails.email || customer.email).trim(),
           preferredRegistrar: `${adsenseDetails.registrar}: ${adsenseDetails.registrarUsername}`,
         },
         generatedLicenseKeys,
@@ -422,6 +445,25 @@ export default function CheckoutPage() {
                 <p className="font-semibold text-emerald-300">• Pro Plan:</p>
                 <p className="text-[11px] text-neutral-400 pl-3">Check your inbox for an official OpenAI Team/Pro organization invite link. Click Accept to activate immediately.</p>
                 <p className="font-semibold text-emerald-300 pt-1">• Plus Plan:</p>
+                <p className="text-[11px] text-neutral-400 pl-3">When our technician initiates login, they will coordinate the one-time 2FA verification code with you in the Order Vault Live Chat or Ticket below.</p>
+              </div>
+            </div>
+          )}
+
+          {/* CLAUDE PERSONAL EMAIL ACTIVATION STATUS */}
+          {orderComplete.items.some((i: CartItem) => i.slug.includes("claude")) && (
+            <div className="mt-6 p-4 sm:p-6 rounded-2xl bg-amber-950/40 border border-amber-500/30 space-y-3 text-left">
+              <div className="flex items-center gap-2 text-amber-300 font-bold text-xs sm:text-sm">
+                <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
+                <span>Claude Pro &amp; Team Personal Email Activation Assigned</span>
+              </div>
+              <p className="text-xs text-neutral-300 leading-relaxed">
+                Our technician has received your order for target email <strong className="text-white">{orderComplete.submissions?.claudeEmail || orderComplete.customer.email}</strong>. Activation SLA is <strong className="text-amber-400">15 to 30 minutes</strong>.
+              </p>
+              <div className="p-3 bg-black/40 rounded-xl border border-amber-500/20 text-xs text-neutral-300 space-y-1 font-sans">
+                <p className="font-semibold text-amber-300">• Team Plan:</p>
+                <p className="text-[11px] text-neutral-400 pl-3">Check your inbox for an official Anthropic Team organization invite link. Click Accept to activate immediately.</p>
+                <p className="font-semibold text-amber-300 pt-1">• Pro Plan:</p>
                 <p className="text-[11px] text-neutral-400 pl-3">When our technician initiates login, they will coordinate the one-time 2FA verification code with you in the Order Vault Live Chat or Ticket below.</p>
               </div>
             </div>
@@ -743,6 +785,76 @@ export default function CheckoutPage() {
                       value={chatgptDetails.notes}
                       onChange={(e) => setChatgptDetails({ ...chatgptDetails, notes: e.target.value })}
                       className="w-full px-3.5 py-2.5 rounded-xl border border-white/10 bg-white/[0.04] text-xs text-white placeholder-neutral-500 focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Step 2b-2: CLAUDE PRO & TEAM PERSONAL EMAIL ACTIVATION DESTINATION */}
+            {claudeItems.length > 0 && (
+              <div className="bg-[#120f18] p-6 sm:p-8 rounded-3xl border-2 border-amber-500/40 shadow-xl space-y-5">
+                <div className="flex items-start justify-between flex-wrap gap-2">
+                  <div>
+                    <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                      <Sparkles className="w-5 h-5 text-amber-400" />
+                      Claude Personal Email &amp; Activation Destination
+                    </h2>
+                    <p className="text-xs text-neutral-400 mt-1">
+                      Provide your personal email address. We deliver Claude Pro or Team within 15–30 minutes.
+                    </p>
+                  </div>
+                  <span className="text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 px-3 py-1 rounded-full uppercase font-mono">
+                    ⚡ 15–30 Min Handover
+                  </span>
+                </div>
+
+                {/* Important Instructions Box */}
+                <div className="p-4 rounded-2xl bg-amber-950/40 border border-amber-500/30 text-xs text-neutral-300 space-y-2">
+                  <div className="flex items-center gap-2 text-amber-400 font-bold">
+                    <ShieldCheck className="w-4 h-4 shrink-0" />
+                    <span>How Activation Works For Your Claude Order:</span>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 text-[11.5px] leading-relaxed">
+                    <div className="p-3 rounded-xl bg-black/40 border border-white/[0.06]">
+                      <strong className="text-amber-300 block mb-1">Claude Team Plan:</strong>
+                      You will receive an official Anthropic organization invite link in your inbox. Simply click 'Accept Invite' to activate. Zero password or 2FA needed!
+                    </div>
+                    <div className="p-3 rounded-xl bg-black/40 border border-white/[0.06]">
+                      <strong className="text-orange-300 block mb-1">Claude Pro Plan:</strong>
+                      Submit only your email here now. When our technician begins activation within 15–30 mins, they will request the 2FA code via the Order Live Chat or Ticket desk below.
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-4 pt-1">
+                  <div>
+                    <label className="block text-xs font-semibold text-neutral-300 mb-1">
+                      Your Personal Claude / Anthropic Account Email *
+                    </label>
+                    <input
+                      type="email"
+                      required
+                      placeholder="e.g. yourname@gmail.com"
+                      value={claudeDetails.email || customer.email}
+                      onChange={(e) => setClaudeDetails({ ...claudeDetails, email: e.target.value })}
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-white/10 bg-white/[0.04] text-xs text-white placeholder-neutral-500 focus:ring-2 focus:ring-amber-500 focus:outline-hidden"
+                    />
+                    <p className="text-[11px] text-neutral-500 mt-1">
+                      Make sure this is the email registered on claude.ai / anthropic.com (or your personal primary email).
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-neutral-300 mb-1">
+                      Account Notes or Existing Workspace Setup (Optional)
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Currently on free tier, or prefer notification on WhatsApp"
+                      value={claudeDetails.notes}
+                      onChange={(e) => setClaudeDetails({ ...claudeDetails, notes: e.target.value })}
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-white/10 bg-white/[0.04] text-xs text-white placeholder-neutral-500 focus:ring-2 focus:ring-amber-500 focus:outline-hidden"
                     />
                   </div>
                 </div>

@@ -93,6 +93,7 @@ export interface OrderRecord {
   deliveredAsset?: TurnkeyWebsiteAsset;
   adsenseFulfillment?: any;
   chatgptFulfillment?: any;
+  claudeFulfillment?: any;
   adsenseDetails?: any;
   submissions?: any;
 
@@ -106,6 +107,41 @@ export interface OrderRecord {
 }
 
 export const INITIAL_ORDERS: OrderRecord[] = [
+  {
+    id: "ord-938211",
+    orderNumber: "NEX-938211",
+    customerName: "Sarah Connor",
+    customerEmail: "sarah.connor@cyberdyne.io",
+    productTitle: "Claude Pro & Team — Personal Account Manual Activation",
+    category: "ai-tools",
+    deliveryType: "MANUAL_HANDOFF",
+    status: "PROCESSING",
+    total: 139.99,
+    paymentRail: "Stripe Card (Mastercard)",
+    transactionId: "pi_3PjX9842110Sarah",
+    createdAt: "Today at 05:20 PM",
+    itemDetails: {
+      id: "claude-team-1m",
+      title: "Claude Team — 1 Month Plan (Official Invite)",
+      tierOrVariant: "Team Official Invite",
+      categoryName: "AI Tools",
+      price: 139.99,
+      quantity: 1,
+      billingPeriod: "1 Month",
+    },
+    submissions: {
+      claudeEmail: "sarah.connor@cyberdyne.io",
+      claudeNotes: "Team workspace for 5 engineers. Please dispatch official invite link.",
+    },
+    claudeFulfillment: {
+      planType: "TEAM",
+      customerClaudeEmail: "sarah.connor@cyberdyne.io",
+      status: "WAITING_INVITE",
+      technicianNotes: "Preparing Anthropic Team organization invite link for direct dispatch.",
+    },
+    isPurged: false,
+    purgeHours: 24,
+  },
   {
     id: "ord-938210",
     orderNumber: "NEX-938210",

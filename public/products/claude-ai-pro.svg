@@ -1,0 +1,164 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" fill="none">
+  <defs>
+    <linearGradient id="bgClaude" x1="0" y1="0" x2="800" y2="500" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#090a10"/>
+      <stop offset="50%" stop-color="#141018"/>
+      <stop offset="100%" stop-color="#1c1114"/>
+    </linearGradient>
+    <linearGradient id="claudeOrange" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f97316"/>
+      <stop offset="100%" stop-color="#c2410c"/>
+    </linearGradient>
+    <linearGradient id="claudeAmber" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#ea580c"/>
+    </linearGradient>
+    <linearGradient id="cardGradClaude" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1a1420"/>
+      <stop offset="100%" stop-color="#100c14"/>
+    </linearGradient>
+    <linearGradient id="glowLineClaude" x1="0" y1="0" x2="800" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="transparent"/>
+      <stop offset="30%" stop-color="#f97316"/>
+      <stop offset="70%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </linearGradient>
+    <filter id="glowClaude" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="16" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="500" fill="url(#bgClaude)"/>
+
+  <!-- Top accent glow line -->
+  <rect x="0" y="0" width="800" height="2" fill="url(#glowLineClaude)"/>
+
+  <!-- Grid lines (subtle) -->
+  <g opacity="0.05" stroke="#f97316" stroke-width="0.5">
+    <line x1="0" y1="100" x2="800" y2="100"/>
+    <line x1="0" y1="200" x2="800" y2="200"/>
+    <line x1="0" y1="300" x2="800" y2="300"/>
+    <line x1="0" y1="400" x2="800" y2="400"/>
+    <line x1="200" y1="0" x2="200" y2="500"/>
+    <line x1="400" y1="0" x2="400" y2="500"/>
+    <line x1="600" y1="0" x2="600" y2="500"/>
+  </g>
+
+  <!-- Ambient Glow Blobs -->
+  <circle cx="160" cy="240" r="140" fill="#f97316" opacity="0.07" filter="url(#glowClaude)"/>
+  <circle cx="640" cy="200" r="160" fill="#fbbf24" opacity="0.05" filter="url(#glowClaude)"/>
+
+  <!-- Left: Hero Brand Box -->
+  <g transform="translate(50, 60)">
+    <!-- Anthropic / Claude Starburst Logo -->
+    <g filter="url(#glowClaude)">
+      <circle cx="48" cy="48" r="42" fill="url(#claudeOrange)" opacity="0.2"/>
+      <circle cx="48" cy="48" r="36" fill="none" stroke="#f97316" stroke-width="1.5" opacity="0.6"/>
+      <!-- Claude signature asterisk / starburst shape -->
+      <path d="M48 24 L48 72 M24 48 L72 48 M31 31 L65 65 M31 65 L65 31" stroke="#f97316" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="48" cy="48" r="5" fill="#fbbf24"/>
+    </g>
+
+    <!-- Title & Brand -->
+    <text x="110" y="38" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="28" font-weight="900" fill="white" letter-spacing="-1">Claude</text>
+    <text x="215" y="38" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="28" font-weight="900" fill="#f97316" letter-spacing="-1">PRO</text>
+    <text x="285" y="38" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="24" font-weight="700" fill="#6b7280">&amp;</text>
+    <text x="310" y="38" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="28" font-weight="900" fill="#fbbf24" letter-spacing="-1">TEAM</text>
+
+    <!-- Subtitle -->
+    <text x="110" y="62" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#fb923c" letter-spacing="1.5">ANTHROPIC PERSONAL EMAIL ACTIVATION</text>
+
+    <!-- Badges Row -->
+    <g transform="translate(110, 76)">
+      <rect x="0" y="0" width="140" height="22" rx="11" fill="#f97316" opacity="0.15"/>
+      <rect x="0" y="0" width="140" height="22" rx="11" fill="none" stroke="#f97316" stroke-width="1" opacity="0.4"/>
+      <text x="12" y="15" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="9.5" font-weight="800" fill="#fb923c" letter-spacing="1">⚡ 15–30 MIN DELIVERY</text>
+
+      <rect x="150" y="0" width="135" height="22" rx="11" fill="#fbbf24" opacity="0.15"/>
+      <rect x="150" y="0" width="135" height="22" rx="11" fill="none" stroke="#fbbf24" stroke-width="1" opacity="0.4"/>
+      <text x="162" y="15" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="9.5" font-weight="800" fill="#fde047" letter-spacing="1">🛡 100% VALIDITY</text>
+    </g>
+
+    <!-- Left Features Checklist -->
+    <g transform="translate(0, 140)">
+      <rect x="0" y="0" width="380" height="200" rx="18" fill="url(#cardGradClaude)"/>
+      <rect x="0" y="0" width="380" height="200" rx="18" fill="none" stroke="#372430" stroke-width="1"/>
+
+      <text x="22" y="28" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="11" font-weight="800" fill="#9a7280" letter-spacing="2">CLAUDE ADVANTAGES</text>
+
+      <g transform="translate(22, 45)">
+        <circle cx="6" cy="6" r="3" fill="#f97316"/>
+        <text x="18" y="10" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#e2e8f0">Claude 3.5 Sonnet &amp; 3.5 Haiku Unlocked</text>
+      </g>
+      <g transform="translate(22, 75)">
+        <circle cx="6" cy="6" r="3" fill="#f97316"/>
+        <text x="18" y="10" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#e2e8f0">Personal Email Only — Never share passwords</text>
+      </g>
+      <g transform="translate(22, 105)">
+        <circle cx="6" cy="6" r="3" fill="#fbbf24"/>
+        <text x="18" y="10" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#e2e8f0">Claude Pro: Smooth 2FA Login Upgrade</text>
+      </g>
+      <g transform="translate(22, 135)">
+        <circle cx="6" cy="6" r="3" fill="#fbbf24"/>
+        <text x="18" y="10" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#e2e8f0">Claude Team: Direct Official Email Invite Link</text>
+      </g>
+      <g transform="translate(22, 165)">
+        <circle cx="6" cy="6" r="3" fill="#f97316"/>
+        <text x="18" y="10" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#e2e8f0">Interactive Artifacts, 200K Context &amp; Projects</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- Right: Plan Selector Preview Cards -->
+  <g transform="translate(470, 60)">
+    <!-- Card 1: Claude Pro 1 Month -->
+    <rect x="0" y="0" width="280" height="88" rx="16" fill="url(#cardGradClaude)"/>
+    <rect x="0" y="0" width="280" height="88" rx="16" fill="none" stroke="#372430" stroke-width="1"/>
+    <rect x="0" y="0" width="280" height="2" rx="1" fill="#f97316" opacity="0.7"/>
+    <text x="18" y="26" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#fb923c">Claude Pro 1 Month</text>
+    <text x="18" y="56" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="26" font-weight="900" fill="white">$14<tspan font-size="15" fill="#71717a">.99</tspan></text>
+    <text x="18" y="74" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="10.5" fill="#a1a1aa">Personal email 2FA manual upgrade</text>
+    <rect x="195" y="14" width="70" height="20" rx="10" fill="#f97316" opacity="0.15"/>
+    <text x="207" y="27" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="9" font-weight="800" fill="#fb923c">FLEXIBLE</text>
+
+    <!-- Card 2: Claude Pro 6 Month (Popular) -->
+    <rect x="0" y="100" width="280" height="96" rx="16" fill="#181014"/>
+    <rect x="0" y="100" width="280" height="96" rx="16" fill="none" stroke="#ea580c" stroke-width="1.5"/>
+    <rect x="0" y="100" width="280" height="2" rx="1" fill="#f97316"/>
+    <text x="18" y="126" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#f97316">Claude Pro 6 Months</text>
+    <text x="18" y="158" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="26" font-weight="900" fill="white">$69<tspan font-size="15" fill="#71717a">.99</tspan></text>
+    <text x="110" y="158" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="12" fill="#52525b" text-decoration="line-through">$120</text>
+    <text x="18" y="178" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="10.5" fill="#a1a1aa">180 days · Save 42% · Validity guaranteed</text>
+    <rect x="180" y="112" width="86" height="20" rx="10" fill="#ea580c"/>
+    <text x="190" y="126" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="8.5" font-weight="900" fill="white">MOST POPULAR</text>
+
+    <!-- Card 3: Claude Team 1 Month (Invite) -->
+    <rect x="0" y="208" width="280" height="106" rx="16" fill="#18131c"/>
+    <rect x="0" y="208" width="280" height="106" rx="16" fill="none" stroke="#fbbf24" stroke-width="1.5"/>
+    <rect x="0" y="208" width="280" height="2" rx="1" fill="#fbbf24"/>
+    <text x="18" y="234" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#fde047">Claude Team 1 Month</text>
+    <text x="18" y="266" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="26" font-weight="900" fill="white">$139<tspan font-size="15" fill="#71717a">.99</tspan></text>
+    <text x="125" y="266" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="12" fill="#52525b" text-decoration="line-through">$180</text>
+    <text x="18" y="286" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="10.5" fill="#fde047">Official Email Invite · No 2FA or Password</text>
+    <text x="18" y="300" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="10" fill="#a1a1aa">Highest usage limits &amp; Team Collaboration</text>
+    <rect x="172" y="220" width="94" height="20" rx="10" fill="#d97706"/>
+    <text x="181" y="234" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="8.5" font-weight="900" fill="white">OFFICIAL INVITE</text>
+
+    <!-- Card 4: Claude Pro 1 Year -->
+    <rect x="0" y="324" width="280" height="76" rx="14" fill="url(#cardGradClaude)"/>
+    <rect x="0" y="324" width="280" height="76" rx="14" fill="none" stroke="#372430" stroke-width="1"/>
+    <text x="18" y="348" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="11.5" font-weight="700" fill="#fb923c">Claude Pro 1 Year (Save 50%)</text>
+    <text x="18" y="376" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="22" font-weight="900" fill="white">$119<tspan font-size="13" fill="#71717a">.99</tspan></text>
+    <text x="110" y="376" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="11" fill="#52525b" text-decoration="line-through">$240</text>
+    <rect x="195" y="336" width="70" height="18" rx="9" fill="#f97316" opacity="0.15"/>
+    <text x="204" y="349" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="8.5" font-weight="800" fill="#fb923c">BEST VALUE</text>
+  </g>
+
+  <!-- Bottom Strip -->
+  <rect x="0" y="460" width="800" height="40" fill="#06070a"/>
+  <line x1="0" y1="460" x2="800" y2="460" stroke="#f97316" stroke-width="0.5" opacity="0.2"/>
+  <text x="50" y="484" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="11" fill="#52525b">Anthropic Official Platform  •  Delivered in 15–30 Mins to Your Personal Email  •  Full Warranty Guarantee</text>
+  <text x="640" y="484" font-family="'SF Pro Display', 'Segoe UI', sans-serif" font-size="11" font-weight="800" fill="#f97316">NEXUS DIGITAL</text>
+</svg>

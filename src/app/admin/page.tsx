@@ -104,6 +104,7 @@ interface OrderAdminRecord {
   // AdSense Multi-stage Fulfillment & Order Chat
   adsenseFulfillment?: any;
   chatgptFulfillment?: any;
+  claudeFulfillment?: any;
   adsenseDetails?: any;
   submissions?: any;
 }
@@ -719,6 +720,14 @@ export default function AdminDashboardPage() {
             chatgptFulfillment: {
               planType: chatGptForm.planType,
               customerChatgptEmail: chatGptForm.email,
+              inviteLink: chatGptForm.inviteLink,
+              technicianNotes: chatGptForm.notes,
+              status: chatGptForm.status,
+              activatedAt: new Date().toLocaleTimeString(),
+            },
+            claudeFulfillment: {
+              planType: chatGptForm.planType === "PRO" ? "TEAM" : "PRO",
+              customerClaudeEmail: chatGptForm.email,
               inviteLink: chatGptForm.inviteLink,
               technicianNotes: chatGptForm.notes,
               status: chatGptForm.status,
@@ -1509,11 +1518,12 @@ export default function AdminDashboardPage() {
               {filteredOrders.map((order) => {
                 const isPassVisible = revealedPasswords[order.id] || false;
                 const isChatGpt = (order.productTitle || "").toLowerCase().includes("chatgpt") || Boolean(order.submissions?.chatgptEmail) || Boolean(order.submissions?.chatgpt);
+                const isClaude = (order.productTitle || "").toLowerCase().includes("claude") || Boolean(order.submissions?.claudeEmail) || Boolean(order.submissions?.claude);
                 const isWp = order.deliveryType === "SERVICE_SETUP" || order.category?.includes("wordpress");
-                const isAi = !isChatGpt && (order.category === "ai-tools" || Boolean(order.accountCredentials));
+                const isAi = !isChatGpt && !isClaude && (order.category === "ai-tools" || Boolean(order.accountCredentials));
                 const isGame = order.category === "game-codes" || Boolean(order.gameGiftCode);
                 const isSoftware = order.category === "software-license" || Boolean(order.softwareLicense);
-                const isWebsite = !isChatGpt && (
+                const isWebsite = !isChatGpt && !isClaude && (
                   order.deliveryType === "MANUAL_HANDOFF" ||
                   order.category === "adsense-websites" ||
                   Boolean(order.adsenseFulfillment) ||
@@ -1534,6 +1544,11 @@ export default function AdminDashboardPage() {
                           {isChatGpt && (
                             <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 flex items-center gap-1">
                               <Sparkles className="w-3 h-3 text-emerald-600" /> ChatGPT Personal Email (30m SLA)
+                            </span>
+                          )}
+                          {isClaude && (
+                            <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 flex items-center gap-1">
+                              <Sparkles className="w-3 h-3 text-amber-600" /> Claude Personal Email (30m SLA)
                             </span>
                           )}
                           {isWp && (
@@ -3797,136 +3812,148 @@ export default function AdminDashboardPage() {
           </div>
         )}
 
-        {/* MODAL: CHATGPT PLUS & PRO PERSONAL EMAIL FULFILLMENT */}
-        {chatGptTargetOrder && (
-          <div className="fixed inset-0 z-50 bg-neutral-950/70 backdrop-blur-xs flex items-center justify-center p-4">
-            <div className="w-full max-w-lg bg-[#0f111a] rounded-3xl p-6 sm:p-8 border border-emerald-500/30 shadow-2xl space-y-5 text-white animate-in fade-in zoom-in-95 duration-200">
-              <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
-                <div>
-                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-emerald-400" />
-                    ChatGPT Order Delivery Console
-                  </h3>
-                  <p className="text-xs text-neutral-400 mt-1">
-                    Order {chatGptTargetOrder.orderNumber} • {chatGptTargetOrder.customerName}
-                  </p>
-                </div>
-                <button
-                  onClick={() => setChatGptTargetOrder(null)}
-                  className="text-neutral-400 hover:text-white font-bold p-1"
-                >
-                  ✕
-                </button>
-              </div>
-
-              <form onSubmit={handleDeliverChatGpt} className="space-y-4 text-xs">
-                <div>
-                  <label className="block font-semibold text-neutral-300 mb-1">
-                    Customer Target ChatGPT Email Address
-                  </label>
-                  <input
-                    type="email"
-                    required
-                    value={chatGptForm.email}
-                    onChange={(e) => setChatGptForm({ ...chatGptForm, email: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-white/10 bg-white/[0.04] font-mono text-white focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
-                  />
-                  <p className="text-[10.5px] text-neutral-500 mt-1">
-                    Delivery must be completed on this personal email.
-                  </p>
+        {/* MODAL: CHATGPT & CLAUDE PERSONAL EMAIL FULFILLMENT */}
+        {chatGptTargetOrder && (() => {
+          const isTargetClaude = (chatGptTargetOrder.productTitle || "").toLowerCase().includes("claude");
+          return (
+            <div className="fixed inset-0 z-50 bg-neutral-950/70 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className={`w-full max-w-lg bg-[#0f111a] rounded-3xl p-6 sm:p-8 border ${isTargetClaude ? 'border-amber-500/30' : 'border-emerald-500/30'} shadow-2xl space-y-5 text-white animate-in fade-in zoom-in-95 duration-200`}>
+                <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+                  <div>
+                    <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                      <Sparkles className={`w-5 h-5 ${isTargetClaude ? 'text-amber-400' : 'text-emerald-400'}`} />
+                      {isTargetClaude ? "Claude Order Delivery Console" : "ChatGPT Order Delivery Console"}
+                    </h3>
+                    <p className="text-xs text-neutral-400 mt-1">
+                      Order {chatGptTargetOrder.orderNumber} • {chatGptTargetOrder.customerName}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setChatGptTargetOrder(null)}
+                    className="text-neutral-400 hover:text-white font-bold p-1"
+                  >
+                    ✕
+                  </button>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
+                <form onSubmit={handleDeliverChatGpt} className="space-y-4 text-xs">
                   <div>
                     <label className="block font-semibold text-neutral-300 mb-1">
-                      Plan Type
+                      {isTargetClaude ? "Customer Target Claude / Anthropic Email Address" : "Customer Target ChatGPT / OpenAI Email Address"}
                     </label>
-                    <select
-                      value={chatGptForm.planType}
-                      onChange={(e) => setChatGptForm({ ...chatGptForm, planType: e.target.value as any })}
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-white/10 bg-[#161926] text-white font-semibold"
-                    >
-                      <option value="PLUS">ChatGPT Plus (Manual 2FA)</option>
-                      <option value="PRO">ChatGPT Pro (Email Invite)</option>
-                    </select>
+                    <input
+                      type="email"
+                      required
+                      value={chatGptForm.email}
+                      onChange={(e) => setChatGptForm({ ...chatGptForm, email: e.target.value })}
+                      className={`w-full px-3.5 py-2.5 rounded-xl border border-white/10 bg-white/[0.04] font-mono text-white focus:ring-2 ${isTargetClaude ? 'focus:ring-amber-500' : 'focus:ring-emerald-500'} focus:outline-hidden`}
+                    />
+                    <p className="text-[10.5px] text-neutral-500 mt-1">
+                      Delivery must be completed on this personal email.
+                    </p>
                   </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block font-semibold text-neutral-300 mb-1">
+                        Plan Type
+                      </label>
+                      <select
+                        value={chatGptForm.planType}
+                        onChange={(e) => setChatGptForm({ ...chatGptForm, planType: e.target.value as any })}
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-white/10 bg-[#161926] text-white font-semibold"
+                      >
+                        {isTargetClaude ? (
+                          <>
+                            <option value="PLUS">Claude Pro (Manual 2FA)</option>
+                            <option value="PRO">Claude Team (Email Invite)</option>
+                          </>
+                        ) : (
+                          <>
+                            <option value="PLUS">ChatGPT Plus (Manual 2FA)</option>
+                            <option value="PRO">ChatGPT Pro (Email Invite)</option>
+                          </>
+                        )}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block font-semibold text-neutral-300 mb-1">
+                        Order Status After Save
+                      </label>
+                      <select
+                        value={chatGptForm.status}
+                        onChange={(e) => setChatGptForm({ ...chatGptForm, status: e.target.value as any })}
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-white/10 bg-[#161926] text-white font-semibold"
+                      >
+                        <option value="COMPLETED">COMPLETED (Activated)</option>
+                        <option value="PROCESSING">PROCESSING (Awaiting 2FA)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {chatGptForm.planType === "PRO" ? (
+                    <div>
+                      <label className="block font-semibold text-purple-300 mb-1">
+                        {isTargetClaude ? "Anthropic Team Organization Invitation Link (Sent to Customer)" : "OpenAI Pro Workspace Invitation Link (Sent to Customer)"}
+                      </label>
+                      <input
+                        type="text"
+                        placeholder={isTargetClaude ? "e.g. https://claude.ai/invite/team_org_..." : "e.g. https://chat.openai.com/invite/auth_org_..."}
+                        value={chatGptForm.inviteLink}
+                        onChange={(e) => setChatGptForm({ ...chatGptForm, inviteLink: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-purple-500/30 bg-white/[0.04] font-mono text-white focus:ring-2 focus:ring-purple-500 focus:outline-hidden"
+                      />
+                      <p className="text-[10.5px] text-neutral-400 mt-1">
+                        {isTargetClaude ? "Team plans are delivered by sending this invite link to the customer's email or Order Vault." : "Pro plans are delivered by sending this invite link to the customer's email or Order Vault."}
+                      </p>
+                    </div>
+                  ) : (
+                    <div className={`p-3.5 rounded-xl ${isTargetClaude ? 'bg-amber-950/40 border-amber-500/20' : 'bg-emerald-950/40 border-emerald-500/20'} border space-y-2`}>
+                      <span className={`font-bold ${isTargetClaude ? 'text-amber-400' : 'text-emerald-400'} block text-xs`}>
+                        {isTargetClaude ? "2FA Login Upgrade Checklist (Claude Pro):" : "2FA Login Upgrade Checklist (ChatGPT Plus):"}
+                      </span>
+                      <ol className="list-decimal list-inside space-y-1 text-[11px] text-neutral-300">
+                        <li>Initiate login to customer's email at {isTargetClaude ? "claude.ai" : "chatgpt.com"}.</li>
+                        <li>Use the Live Chat or Ticket desk below to ask customer for their 6-digit 2FA code / link.</li>
+                        <li>Enter code, verify subscription upgraded to {isTargetClaude ? "Claude Pro" : "Plus"}, and submit confirmation below.</li>
+                      </ol>
+                    </div>
+                  )}
 
                   <div>
                     <label className="block font-semibold text-neutral-300 mb-1">
-                      Order Status After Save
-                    </label>
-                    <select
-                      value={chatGptForm.status}
-                      onChange={(e) => setChatGptForm({ ...chatGptForm, status: e.target.value as any })}
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-white/10 bg-[#161926] text-white font-semibold"
-                    >
-                      <option value="COMPLETED">COMPLETED (Activated)</option>
-                      <option value="PROCESSING">PROCESSING (Awaiting 2FA)</option>
-                    </select>
-                  </div>
-                </div>
-
-                {chatGptForm.planType === "PRO" ? (
-                  <div>
-                    <label className="block font-semibold text-purple-300 mb-1">
-                      OpenAI Pro Workspace Invitation Link (Sent to Customer)
+                      Technician Delivery Notes / Confirmation
                     </label>
                     <input
                       type="text"
-                      placeholder="e.g. https://chat.openai.com/invite/auth_org_..."
-                      value={chatGptForm.inviteLink}
-                      onChange={(e) => setChatGptForm({ ...chatGptForm, inviteLink: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-purple-500/30 bg-white/[0.04] font-mono text-white focus:ring-2 focus:ring-purple-500 focus:outline-hidden"
+                      value={chatGptForm.notes}
+                      onChange={(e) => setChatGptForm({ ...chatGptForm, notes: e.target.value })}
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-white/10 bg-white/[0.04] text-white"
                     />
-                    <p className="text-[10.5px] text-neutral-400 mt-1">
-                      Pro plans are delivered by sending this invite link to the customer's email or Order Vault.
-                    </p>
                   </div>
-                ) : (
-                  <div className="p-3.5 rounded-xl bg-emerald-950/40 border border-emerald-500/20 space-y-2">
-                    <span className="font-bold text-emerald-400 block text-xs">
-                      2FA Login Upgrade Checklist (ChatGPT Plus):
-                    </span>
-                    <ol className="list-decimal list-inside space-y-1 text-[11px] text-neutral-300">
-                      <li>Initiate login to customer's email at chatgpt.com.</li>
-                      <li>Use the Live Chat or Ticket desk below to ask customer for their 6-digit 2FA code.</li>
-                      <li>Enter code, verify subscription upgraded to Plus, and submit confirmation below.</li>
-                    </ol>
+
+                  <div className="flex gap-3 pt-3 justify-end border-t border-white/[0.08]">
+                    <button
+                      type="button"
+                      onClick={() => setChatGptTargetOrder(null)}
+                      className="px-4 py-2.5 rounded-xl border border-white/10 font-semibold text-neutral-300 hover:text-white hover:bg-white/[0.05]"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      className={`px-5 py-2.5 rounded-xl ${isTargetClaude ? 'bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500' : 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500'} text-white font-bold shadow-md flex items-center gap-1.5`}
+                    >
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>Save &amp; Complete Delivery</span>
+                    </button>
                   </div>
-                )}
-
-                <div>
-                  <label className="block font-semibold text-neutral-300 mb-1">
-                    Technician Delivery Notes / Confirmation
-                  </label>
-                  <input
-                    type="text"
-                    value={chatGptForm.notes}
-                    onChange={(e) => setChatGptForm({ ...chatGptForm, notes: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-white/10 bg-white/[0.04] text-white"
-                  />
-                </div>
-
-                <div className="flex gap-3 pt-3 justify-end border-t border-white/[0.08]">
-                  <button
-                    type="button"
-                    onClick={() => setChatGptTargetOrder(null)}
-                    className="px-4 py-2.5 rounded-xl border border-white/10 font-semibold text-neutral-300 hover:text-white hover:bg-white/[0.05]"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold shadow-md shadow-emerald-600/30 flex items-center gap-1.5"
-                  >
-                    <Sparkles className="w-3.5 h-3.5" />
-                    <span>Save &amp; Complete Delivery</span>
-                  </button>
-                </div>
-              </form>
+                </form>
+              </div>
             </div>
-          </div>
-        )}
+          );
+        })()}
 
         {/* MODAL: ADVANCED ADSENSE ASSET HANDOFF & LIVE CHAT DESK */}
         {adSenseHandoffOrder && (

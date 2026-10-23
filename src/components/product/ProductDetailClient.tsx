@@ -822,7 +822,7 @@ export default function ProductDetailClient({ product: initialProduct }: Product
                 <h3 className="font-extrabold text-base sm:text-lg text-white">
                   {product.deliveryType === "SERVICE_SETUP" && "How WordPress Setup & Activation Works"}
                   {product.deliveryType === "INSTANT_CODE" && "Instant Key Dispenser & Auto-Delivery"}
-                  {product.deliveryType === "MANUAL_HANDOFF" && (product.slug.includes("chatgpt") ? "15–30 Minute Personal Email Activation Pipeline" : "Asset & Account Ownership Transfer Process")}
+                  {product.deliveryType === "MANUAL_HANDOFF" && ((product.slug.includes("chatgpt") || product.slug.includes("claude")) ? "15–30 Minute Personal Email Activation Pipeline" : "Asset & Account Ownership Transfer Process")}
                 </h3>
                 <p className="text-xs text-neutral-400 mt-0.5">
                   100% Guaranteed Setup • Safe & Verified • Full Warranty Protection
@@ -1067,6 +1067,106 @@ export default function ProductDetailClient({ product: initialProduct }: Product
                   <div className="flex items-center gap-2">
                     <Check className="w-3.5 h-3.5 text-purple-400 shrink-0" />
                     <span>Direct official OpenAI invite — 1-click activation</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+
+        {/* Dedicated Claude Pro & Team Experience Section */}
+        {product.slug.includes("claude") && (
+          <div className="mt-8 sm:mt-12 space-y-6">
+            {/* Guarantee Callout Banner */}
+            <div className="relative rounded-2xl sm:rounded-3xl p-5 sm:p-8 overflow-hidden border border-amber-500/30 bg-gradient-to-br from-[#19100d] via-[#1a0f14] to-[#12080f] shadow-2xl">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5">
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2.5">
+                    <ShieldCheck className="w-6 h-6 text-amber-400 shrink-0" />
+                    <h3 className="font-extrabold text-lg sm:text-xl text-white">100% Full-Term Validity Guarantee</h3>
+                  </div>
+                  <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed max-w-2xl">
+                    Every Claude Pro and Claude Team subscription is delivered directly to your <strong className="text-white">personal email address</strong> and backed by our full validity warranty. If your access drops or expires early for any reason, our team will re-invite or replace your plan immediately at zero cost.
+                  </p>
+                </div>
+                <div className="flex-shrink-0 flex items-center gap-2">
+                  <span className="px-3.5 py-1.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs font-bold font-mono">
+                    ⚡ 15–30 Min SLA
+                  </span>
+                  <span className="px-3.5 py-1.5 rounded-full bg-orange-500/20 text-orange-300 border border-orange-500/40 text-xs font-bold font-mono">
+                    🔒 Personal Email
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Pro vs Team Plan Comparison Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              {/* Claude Pro Box */}
+              <div className="rounded-2xl sm:rounded-3xl p-6 border border-orange-500/30 bg-[#160f14] space-y-4">
+                <div className="flex items-center justify-between pb-3 border-b border-orange-500/20">
+                  <div>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-orange-400 font-mono block">1M, 6M &amp; 1Y Plans</span>
+                    <h4 className="text-lg font-black text-white">Claude Pro</h4>
+                  </div>
+                  <span className="px-2.5 py-1 rounded-full bg-orange-500/20 text-orange-300 text-xs font-bold font-mono">
+                    From $14.99
+                  </span>
+                </div>
+                <p className="text-xs text-neutral-300 leading-relaxed">
+                  Upgraded manually on your personal email within 15–30 minutes. Submit your email at checkout; our technician will coordinate the 2FA login verification code in real-time via the live order chat or support ticket.
+                </p>
+                <div className="space-y-2 pt-1 text-xs text-neutral-300">
+                  <div className="flex items-center gap-2">
+                    <Check className="w-3.5 h-3.5 text-orange-400 shrink-0" />
+                    <span>Claude 3.5 Sonnet &amp; 3.5 Haiku full access</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Check className="w-3.5 h-3.5 text-orange-400 shrink-0" />
+                    <span>Claude Artifacts live side-by-side code rendering</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Check className="w-3.5 h-3.5 text-orange-400 shrink-0" />
+                    <span>Massive 200,000 token context window</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Check className="w-3.5 h-3.5 text-orange-400 shrink-0" />
+                    <span>Projects workspaces with custom knowledge bases</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Claude Team Box */}
+              <div className="rounded-2xl sm:rounded-3xl p-6 border border-amber-500/30 bg-[#191118] space-y-4">
+                <div className="flex items-center justify-between pb-3 border-b border-amber-500/20">
+                  <div>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-amber-400 font-mono block">1M &amp; 1Y Enterprise</span>
+                    <h4 className="text-lg font-black text-white">Claude Team</h4>
+                  </div>
+                  <span className="px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold font-mono">
+                    From $139.99
+                  </span>
+                </div>
+                <p className="text-xs text-neutral-300 leading-relaxed">
+                  Delivered via an official Anthropic organization email invitation link. Simply click 'Accept Invite' in your email inbox to immediately unlock Claude Team. Zero password or 2FA code sharing required.
+                </p>
+                <div className="space-y-2 pt-1 text-xs text-neutral-300">
+                  <div className="flex items-center gap-2">
+                    <Check className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                    <span className="font-semibold text-amber-200">5x higher usage limits on Claude 3.5 Sonnet</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Check className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                    <span>Shared Projects &amp; organization-wide Artifacts</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Check className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                    <span>Central billing console &amp; member seat management</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Check className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                    <span>Direct official Anthropic invite — 1-click activation</span>
                   </div>
                 </div>
               </div>

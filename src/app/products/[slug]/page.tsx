@@ -35,6 +35,13 @@ export function generateStaticParams() {
       slugs.push({ slug: "google-adsense" });
       slugs.push({ slug: "adsense-websites" });
     }
+    if (product.slug === "claude-ai-pro") {
+      slugs.push({ slug: "claude" });
+      slugs.push({ slug: "claude-ai" });
+      slugs.push({ slug: "claude-pro" });
+      slugs.push({ slug: "claude-team" });
+      slugs.push({ slug: "anthropic-claude" });
+    }
   });
   return slugs;
 }
